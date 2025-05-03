@@ -9,10 +9,7 @@ const AgroGuide = () => {
 
   const handleLiveLinkClick = (e) => {
     e.preventDefault();
-    toast("Username: Kevin | Password: 1234");
-    setTimeout(() => {
-      window.open(project.liveLink, "_blank");
-    }, 500);
+    window.open(project.liveLink, "_blank");
   };
 
   return (

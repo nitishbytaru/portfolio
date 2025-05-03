@@ -1,20 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import ProjectLayout from "../components/ProjectLayout";
 import { projectsData } from "../data/ProjectData";
-import { toast } from "react-hot-toast";
+import Modal from "../components/Modal";
 
 const ExpenseTracker = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const project = projectsData[2];
 
   const handleLiveLinkClick = (e) => {
     e.preventDefault();
-    toast("Username: Kevin | Password: 1234");
-    setTimeout(() => {
-      window.open(project.liveLink, "_blank");
-    }, 500);
+    setIsModalOpen(true);
   };
 
-  return <ProjectLayout project={project} onLiveLinkClick={handleLiveLinkClick} />;
+  const handleContinue = () => {
+    setIsModalOpen(false);
+    window.open(project.liveLink, "_blank");
+  };
+
+  return (
+    <>
+      <ProjectLayout project={project} onLiveLinkClick={handleLiveLinkClick} />
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onContinue={handleContinue}
+      />
+    </>
+  );
 };
 
 export default ExpenseTracker;

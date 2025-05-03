@@ -13,33 +13,30 @@ const SectionCard = ({ title, children, spanAll = false }) => (
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ duration: 0.6 }}
-    className={`bg-white/80 dark:bg-gray-800/50 p-8 rounded-xl shadow-md hover:shadow-lg hover:shadow-portfolio-primary/10 transition-all backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/30 ${
+    className={`bg-white/80 dark:bg-gray-800/50 p-8 rounded-xl shadow-md hover:shadow-lg hover:shadow-blue-500/10 transition-all backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/30 ${
       spanAll ? "md:col-span-2" : ""
     }`}
   >
-    <h2 className="text-2xl font-bold gradient-heading mb-6">{title}</h2>
+    <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+      {title}
+    </h2>
     {children}
   </motion.section>
 );
 
 const ProjectLayout = ({ project, onLiveLinkClick }) => {
   return (
-    <div className="max-w-7xl mx-auto px-6 py-20 relative overflow-hidden">
-      {/* Background decorations */}
+    <div className="max-w-7xl mx-auto px-6 py-2 relative overflow-hidden">
+      {/* Background decorations - toned down */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-20 left-1/4 w-96 h-96 bg-portfolio-primary/10 dark:bg-portfolio-primary/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-40 right-1/4 w-80 h-80 bg-portfolio-secondary/10 dark:bg-portfolio-secondary/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-20 left-1/4 w-96 h-96 bg-blue-500/5 dark:bg-blue-400/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-40 right-1/4 w-80 h-80 bg-teal-500/5 dark:bg-teal-400/5 rounded-full blur-3xl"></div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-16 relative z-10"
-      >
+      <div className="flex justify-between items-center mb-6 relative z-10">
         <Link
           to="/#projects"
-          className="inline-flex items-center mb-6 text-portfolio-primary dark:text-portfolio-accent hover:underline"
+          className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -56,22 +53,28 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
           Back to Projects
         </Link>
 
-        <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-portfolio-accent/10 dark:bg-portfolio-accent/20 border border-portfolio-accent/20 dark:border-portfolio-accent/30">
-          <span className="text-portfolio-primary dark:text-portfolio-accent font-medium">
+        <div className="px-4 py-1.5 rounded-full bg-blue-100 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/30">
+          <span className="text-blue-600 dark:text-blue-400 font-medium">
             Project Showcase
           </span>
         </div>
+      </div>
 
-        <h1 className="text-4xl md:text-6xl font-bold gradient-heading mb-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-16 relative z-10"
+      >
+        <h1 className="text-4xl md:text-6xl font-bold text-gray-800 dark:text-white mb-6">
           {project.title}
         </h1>
-
         <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
           {project.shortDescription}
         </p>
       </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20 relative z-10">
+      <div className="flex flex-col gap-12 mb-20 relative z-10">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
@@ -85,7 +88,7 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
             modules={[Navigation, Pagination, Autoplay, Keyboard]}
             navigation
             pagination={{ clickable: true }}
-            autoplay={{ delay: 3500 }}
+            autoplay={{ delay: 4000 }}
             keyboard={{ enabled: true }}
             className="h-full"
           >
@@ -103,6 +106,23 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
           </Swiper>
         </motion.div>
 
+        {/* floating button - more subtle */}
+        <motion.button
+          onClick={onLiveLinkClick}
+          animate={{
+            y: [0, -5, 0],
+            scale: [1, 1.05, 1],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="fixed bottom-6 right-6 z-50 px-6 py-3 bg-gradient-to-r from-blue-600 to-teal-600 text-white rounded-full font-semibold shadow-lg hover:shadow-blue-500/30 transition-all"
+        >
+          View Live Demo
+        </motion.button>
+
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
@@ -110,7 +130,7 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
           className="space-y-8"
         >
           <div>
-            <h2 className="text-2xl font-bold gradient-heading mb-4">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
               Project Overview
             </h2>
             <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
@@ -123,7 +143,7 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onLiveLinkClick}
-              className="px-6 py-3 bg-gradient-to-r from-portfolio-primary to-portfolio-secondary text-white rounded-lg font-medium shadow-lg hover:shadow-xl hover:shadow-portfolio-primary/30 transition-all flex items-center gap-2 animate-gradient-x"
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-teal-600 text-white rounded-lg font-medium shadow-md hover:shadow-lg hover:shadow-blue-500/20 transition-all flex items-center gap-2"
             >
               <span>View Live Demo</span>
               <svg
@@ -142,7 +162,7 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
               href={project.githubLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3 bg-gray-800 dark:bg-gray-700 text-white rounded-lg font-medium shadow-lg hover:shadow-xl hover:shadow-gray-800/30 transition-all flex items-center gap-2"
+              className="px-6 py-3 bg-gray-800 dark:bg-gray-700 text-white rounded-lg font-medium shadow-md hover:shadow-lg hover:shadow-gray-800/20 transition-all flex items-center gap-2"
             >
               <span>GitHub Repository</span>
               <svg
@@ -158,14 +178,14 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
           </div>
 
           <div>
-            <h3 className="text-xl font-semibold gradient-heading mb-4">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
               Tech Stack
             </h3>
             <div className="flex flex-wrap gap-3">
               {project.techStack.map((tech, i) => (
                 <span
                   key={i}
-                  className="px-4 py-2 bg-portfolio-primary/10 dark:bg-portfolio-primary/20 text-portfolio-primary dark:text-portfolio-light rounded-full text-sm font-medium border border-portfolio-primary/20 dark:border-portfolio-primary/30"
+                  className="px-4 py-2 bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium border border-blue-200 dark:border-blue-800/30"
                 >
                   {tech}
                 </span>
@@ -180,9 +200,9 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
           <ul className="space-y-4">
             {project.features.map((feature, i) => (
               <li key={i} className="flex items-start group">
-                <div className="mr-3 mt-1 flex-shrink-0 p-1 rounded-full bg-portfolio-primary/10 dark:bg-portfolio-primary/20 group-hover:bg-portfolio-primary/30 transition-colors">
+                <div className="mr-3 mt-1 flex-shrink-0 p-1 rounded-full bg-blue-100 dark:bg-blue-900/20 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/30 transition-colors">
                   <svg
-                    className="h-5 w-5 text-portfolio-primary dark:text-portfolio-light"
+                    className="h-5 w-5 text-blue-600 dark:text-blue-400"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -207,7 +227,7 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
           <div className="space-y-6">
             {Object.entries(project.technologiesUsed).map(([key, value]) => (
               <div key={key} className="group">
-                <h3 className="font-semibold text-portfolio-primary dark:text-portfolio-light mb-1 group-hover:text-portfolio-accent transition-colors">
+                <h3 className="font-semibold text-blue-600 dark:text-blue-400 mb-1 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
                   {key}
                 </h3>
                 <p className="text-gray-700 dark:text-gray-400">{value}</p>
@@ -225,9 +245,9 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white dark:bg-gray-900/50 p-6 rounded-xl shadow-md hover:shadow-lg hover:shadow-portfolio-primary/10 transition-all border border-gray-200/30 dark:border-gray-700/30"
+                className="bg-white dark:bg-gray-900/50 p-6 rounded-xl shadow-md hover:shadow-lg hover:shadow-blue-500/10 transition-all border border-gray-200/30 dark:border-gray-700/30"
               >
-                <h3 className="text-lg font-semibold gradient-heading mb-2">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">
                   {key}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">{value}</p>
