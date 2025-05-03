@@ -81,7 +81,7 @@ const Modal = ({ isOpen, onClose, onContinue }) => {
                     />
                   </svg>
                   <span className="font-medium text-gray-900 dark:text-white">
-                    Username: <span className="font-normal">Kevin</span>
+                    Username: <span className="font-normal">doremon</span>
                   </span>
                 </div>
                 <div className="flex items-center">
