@@ -41,7 +41,7 @@ const Modal = ({ isOpen, onClose, onContinue }) => {
           <div className="bg-gray-800 p-3 rounded mb-4 border border-gray-600">
             <div className="mb-2">
               <span className="font-medium text-amber-300">Username: </span>
-              <span className="text-gray-200">Kevin</span>
+              <span className="text-gray-200">doremon</span>
             </div>
             <div>
               <span className="font-medium text-amber-300">Password: </span>
