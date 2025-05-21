@@ -11,10 +11,28 @@ import RecipeHeaven from "./projects/RecipeHeaven";
 const App = () => {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-black">
         <Navbar />
-        <Toaster position="top-center" />
-        <main className="flex-grow pt-20">
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "#1e40af",
+              color: "#fff",
+            },
+            success: {
+              style: {
+                background: "#065f46",
+              },
+            },
+            error: {
+              style: {
+                background: "#991b1b",
+              },
+            },
+          }}
+        />
+        <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/projects/agroguide" element={<AgroGuide />} />

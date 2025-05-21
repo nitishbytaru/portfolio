@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-
 export const projectsData = [
   {
     id: 1,
@@ -21,34 +19,17 @@ export const projectsData = [
     ],
     detailedDescription: (
       <>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-gray-800 dark:text-gray-200"
-        >
-          <div className="relative">
-            <div className="absolute -left-4 top-0 h-full w-1 bg-portfolio-primary rounded-full"></div>
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-portfolio-primary to-portfolio-secondary bg-clip-text text-transparent dark:from-portfolio-primary/90 dark:to-portfolio-secondary/90 pl-3 mb-4">
-              AgroGuide
-            </h3>
+        <div className="space-y-6">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold text-blue-400 mb-2">AgroGuide</h3>
+            <p className="text-lg text-gray-300">
+              An intelligent agricultural assistance platform that leverages
+              machine learning to help farmers make{" "}
+              <strong className="text-amber-400">data-driven decisions</strong>.
+            </p>
           </div>
 
-          <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-            An intelligent agricultural assistance platform that leverages
-            machine learning to help farmers make{" "}
-            <span className="font-semibold text-portfolio-primary dark:text-portfolio-accent">
-              data-driven decisions
-            </span>
-            .
-          </p>
-
-          <motion.ul
-            className="list-none pl-0 space-y-3 mb-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ staggerChildren: 0.15 }}
-          >
+          <ul className="space-y-4">
             {[
               {
                 icon: "M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z",
@@ -67,16 +48,10 @@ export const projectsData = [
                 text: "Comprehensive agricultural market information",
               },
             ].map((item, index) => (
-              <motion.li
-                key={index}
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 100 }}
-                className="flex items-start p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
-              >
-                <span className="flex-shrink-0 p-2 mr-3 bg-portfolio-primary/10 dark:bg-portfolio-primary/20 rounded-full text-portfolio-primary dark:text-portfolio-accent">
+              <li key={index} className="flex items-start">
+                <span className="flex-shrink-0 bg-amber-900 bg-opacity-20 p-2 rounded-full mr-4">
                   <svg
-                    className="h-5 w-5"
+                    className="w-6 h-6 text-amber-400"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -89,23 +64,16 @@ export const projectsData = [
                     />
                   </svg>
                 </span>
-                <span className="text-gray-700 dark:text-gray-300">
-                  {item.text}
-                </span>
-              </motion.li>
+                <span className="text-gray-300">{item.text}</span>
+              </li>
             ))}
-          </motion.ul>
+          </ul>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="p-4 bg-gradient-to-r from-portfolio-primary/10 to-portfolio-secondary/10 dark:from-portfolio-primary/20 dark:to-portfolio-secondary/20 rounded-xl border border-portfolio-primary/20 dark:border-portfolio-primary/30"
-          >
-            <div className="flex items-center">
-              <div className="flex-shrink-0 p-2 rounded-lg bg-portfolio-primary/10 dark:bg-portfolio-primary/20 text-portfolio-primary dark:text-portfolio-accent">
+          <div className="bg-blue-900 bg-opacity-20 p-6 rounded-xl border-l-4 border-blue-500 mt-8">
+            <div className="flex items-start">
+              <div className="flex-shrink-0 bg-blue-900 bg-opacity-30 p-2 rounded-full mr-4">
                 <svg
-                  className="h-6 w-6"
+                  className="w-6 h-6 text-blue-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -118,17 +86,18 @@ export const projectsData = [
                   />
                 </svg>
               </div>
-              <div className="ml-3">
-                <p className="text-sm text-portfolio-primary dark:text-portfolio-accent">
+              <div>
+                <p className="text-gray-300">
                   The platform supports multiple languages and is accessible to
                   farmers across different regions.
                 </p>
               </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </>
     ),
+
     technologiesUsed: {
       Frontend: "React.js, Vite, Tailwind CSS",
       Backend: "Flask, Python, REST API",
@@ -206,43 +175,27 @@ export const projectsData = [
     ],
     detailedDescription: (
       <>
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="text-gray-800 dark:text-gray-200 leading-relaxed"
-        >
-          <p className="text-lg md:text-xl font-medium mb-4 bg-gradient-to-r from-portfolio-primary to-portfolio-secondary bg-clip-text text-transparent dark:from-portfolio-primary/90 dark:to-portfolio-secondary/90">
+        <div className="space-y-6">
+          <p className="text-lg text-gray-300">
             EchoRealm is a cutting-edge social web application that connects
             users through direct messaging, group interactions, and dynamic
             community discussions.
           </p>
 
-          <motion.ul
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ staggerChildren: 0.1 }}
-            className="list-none pl-0 mt-6 space-y-3"
-          >
+          <ul className="space-y-4">
             {[
               "Real-time one-on-one and group chats with friends (EchoLink)",
               "Community chatroom for larger discussions (Shout)",
               "Send quick messages to random users with Mumbles",
               "Anonymous interaction mode for enhanced privacy",
-              "Instant real-time notifications for messages, requests, and activities",
+              "Instant real-time notifications for messages, requests and activities",
               "Block users and manage your privacy settings easily",
               "Profile showcasing friends list and total Mumble likes",
             ].map((item, index) => (
-              <motion.li
-                key={index}
-                initial={{ x: -10, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="flex items-start"
-              >
-                <span className="flex-shrink-0 h-6 w-6 mr-3 mt-0.5">
+              <li key={index} className="flex items-start">
+                <span className="flex-shrink-0 bg-blue-900 bg-opacity-20 p-2 rounded-full mr-4">
                   <svg
-                    className="h-full w-full text-portfolio-primary dark:text-portfolio-accent"
+                    className="w-6 h-6 text-blue-400"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -255,21 +208,16 @@ export const projectsData = [
                     />
                   </svg>
                 </span>
-                <span className="text-gray-700 dark:text-gray-300">{item}</span>
-              </motion.li>
+                <span className="text-gray-300">{item}</span>
+              </li>
             ))}
-          </motion.ul>
+          </ul>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="mt-8 p-4 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200/50 dark:border-gray-700/30"
-          >
-            <div className="flex items-center">
-              <div className="flex-shrink-0 p-2 rounded-lg bg-portfolio-primary/10 dark:bg-portfolio-primary/20 text-portfolio-primary dark:text-portfolio-accent">
+          <div className="bg-amber-900 bg-opacity-20 p-6 rounded-xl border-l-4 border-amber-500 mt-8">
+            <div className="flex items-start">
+              <div className="flex-shrink-0 bg-amber-900 bg-opacity-30 p-2 rounded-full mr-4">
                 <svg
-                  className="h-6 w-6"
+                  className="w-6 h-6 text-amber-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -282,23 +230,23 @@ export const projectsData = [
                   />
                 </svg>
               </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-2">
                   Built With
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-gray-300">
                   React, Redux, TailwindCSS, Node.js, Express.js, MongoDB, and
                   Socket.io.
-                  <span className="block mt-1">
-                    Deployed on Vercel for seamless cross-device access.
-                  </span>
+                  <br />
+                  Deployed on Vercel for seamless cross-device access.
                 </p>
               </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </>
     ),
+
     technologiesUsed: {
       Frontend: "React.js, Redux, Tailwind CSS, Vite.js",
       Backend: "Node.js, Express.js",
@@ -362,29 +310,19 @@ export const projectsData = [
     ],
     detailedDescription: (
       <>
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="text-gray-800 dark:text-gray-200 leading-relaxed"
-        >
-          <p className="text-lg md:text-xl font-medium mb-4 bg-gradient-to-r from-portfolio-primary to-portfolio-secondary bg-clip-text text-transparent dark:from-portfolio-primary/90 dark:to-portfolio-secondary/90">
+        <div className="space-y-6">
+          <p className="text-lg text-gray-300">
             I'm excited to share the completion of my latest project: an Expense
-            Tracker web application! 🎉
+            Tracker web application! <span className="text-amber-400">🎉</span>
           </p>
 
-          <p className="text-gray-700 dark:text-gray-300 mt-2">
+          <p className="text-gray-400">
             This is my first ever full-stack project. I learned a lot from
             building this, and I'm looking forward to improving it further with
             more experience.
           </p>
 
-          <motion.ul
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ staggerChildren: 0.1 }}
-            className="list-none pl-0 mt-4 space-y-2"
-          >
+          <ul className="space-y-4">
             {[
               "Secure user authentication and JWT-based session management",
               "Track expenses and income easily with categorized entries",
@@ -393,16 +331,10 @@ export const projectsData = [
               "Fully responsive design for both desktop and mobile users",
               "Comprehensive user profile management, including account deletion",
             ].map((item, index) => (
-              <motion.li
-                key={index}
-                initial={{ x: -10, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="flex items-start"
-              >
-                <span className="flex-shrink-0 h-5 w-5 mr-3 mt-0.5">
+              <li key={index} className="flex items-start">
+                <span className="flex-shrink-0 bg-blue-900 bg-opacity-20 p-2 rounded-full mr-4">
                   <svg
-                    className="h-full w-full text-portfolio-primary dark:text-portfolio-accent"
+                    className="w-6 h-6 text-blue-400"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -415,26 +347,28 @@ export const projectsData = [
                     />
                   </svg>
                 </span>
-                <span className="text-gray-700 dark:text-gray-300">{item}</span>
-              </motion.li>
+                <span className="text-gray-300">{item}</span>
+              </li>
             ))}
-          </motion.ul>
+          </ul>
 
-          <div className="mt-6 p-4 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200/50 dark:border-gray-700/30">
-            <p className="text-gray-700 dark:text-gray-300">
+          <div className="bg-blue-900 bg-opacity-20 p-6 rounded-xl mt-8">
+            <p className="text-gray-300 mb-4">
               Built with React.js (Context API) and Vite on the frontend,
               Node.js, Express.js, and MongoDB on the backend, and deployed
               using Netlify and Render.
             </p>
-            <p className="mt-2 text-sm text-portfolio-primary dark:text-portfolio-accent">
-              <strong>Note:</strong> This is my first full-stack project. You
-              may face a few issues — if you do, please let me know so I can
-              improve the app! 🚀
+            <p className="text-gray-300">
+              <strong className="text-amber-400">Note:</strong> This is my first
+              full-stack project. You may face a few issues — if you do, please
+              let me know so I can improve the app!{" "}
+              <span className="text-amber-400">🚀</span>
             </p>
           </div>
-        </motion.div>
+        </div>
       </>
     ),
+
     technologiesUsed: {
       Frontend: "React.js (Context API), Vite.js, Axios",
       Backend: "Node.js, Express.js",
@@ -482,24 +416,13 @@ export const projectsData = [
     ],
     detailedDescription: (
       <>
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="text-gray-800 dark:text-gray-200 leading-relaxed"
-        >
-          <p className="text-lg md:text-xl font-medium mb-4 bg-gradient-to-r from-portfolio-primary to-portfolio-secondary bg-clip-text text-transparent dark:from-portfolio-primary/90 dark:to-portfolio-secondary/90">
+        <div className="space-y-6">
+          <p className="text-lg text-gray-300">
             I've been working on a dynamic recipe-sharing platform that allows
             users to create and share recipes with a thriving community of food
             enthusiasts.
           </p>
-
-          <motion.ul
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ staggerChildren: 0.1 }}
-            className="list-none pl-0 mt-4 space-y-2"
-          >
+          <ul className="space-y-4">
             {[
               "Secure user authentication and account management",
               "Create, edit, and delete personalized recipes",
@@ -508,16 +431,10 @@ export const projectsData = [
               "Update personal details like username, email, and password easily",
               "Responsive web design optimized for both desktop and mobile users",
             ].map((item, index) => (
-              <motion.li
-                key={index}
-                initial={{ x: -10, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="flex items-start"
-              >
-                <span className="flex-shrink-0 h-5 w-5 mr-3 mt-0.5">
+              <li key={index} className="flex items-start">
+                <span className="flex-shrink-0 bg-amber-900 bg-opacity-20 p-2 rounded-full mr-4">
                   <svg
-                    className="h-full w-full text-portfolio-primary dark:text-portfolio-accent"
+                    className="w-6 h-6 text-amber-400"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -530,50 +447,51 @@ export const projectsData = [
                     />
                   </svg>
                 </span>
-                <span className="text-gray-700 dark:text-gray-300">{item}</span>
-              </motion.li>
+                <span className="text-gray-300">{item}</span>
+              </li>
             ))}
-          </motion.ul>
-
-          <div className="mt-6 p-4 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200/50 dark:border-gray-700/30">
-            <p className="text-gray-700 dark:text-gray-300">
+          </ul>
+          <div className="space-y-4">
+            <p className="text-gray-300">
               Built using Django for the backend and Bootstrap for a clean,
               responsive frontend. Data management is handled with SQLite.
             </p>
-
-            <div className="mt-4 space-y-2">
-              <p className="flex items-center">
-                <span className="mr-2">🎯</span>
+            <div className="bg-blue-900 bg-opacity-20 p-4 rounded-xl">
+              <p className="flex items-center text-gray-300 mb-2">
+                <span className="inline-block bg-blue-900 bg-opacity-30 text-blue-400 rounded-full p-2 mr-3">
+                  🎯
+                </span>
                 <span>Check out the live project here: </span>
                 <a
                   href="https://lnkd.in/g-Wa78Fp"
-                  className="text-portfolio-primary dark:text-portfolio-accent hover:underline ml-1"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 ml-1"
                 >
                   View Live
                 </a>
               </p>
-
-              <p className="flex items-center">
-                <span className="mr-2">💡</span>
+              <p className="flex items-center text-gray-300">
+                <span className="inline-block bg-amber-900 bg-opacity-30 text-amber-400 rounded-full p-2 mr-3">
+                  💡
+                </span>
                 <span>GitHub Repository: </span>
                 <a
                   href="https://lnkd.in/grUX3dYs"
-                  className="text-portfolio-primary dark:text-portfolio-accent hover:underline ml-1"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 ml-1"
                 >
                   View Code
                 </a>
               </p>
             </div>
-
-            <p className="mt-4 text-sm text-portfolio-primary dark:text-portfolio-accent">
-              I would love your feedback so I can improve this website! 🙌
+            <p className="text-gray-300">
+              I would love your feedback so I can improve this website!{" "}
+              <span className="text-amber-400">🙌</span>
             </p>
           </div>
-        </motion.div>
+        </div>
       </>
     ),
     technologiesUsed: {
