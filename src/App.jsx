@@ -7,6 +7,7 @@ import AgroGuide from "./projects/AgroGuide";
 import EchoRealm from "./projects/EchoRealm";
 import ExpenseTracker from "./projects/ExpenseTracker";
 import RecipeHeaven from "./projects/RecipeHeaven";
+import Insta from "./projects/Insta";
 
 const App = () => {
   return (
@@ -42,6 +43,7 @@ const App = () => {
               element={<ExpenseTracker />}
             />
             <Route path="/projects/recipeheaven" element={<RecipeHeaven />} />
+            <Route path="/projects/insta" element={<Insta />} />
           </Routes>
         </main>
         <Footer />

@@ -51,6 +51,21 @@ const projects = [
     link: "/projects/recipeheaven",
     techStack: ["Django", "Python", "SQLite", "HTML", "CSS", "Bootstrap"],
   },
+  {
+    title: "Instagram UI Clone",
+    description:
+      "A pixel-perfect Instagram UI clone built with React Native during my learning journey at Evaluate Health as a proof of work in mobile development.",
+    image: "/insta/thumbnail/6.png", // you can replace with actual thumbnail path later
+    link: "/projects/insta",
+    techStack: [
+      "React Native",
+      "JavaScript",
+      "React Navigation",
+      "Flexbox",
+      "React Native Components",
+      "AsyncStorage (optional)",
+    ],
+  }
 ];
 
 const Projects = () => {

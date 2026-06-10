@@ -404,7 +404,7 @@ export const projectsData = [
       "A dynamic recipe-sharing web app where users can create, manage, and discover recipes with a vibrant food-loving community.",
     thumbnail: "/recipeheaven/thumbnail/1.jpeg", // corrected path
     liveLink: "https://nitish24.pythonanywhere.com/",
-    githubLink: "https://lnkd.in/grUX3dYs",
+    githubLink: "https://github.com/nitishbytaru/RecipeHaven",
     techStack: ["HTML", "CSS", "Bootstrap", "Django", "Python", "SQLite"],
     features: [
       "Secure user login and registration using Django's authentication system",
@@ -477,7 +477,7 @@ export const projectsData = [
                 </span>
                 <span>GitHub Repository: </span>
                 <a
-                  href="https://lnkd.in/grUX3dYs"
+                  href="https://github.com/nitishbytaru/RecipeHaven"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-400 hover:text-blue-300 ml-1"
@@ -517,6 +517,133 @@ export const projectsData = [
       "/recipeheaven/4.jpeg",
       "/recipeheaven/6.jpeg",
       "/recipeheaven/7.jpeg",
+    ],
+  },
+  {
+    id: 5,
+    title: "Instagram UI Clone - React Native",
+    shortDescription:
+      "A pixel-perfect Instagram UI Clone built with React Native to master mobile app development, navigation, and performance optimization.",
+    thumbnail: "/insta/thumbnail/6.jpeg", // corrected path
+    liveLink: "",
+    githubLink: "https://github.com/nitishbytaru/Instagram_UI_Clone",
+    techStack: ["React Native", "Tailwind CSS"],
+    features: [
+      "Pixel-perfect Instagram UI Clone built entirely with React Native",
+      "Fully implemented feed, stories, reels tab, and profile sections",
+      "Smooth navigation using React Navigation (stack, tab, and bottom tabs)",
+      "Advanced Flexbox layouts for responsive and adaptive UI",
+      "Efficient image loading and caching with React Native FastImage",
+      "Custom components for stories highlights, posts grid, and interactive buttons",
+      "State management with React hooks for seamless user interactions",
+      "Cross-platform compatibility — tested and optimized for both Android and iOS",
+    ],
+    detailedDescription: (
+      <>
+        <div className="space-y-6">
+          <p className="text-lg text-gray-300">
+            During my learning journey at Evaluate Health, I dove into Android
+            development with React Native and built a pixel-perfect Instagram UI
+            Clone as a hands-on proof of work.
+          </p>
+          <ul className="space-y-4">
+            {[
+              "Built a fully functional Instagram UI Clone using React Native",
+              "Deepened expertise in React Native components and Flexbox styling",
+              "Implemented smooth navigation using React Navigation (stack & tab navigators)",
+              "Mastered layout design for complex feed, stories, and profile screens",
+              "Optimized image handling with FastImage and proper caching techniques",
+              "Ensured pixel-perfect UI replication matching Instagram's native look and feel",
+              "Improved performance through efficient component rendering and state management",
+            ].map((item, index) => (
+              <li key={index} className="flex items-start">
+                <span className="flex-shrink-0 bg-amber-900 bg-opacity-20 p-2 rounded-full mr-4">
+                  <svg
+                    className="w-6 h-6 text-amber-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </span>
+                <span className="text-gray-300">{item}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="space-y-4">
+            <p className="text-gray-300">
+              Built using React Native for the Frontend and Tailwind CSS for a
+              clean, responsive usage. Data management is handled with Sample
+              Data.
+            </p>
+            <div className="bg-blue-900 bg-opacity-20 p-4 rounded-xl">
+              <p className="flex items-center text-gray-300 mb-2">
+                <span className="inline-block bg-blue-900 bg-opacity-30 text-blue-400 rounded-full p-2 mr-3">
+                  🎯
+                </span>
+                <span>Check out the Demo video: </span>
+                <a
+                  href="https://www.linkedin.com/posts/nitishbytaru_during-my-learning-journey-at-evaluate-health-activity-7394217921595523072-PPrk?utm_source=share&utm_medium=member_desktop&rcm=ACoAAECYhy0BjTqW8NV_A7nTP6_KGN5tzcO2gqk"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 ml-1"
+                >
+                  View Live
+                </a>
+              </p>
+              <p className="flex items-center text-gray-300">
+                <span className="inline-block bg-amber-900 bg-opacity-30 text-amber-400 rounded-full p-2 mr-3">
+                  💡
+                </span>
+                <span>GitHub Repository: </span>
+                <a
+                  href="https://github.com/nitishbytaru/Instagram_UI_Clone"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 ml-1"
+                >
+                  View Code
+                </a>
+              </p>
+            </div>
+            <p className="text-gray-300">
+              I would love your feedback so I can improve this website!{" "}
+              <span className="text-amber-400">🙌</span>
+            </p>
+          </div>
+        </div>
+      </>
+    ),
+    technologiesUsed: {
+      Frontend: "React Native, Tailwind CSS",
+      // Backend: "Django, Python",
+      // Database: "SQLite",
+    },
+    deployment: {
+      Frontend: "Django Templates (hosted with backend)",
+      Backend: "Pythonanywhere",
+      Database: "SQLite (local database)",
+    },
+    folderStructure: {
+      Server:
+        "Django structure: settings.py, urls.py, models.py, views.py, templates, static",
+    },
+    machineLearningModels: [], // No ML models
+    images: [
+      "/insta/thumbnail/6.png",
+      "/insta/5.png",
+      "/insta/2.png",
+      "/insta/3.png",
+      "/insta/4.png",
+      "/insta/1.png",
+      "/insta/6.png",
+      "/insta/7.png",
     ],
   },
 ];
