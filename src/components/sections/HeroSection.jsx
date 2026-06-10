@@ -30,7 +30,6 @@ const STATS = [
     label: "Major Projects",
     description: "Full-stack, mobile, and ML-based applications",
     icon: Layers,
-    progress: "85%",
   },
   {
     value: 10,
@@ -38,7 +37,6 @@ const STATS = [
     label: "Technologies",
     description: "React, RN, Node, Flask, .NET, Angular and more",
     icon: Code2,
-    progress: "90%",
   },
   {
     value: 3,
@@ -46,14 +44,12 @@ const STATS = [
     label: "Databases",
     description: "MongoDB, MySQL, and PostgreSQL exposure",
     icon: Database,
-    progress: "75%",
   },
   {
     display: "Full Stack",
     label: "Specialization",
     description: "Frontend, backend, APIs, and database workflows",
     icon: Cpu,
-    progress: "88%",
   },
 ];
 
@@ -137,9 +133,6 @@ const StatCard = ({ stat, index, isVisible }) => {
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
             <Icon className="h-6 w-6" />
           </div>
-          <Pill tone="primary" size="sm">
-            {stat.progress}
-          </Pill>
         </div>
 
         <div className="mb-4 font-mono text-5xl font-bold tracking-tight text-text">
@@ -166,26 +159,6 @@ const StatCard = ({ stat, index, isVisible }) => {
         </div>
       </div>
     </GlassCard>
-  );
-};
-const ProfileMatchCard = () => {
-  return (
-    <div className="absolute -bottom-6 -right-6 md:right-4 md:-bottom-2 bg-surface/90 backdrop-blur-xl border border-border p-4 rounded-2xl shadow-xl z-20 flex items-center gap-3 animate-bounce-subtle hover:scale-105 transition-all duration-300">
-      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-        <Sparkles className="w-5 h-5" />
-      </div>
-      <div>
-        <div className="text-xs font-bold text-text-secondary uppercase tracking-wider">
-          Profile Match
-        </div>
-        <div className="text-base font-bold text-text flex items-center gap-2">
-          96%{" "}
-          <span className="text-xs font-medium text-primary bg-primary/10 px-1.5 py-0.5 rounded-full border border-primary/20">
-            Very High
-          </span>
-        </div>
-      </div>
-    </div>
   );
 };
 
@@ -242,13 +215,6 @@ const HeroSection = () => {
               </Pill>
             </Reveal>
 
-            <Reveal delay={0.3}>
-              <p className="mb-8 max-w-2xl text-lg leading-relaxed text-text-secondary md:text-xl">
-                I build clean, scalable, and production-ready applications
-                across frontend, backend, APIs, databases, and mobile interfaces.
-              </p>
-            </Reveal>
-
             <Reveal delay={0.4}>
               <div className="mb-8 grid gap-4 sm:grid-cols-3">
                 {MINI_CARDS.map((c) => (
@@ -294,7 +260,6 @@ const HeroSection = () => {
                 <FloatingBadge key={b.label} {...b} />
               ))}
               <HeroAvatar />
-              <ProfileMatchCard />
             </div>
           </div>
         </div>

@@ -7,8 +7,16 @@ import {
   CheckCircle2,
   Sparkles,
   Building2,
+  Code2,
+  Database,
+  Layers,
+  Activity,
 } from "lucide-react";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
+import SectionShell from "../ui/SectionShell";
+import SectionHeader from "../ui/SectionHeader";
+import GlassCard from "../ui/GlassCard";
+import Pill from "../ui/Pill";
 
 const experiences = [
   {
@@ -17,6 +25,7 @@ const experiences = [
     location: "Mysore",
     date: "Dec 2025 - May 2026",
     type: "Enterprise Training",
+    summaryLabel: "Enterprise Stack",
     certificate:
       "https://drive.google.com/file/d/1aLeH6dHQzZo0sbtxbiw7Z4B6qrq_IPTw/view?usp=drive_link",
     points: [
@@ -24,6 +33,23 @@ const experiences = [
       "Acquired hands-on knowledge of DBMS and MySQL: relational design, normalization, SQL queries, joins, and database management.",
       "Completed Stream Training in the Microsoft stack: TypeScript, C#, Angular, .NET, and Entity Framework Core for enterprise-grade full-stack development.",
     ],
+    skills: [
+      "Java",
+      "OOP",
+      "DBMS",
+      "MySQL",
+      "TypeScript",
+      "C#",
+      "Angular",
+      ".NET",
+      "Entity Framework Core",
+    ],
+    metrics: [
+      { label: "Focus Area", value: "Full Stack & DB", icon: Database },
+      { label: "Stream Track", value: "Microsoft C# / .NET", icon: Code2 },
+      { label: "Engineering Scope", value: "Enterprise Architecture", icon: Layers },
+      { label: "Work Model", value: "Intensive Academy", icon: Activity },
+    ]
   },
   {
     role: "Frontend Intern",
@@ -31,6 +57,7 @@ const experiences = [
     location: "Vizag",
     date: "Jul 2025 - Nov 2025",
     type: "Frontend Engineering",
+    summaryLabel: "Mobile Frontend",
     certificate:
       "https://drive.google.com/file/d/1hiiyhRLeDxyIRnXKSnl4iDoFrAVErm6g/view?usp=drive_link",
     points: [
@@ -38,170 +65,234 @@ const experiences = [
       "Built reusable card components, reducing unnecessary re-renders and measurably improving rendering performance of the application.",
       "Coordinated with the backend team to integrate REST APIs for data storage and retrieval within an Agile frontend workflow.",
     ],
+    skills: [
+      "React Native",
+      "TypeScript",
+      "Redux",
+      "Redux-Saga",
+      "REST APIs",
+      "Agile",
+    ],
+    metrics: [
+      { label: "Focus Area", value: "Mobile Native UI", icon: Layers },
+      { label: "State Engine", value: "Redux & Saga", icon: Activity },
+      { label: "API Integration", value: "RESTful Endpoints", icon: Code2 },
+      { label: "Workflow Mode", value: "Agile Scrum", icon: Briefcase },
+    ]
   },
 ];
 
 export default function Experience() {
-  const titleReveal = useScrollReveal({ threshold: 0.2 });
   const cardsReveal = useScrollReveal({ threshold: 0.1 });
 
+  const highlightKeywords = (text) => {
+    const keywords = [
+      "Java",
+      "OOP",
+      "DBMS",
+      "MySQL",
+      "TypeScript",
+      "C#",
+      "Angular",
+      ".NET",
+      "Entity Framework Core",
+      "React Native",
+      "Redux",
+      "Redux-Saga",
+      "REST APIs",
+      "Agile",
+    ];
+
+    const regex = new RegExp(
+      `(${keywords
+        .map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+        .join("|")})`,
+      "g"
+    );
+
+    return text.split(regex).map((chunk, i) => {
+      if (keywords.includes(chunk)) {
+        return (
+          <span
+            key={i}
+            className="font-semibold text-text bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20 transition-all duration-300 hover:bg-primary/20"
+          >
+            {chunk}
+          </span>
+        );
+      }
+      return chunk;
+    });
+  };
+
   return (
-    <section
-      className="py-24 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden transition-colors duration-300"
-      id="experience"
-    >
-      <div className="absolute inset-0 pointer-events-none opacity-[0.05] dark:opacity-[0.08] bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:48px_48px]" />
+    <SectionShell id="experience" orbs="both" withGradient>
+      <SectionHeader
+        eyebrow="Professional Journey"
+        eyebrowIcon={Briefcase}
+        title="Where I've Worked"
+        lead="My internship experiences where I contributed to real-world projects and strengthened my engineering skills."
+        align="center"
+      />
 
-      <div className="absolute top-20 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[140px] opacity-50 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/10 rounded-full blur-[160px] opacity-40 pointer-events-none" />
+      <div className="relative max-w-6xl mx-auto pl-4 sm:pl-10 md:pl-16 mt-16">
+        {/* Advanced timeline stem */}
+        <div className="absolute left-8 sm:left-14 md:left-20 top-4 bottom-4 w-[2px] bg-gradient-to-b from-primary via-secondary to-border opacity-70" />
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div
-          ref={titleReveal.ref}
-          className={`scroll-reveal ${
-            titleReveal.isVisible ? "revealed" : ""
-          } mb-16 md:text-center`}
-        >
-          <div className="mb-4">
-            <span className="inline-flex items-center px-4 py-1.5 text-sm font-medium text-text bg-surface/70 backdrop-blur-2xl rounded-full border border-border shadow-sm shimmer-badge">
-              <Briefcase className="w-4 h-4 mr-2 text-primary" />
-              Professional Experience
-            </span>
-          </div>
-
-          <h2 className="text-4xl md:text-5xl font-extrabold text-text tracking-tight mb-4">
-            Where I've Worked
-          </h2>
-
-          <p className="text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
-            My internship experiences where I contributed to real-world projects
-            and strengthened my engineering skills.
-          </p>
-        </div>
-
-        <div
-          ref={cardsReveal.ref}
-          className="flex flex-col gap-8 max-w-4xl mx-auto relative timeline-connector"
-        >
+        <div ref={cardsReveal.ref} className="flex flex-col gap-12">
           {experiences.map((exp, index) => (
             <div
               key={index}
               className={`scroll-reveal stagger-${(index + 1) * 2} ${
                 cardsReveal.isVisible ? "revealed" : ""
-              } timeline-dot group relative ml-8 rounded-3xl border border-border bg-surface/70 backdrop-blur-2xl p-8 overflow-hidden transition-all duration-500 hover:bg-surface/90 hover:-translate-y-2 hover:border-primary/60 hover:shadow-2xl hover:shadow-primary/10`}
+              } group relative flex flex-col md:flex-row items-stretch`}
             >
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+              {/* Timeline icon node */}
+              <div className="absolute left-8 sm:left-14 md:left-20 -translate-x-1/2 w-12 h-12 rounded-full bg-surface border border-border flex items-center justify-center text-primary shadow-lg z-20 group-hover:border-primary group-hover:scale-110 transition-all duration-300">
+                <Briefcase className="w-5 h-5" />
+              </div>
 
-              <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-primary to-secondary scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500" />
-
-              <div className="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
-                <div>
-                  <div className="flex flex-wrap items-center gap-3 mb-4">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
-                      <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-                      {exp.type}
-                    </span>
-
-                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-surface/80 text-text-secondary text-xs font-semibold border border-border">
-                      Internship
-                    </span>
-                  </div>
-
-                  <h3 className="text-2xl font-bold text-text mb-2 group-hover:text-primary transition-colors">
-                    {exp.role}
-                  </h3>
-
-                  <div className="flex items-center text-xl font-semibold text-text-secondary mb-4">
-                    <Building2 className="w-5 h-5 mr-2 text-primary" />
-                    {exp.company}
-                  </div>
-
-                  <div className="flex flex-wrap gap-4 text-sm text-text-secondary/80">
-                    <div className="flex items-center">
-                      <MapPin className="w-4 h-4 mr-1.5 text-primary" />
-                      {exp.location}
+              {/* Glassmorphism Card */}
+              <GlassCard
+                padding="p-6 md:p-8"
+                className="flex-1 ml-6 sm:ml-12 md:ml-20"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Left columns - Details */}
+                  <div className="lg:col-span-2 space-y-6">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
+                        <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+                        {exp.type}
+                      </span>
+                      <span className="inline-flex items-center px-3 py-1 rounded-full bg-surface-elevated text-text-secondary text-xs font-semibold border border-border">
+                        Internship
+                      </span>
+                      <span className="inline-flex items-center px-3 py-1 rounded-full bg-secondary/15 text-text text-xs font-mono font-bold border border-secondary/20">
+                        {exp.summaryLabel}
+                      </span>
                     </div>
 
-                    <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-1.5 text-primary" />
-                      {exp.date}
+                    <div>
+                      <h3 className="text-2xl md:text-3xl font-extrabold text-text mb-2 group-hover:text-primary transition-colors">
+                        {exp.role}
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-3 text-sm text-text-secondary">
+                        <div className="flex items-center font-semibold text-text">
+                          <Building2 className="w-4 h-4 mr-2 text-primary" />
+                          {exp.company}
+                        </div>
+                        <div className="flex items-center">
+                          <MapPin className="w-4 h-4 mr-2 text-primary/70" />
+                          {exp.location}
+                        </div>
+                        <div className="flex items-center">
+                          <Calendar className="w-4 h-4 mr-2 text-primary/70" />
+                          {exp.date}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      {exp.points.map((point, i) => (
+                        <div
+                          key={i}
+                          className="flex items-start p-3 rounded-2xl hover:bg-surface/50 transition-colors duration-300"
+                        >
+                          <div className="shrink-0 mt-1.5 mr-4">
+                            <CheckCircle2 className="w-4 h-4 text-secondary group-hover:text-primary transition-colors" />
+                          </div>
+                          <p className="text-base text-text-secondary leading-relaxed">
+                            {highlightKeywords(point)}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Skill chips */}
+                    <div className="pt-5 border-t border-border/60">
+                      <div className="text-xs font-bold uppercase tracking-wider text-text-secondary/70 mb-3 flex items-center gap-1.5">
+                        <Code2 className="w-3.5 h-3.5 text-primary" />
+                        Skills Applied
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {exp.skills.map((skill, sIdx) => (
+                          <span
+                            key={sIdx}
+                            className="px-2.5 py-1 text-xs font-medium text-text-secondary bg-surface/50 border border-border rounded-lg hover:border-primary/40 hover:text-text transition-all duration-200"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right column - Certificate Preview Panel */}
+                  <div className="space-y-6 lg:border-l lg:border-border lg:pl-8 flex flex-col justify-between">
+                    <div className="flex-grow flex flex-col">
+                      
+                      {/* Certificate Preview Frame */}
+                      {exp.certificate !== "#" ? (
+                        <div className="relative group/preview flex-grow rounded-2xl border border-border/60 bg-surface-elevated/40 p-2 shadow-sm transition-all duration-300 hover:border-primary/40 hover:shadow-glow-primary">
+                          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-2xl opacity-0 group-hover/preview:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                          <div className="relative h-full w-full overflow-hidden rounded-xl bg-surface/50 border border-border/30">
+                            {(() => {
+                              const match = exp.certificate.match(/\/d\/(.*?)\//);
+                              const fileId = match ? match[1] : null;
+                              const thumbUrl = fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w800` : null;
+                              
+                              return thumbUrl ? (
+                                <img
+                                  src={thumbUrl}
+                                  alt={`${exp.company} Certificate`}
+                                  className="h-64 sm:h-72 lg:h-[320px] w-full object-cover object-top"
+                                  loading="lazy"
+                                />
+                              ) : (
+                                <iframe
+                                  src={exp.certificate.replace("/view?usp=drive_link", "/preview").replace("/view", "/preview")}
+                                  className="h-64 sm:h-72 lg:h-[320px] w-full border-0 pointer-events-none"
+                                  title={`${exp.company} Certificate`}
+                                  allow="autoplay"
+                                />
+                              );
+                            })()}
+                          </div>
+                        </div>
+                      ) : (
+                         <div className="flex-grow flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/60 bg-surface/30 p-6 text-text-secondary/50">
+                           <ExternalLink className="w-8 h-8 mb-2 opacity-50" />
+                           <span className="text-sm font-medium">Document Unavailable</span>
+                         </div>
+                      )}
+                    </div>
+
+                    {/* Certificate Action */}
+                    <div className="pt-2">
+                      {exp.certificate !== "#" ? (
+                        <a
+                          href={exp.certificate}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-ripple w-full inline-flex items-center justify-center px-4 py-3 bg-primary hover:bg-primary-hover text-white rounded-xl border border-primary transition-all duration-300 text-sm font-semibold hover:shadow-glow-primary group/btn"
+                        >
+                          <span>View Full Certificate</span>
+                          <ExternalLink className="w-4 h-4 ml-2 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-200" />
+                        </a>
+                      ) : (
+                        <span className="w-full inline-flex items-center justify-center px-4 py-3 bg-border text-text-secondary/40 rounded-xl border border-border text-sm font-semibold cursor-not-allowed">
+                          Certificate Pending
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
-
-                {exp.certificate !== "#" ? (
-                  <a
-                    href={exp.certificate}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-ripple inline-flex items-center px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-xl border border-primary transition-all duration-300 text-sm font-medium shrink-0 hover:scale-105 hover:shadow-glow-primary"
-                  >
-                    View Certificate
-                    <ExternalLink className="w-4 h-4 ml-2" />
-                  </a>
-                ) : (
-                  <span className="inline-flex items-center px-4 py-2 bg-border text-text-secondary/50 rounded-xl border border-border text-sm font-medium shrink-0 cursor-not-allowed">
-                    Certificate Pending
-                  </span>
-                )}
-              </div>
-
-              <div className="relative z-10 space-y-4">
-                {exp.points.map((point, i) => (
-                  <div
-                    key={i}
-                    className="flex items-start p-3 rounded-2xl hover:bg-surface/60 transition-colors duration-300"
-                  >
-                    <div className="shrink-0 mt-1 mr-4">
-                      <CheckCircle2 className="w-5 h-5 text-secondary group-hover:text-primary transition-colors" />
-                    </div>
-
-                    <p className="text-base text-text-secondary leading-relaxed">
-                      {point
-                        .split(
-                          /(Java|OOP|DBMS|MySQL|TypeScript|C#|Angular|\.NET|Entity Framework Core|React Native|Redux|Redux-Saga|REST APIs|Agile)/g
-                        )
-                        .map((chunk, j) => {
-                          const highlights = [
-                            "Java",
-                            "OOP",
-                            "DBMS",
-                            "MySQL",
-                            "TypeScript",
-                            "C#",
-                            "Angular",
-                            ".NET",
-                            "Entity Framework Core",
-                            "React Native",
-                            "Redux",
-                            "Redux-Saga",
-                            "REST APIs",
-                            "Agile",
-                          ];
-
-                          if (highlights.includes(chunk)) {
-                            return (
-                              <span
-                                key={j}
-                                className="font-semibold text-text bg-primary/10 px-1.5 py-0.5 rounded border border-primary/10"
-                              >
-                                {chunk}
-                              </span>
-                            );
-                          }
-
-                          return chunk;
-                        })}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="absolute inset-0 rounded-3xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 shadow-glow-inset" />
+              </GlassCard>
             </div>
           ))}
         </div>
       </div>
-    </section>
+    </SectionShell>
   );
 }

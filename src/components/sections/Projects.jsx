@@ -18,10 +18,6 @@ import Pill from "../ui/Pill";
 
 import { projectsData } from "../../data/ProjectData";
 
-/* ---------------------------------------------------------------------- */
-/* Card                                                                   */
-/* ---------------------------------------------------------------------- */
-
 const ProjectCardMedia = ({ project }) => (
   <div className="relative h-72 w-full shrink-0 overflow-hidden border-b border-border sm:h-80">
     {/* Tech chips */}
@@ -83,7 +79,7 @@ const ProjectCardBody = ({ project }) => (
       </div>
     </div>
 
-    <p className="mb-6 line-clamp-3 flex-grow leading-relaxed text-text-secondary">
+    <p className="mb-2 line-clamp-3 flex-grow leading-relaxed text-text-secondary">
       {project.shortDescription}
     </p>
 
@@ -99,14 +95,27 @@ const ProjectCardBody = ({ project }) => (
       ))}
     </ul>
 
-    <div className="mt-auto flex items-center justify-between border-t border-border pt-5">
-      <span className="text-sm text-text-secondary">
-        {project.techStack.length} Technologies
-      </span>
-      <span className="inline-flex items-center text-sm font-semibold text-text transition-colors group-hover:text-primary">
-        Explore
-        <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-1" />
-      </span>
+    <div className="mt-auto flex flex-col border-t border-border pt-5">
+      <div className="text-xs font-bold uppercase tracking-wider text-text-secondary/70 mb-3 flex items-center gap-1.5">
+        <Code2 className="w-3.5 h-3.5 text-primary" />
+        Tech Stack
+      </div>
+      <div className="flex flex-wrap gap-2 mb-4">
+        {project.techStack.map((tech) => (
+          <span
+            key={tech}
+            className="px-2.5 py-1 text-xs font-medium text-text-secondary bg-surface/50 border border-border rounded-lg hover:border-primary/40 hover:text-text transition-all duration-200"
+          >
+            {tech}
+          </span>
+        ))}
+      </div>
+      <div className="mt-auto flex items-center justify-end">
+        <span className="inline-flex items-center text-sm font-semibold text-text transition-colors group-hover:text-primary">
+          Explore
+          <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </span>
+      </div>
     </div>
   </div>
 );
@@ -135,6 +144,24 @@ const ProjectCard = ({ project, index, isVisible }) => (
 /* Section                                                                */
 /* ---------------------------------------------------------------------- */
 
+const getBentoSpan = (index) => {
+  // Bento grid pattern for 5 items
+  switch (index) {
+    case 0:
+      return "md:col-span-2 lg:col-span-2";
+    case 1:
+      return "md:col-span-1 lg:col-span-1";
+    case 2:
+      return "md:col-span-1 lg:col-span-1";
+    case 3:
+      return "md:col-span-1 lg:col-span-1";
+    case 4:
+      return "md:col-span-2 lg:col-span-1";
+    default:
+      return "";
+  }
+};
+
 const Projects = () => {
   const gridReveal = useScrollReveal({ threshold: 0.05 });
 
@@ -154,16 +181,19 @@ const Projects = () => {
 
       <div
         ref={gridReveal.ref}
-        className="grid auto-rows-fr gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8"
+        className="grid auto-rows-fr gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8"
       >
-        {projectsData.map((project, i) => (
-          <ProjectCard
-            key={project.id}
-            project={project}
-            index={i}
-            isVisible={gridReveal.isVisible}
-          />
-        ))}
+        {projectsData.map((project, i) => {
+          const bentoSpan = getBentoSpan(i);
+          return (
+            <ProjectCard
+              key={project.id}
+              project={{ ...project, span: bentoSpan }}
+              index={i}
+              isVisible={gridReveal.isVisible}
+            />
+          );
+        })}
       </div>
     </SectionShell>
   );

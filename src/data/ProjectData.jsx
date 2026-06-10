@@ -1,58 +1,6 @@
 export const projectsData = [
   {
     id: 1,
-    slug: "agroguide",
-    title: "AgroGuide",
-    shortDescription:
-      "A full-stack agricultural assistant platform with ML models",
-    thumbnail: "/agroguide/thumbnail/home.png",
-    liveLink: "http://agroguide.vercel.app/",
-    githubLink: "https://github.com/nitishbytaru/AgroGuide",
-    techStack: ["React", "Flask", "Python", "TensorFlow Lite", "i18next"],
-    features: [
-      "Disease detection via ML",
-      "Crop and yield prediction",
-      "Multilingual support",
-      "Plant disease detection using image classification",
-      "Best crop suggestion based on soil and climate",
-      "Yield prediction using random forest regression",
-      "Agricultural market information",
-    ],
-    detailedDescription: {
-      intro: [
-        "AgroGuide is an intelligent agricultural assistance platform that leverages machine learning to help farmers make data-driven decisions.",
-        "It features real-time plant disease detection, crop recommendations based on soil parameters, and crop yield estimation.",
-      ],
-      note: "The platform supports multiple languages and is accessible to farmers across different regions.",
-    },
-    technologiesUsed: {
-      Frontend: "React.js, Vite, Tailwind CSS",
-      Backend: "Flask, Python, REST API",
-      "Machine Learning":
-        "TensorFlow Lite (InceptionV3, ResNet152V2), Random Forest, Scikit-learn",
-      Database: "MongoDB (for user data), Firebase (for image storage)",
-    },
-    deployment: {
-      Frontend: "Vercel (Static Hosting)",
-      Backend: "Render (Cloud Service)",
-      "ML Models": "Integrated within Flask backend",
-    },
-    images: [
-      "/agroguide/thumbnail/home.png",
-      "/agroguide/aiengine.png",
-      "/agroguide/aiout.png",
-      "/agroguide/cropin.png",
-      "/agroguide/cropout.png",
-      "/agroguide/homehi.png",
-      "/agroguide/homeod.png",
-      "/agroguide/homete.png",
-      "/agroguide/market.png",
-      "/agroguide/yieldout.png",
-      "/agroguide/yielsin.png",
-    ],
-  },
-  {
-    id: 2,
     slug: "echorealm",
     title: "EchoRealm",
     shortDescription:
@@ -110,6 +58,58 @@ export const projectsData = [
       "/echorealm/10.jpeg",
       "/echorealm/11.jpeg",
       "/echorealm/12.jpeg",
+    ],
+  }, 
+  {
+    id: 2,
+    slug: "agroguide",
+    title: "AgroGuide",
+    shortDescription:
+      "A full-stack agricultural assistant platform with ML models",
+    thumbnail: "/agroguide/thumbnail/home.png",
+    liveLink: "http://agroguide.vercel.app/",
+    githubLink: "https://github.com/nitishbytaru/AgroGuide",
+    techStack: ["React", "Flask", "Python", "TensorFlow Lite", "i18next"],
+    features: [
+      "Disease detection via ML",
+      "Crop and yield prediction",
+      "Multilingual support",
+      "Plant disease detection using image classification",
+      "Best crop suggestion based on soil and climate",
+      "Yield prediction using random forest regression",
+      "Agricultural market information",
+    ],
+    detailedDescription: {
+      intro: [
+        "AgroGuide is an intelligent agricultural assistance platform that leverages machine learning to help farmers make data-driven decisions.",
+        "It features real-time plant disease detection, crop recommendations based on soil parameters, and crop yield estimation.",
+      ],
+      note: "The platform supports multiple languages and is accessible to farmers across different regions.",
+    },
+    technologiesUsed: {
+      Frontend: "React.js, Vite, Tailwind CSS",
+      Backend: "Flask, Python, REST API",
+      "Machine Learning":
+        "TensorFlow Lite (InceptionV3, ResNet152V2), Random Forest, Scikit-learn",
+      Database: "MongoDB (for user data), Firebase (for image storage)",
+    },
+    deployment: {
+      Frontend: "Vercel (Static Hosting)",
+      Backend: "Render (Cloud Service)",
+      "ML Models": "Integrated within Flask backend",
+    },
+    images: [
+      "/agroguide/thumbnail/home.png",
+      "/agroguide/aiengine.png",
+      "/agroguide/aiout.png",
+      "/agroguide/cropin.png",
+      "/agroguide/cropout.png",
+      "/agroguide/homehi.png",
+      "/agroguide/homeod.png",
+      "/agroguide/homete.png",
+      "/agroguide/market.png",
+      "/agroguide/yieldout.png",
+      "/agroguide/yielsin.png",
     ],
   },
   {
