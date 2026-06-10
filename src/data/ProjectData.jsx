@@ -1,10 +1,11 @@
 export const projectsData = [
   {
     id: 1,
+    slug: "agroguide",
     title: "AgroGuide",
     shortDescription:
       "A full-stack agricultural assistant platform with ML models",
-    thumbnail: "../../public/agroguide/thumbnail/home.png",
+    thumbnail: "/agroguide/thumbnail/home.png",
     liveLink: "http://agroguide.vercel.app/",
     githubLink: "https://github.com/nitishbytaru/AgroGuide",
     techStack: ["React", "Flask", "Python", "TensorFlow Lite", "i18next"],
@@ -17,87 +18,13 @@ export const projectsData = [
       "Yield prediction using random forest regression",
       "Agricultural market information",
     ],
-    detailedDescription: (
-      <>
-        <div className="space-y-6">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-blue-400 mb-2">AgroGuide</h3>
-            <p className="text-lg text-gray-300">
-              An intelligent agricultural assistance platform that leverages
-              machine learning to help farmers make{" "}
-              <strong className="text-amber-400">data-driven decisions</strong>.
-            </p>
-          </div>
-
-          <ul className="space-y-4">
-            {[
-              {
-                icon: "M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z",
-                text: "Real-time crop disease detection through image classification",
-              },
-              {
-                icon: "M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z",
-                text: "Personalized crop recommendations based on soil and climate data",
-              },
-              {
-                icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
-                text: "Accurate yield predictions using advanced regression models",
-              },
-              {
-                icon: "M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3",
-                text: "Comprehensive agricultural market information",
-              },
-            ].map((item, index) => (
-              <li key={index} className="flex items-start">
-                <span className="flex-shrink-0 bg-amber-900 bg-opacity-20 p-2 rounded-full mr-4">
-                  <svg
-                    className="w-6 h-6 text-amber-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d={item.icon}
-                    />
-                  </svg>
-                </span>
-                <span className="text-gray-300">{item.text}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="bg-blue-900 bg-opacity-20 p-6 rounded-xl border-l-4 border-blue-500 mt-8">
-            <div className="flex items-start">
-              <div className="flex-shrink-0 bg-blue-900 bg-opacity-30 p-2 rounded-full mr-4">
-                <svg
-                  className="w-6 h-6 text-blue-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="text-gray-300">
-                  The platform supports multiple languages and is accessible to
-                  farmers across different regions.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </>
-    ),
-
+    detailedDescription: {
+      intro: [
+        "AgroGuide is an intelligent agricultural assistance platform that leverages machine learning to help farmers make data-driven decisions.",
+        "It features real-time plant disease detection, crop recommendations based on soil parameters, and crop yield estimation.",
+      ],
+      note: "The platform supports multiple languages and is accessible to farmers across different regions.",
+    },
     technologiesUsed: {
       Frontend: "React.js, Vite, Tailwind CSS",
       Backend: "Flask, Python, REST API",
@@ -110,28 +37,6 @@ export const projectsData = [
       Backend: "Render (Cloud Service)",
       "ML Models": "Integrated within Flask backend",
     },
-    machineLearningModels: [
-      {
-        name: "Crop Prediction Model",
-        description:
-          "Predicts optimal crops based on soil parameters and climate data",
-        accuracy: "92%",
-        technique: "Random Forest Classifier",
-      },
-      {
-        name: "Yield Prediction Model",
-        description:
-          "Estimates crop yield using historical and environmental factors",
-        accuracy: "88%",
-        technique: "Random Forest Regressor",
-      },
-      {
-        name: "Disease Detection Model",
-        description: "Identifies plant diseases from leaf images",
-        accuracy: "94%",
-        technique: "CNN (InceptionV3)",
-      },
-    ],
     images: [
       "/agroguide/thumbnail/home.png",
       "/agroguide/aiengine.png",
@@ -142,17 +47,17 @@ export const projectsData = [
       "/agroguide/homeod.png",
       "/agroguide/homete.png",
       "/agroguide/market.png",
-      "/agroguide/cropout.png",
       "/agroguide/yieldout.png",
       "/agroguide/yielsin.png",
     ],
   },
   {
     id: 2,
+    slug: "echorealm",
     title: "EchoRealm",
     shortDescription:
       "A dynamic social web app connecting people through real-time messaging, community chats, and anonymous interactions.",
-    thumbnail: "/echorealm/thumbnail/3.jpeg", // updated thumbnail
+    thumbnail: "/echorealm/thumbnail/13.jpeg",
     liveLink: "https://echorealm24.vercel.app/",
     githubLink: "https://github.com/nitishbytaru/EchoRealm",
     techStack: [
@@ -173,80 +78,13 @@ export const projectsData = [
       "Privacy controls like blocking users",
       "User profile with friends and likes statistics",
     ],
-    detailedDescription: (
-      <>
-        <div className="space-y-6">
-          <p className="text-lg text-gray-300">
-            EchoRealm is a cutting-edge social web application that connects
-            users through direct messaging, group interactions, and dynamic
-            community discussions.
-          </p>
-
-          <ul className="space-y-4">
-            {[
-              "Real-time one-on-one and group chats with friends (EchoLink)",
-              "Community chatroom for larger discussions (Shout)",
-              "Send quick messages to random users with Mumbles",
-              "Anonymous interaction mode for enhanced privacy",
-              "Instant real-time notifications for messages, requests and activities",
-              "Block users and manage your privacy settings easily",
-              "Profile showcasing friends list and total Mumble likes",
-            ].map((item, index) => (
-              <li key={index} className="flex items-start">
-                <span className="flex-shrink-0 bg-blue-900 bg-opacity-20 p-2 rounded-full mr-4">
-                  <svg
-                    className="w-6 h-6 text-blue-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </span>
-                <span className="text-gray-300">{item}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="bg-amber-900 bg-opacity-20 p-6 rounded-xl border-l-4 border-amber-500 mt-8">
-            <div className="flex items-start">
-              <div className="flex-shrink-0 bg-amber-900 bg-opacity-30 p-2 rounded-full mr-4">
-                <svg
-                  className="w-6 h-6 text-amber-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                  />
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-white mb-2">
-                  Built With
-                </h3>
-                <p className="text-gray-300">
-                  React, Redux, TailwindCSS, Node.js, Express.js, MongoDB, and
-                  Socket.io.
-                  <br />
-                  Deployed on Vercel for seamless cross-device access.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </>
-    ),
-
+    detailedDescription: {
+      intro: [
+        "EchoRealm is a cutting-edge social web application that connects users through direct messaging, group interactions, and dynamic community discussions.",
+        "With multiple interactive modes (EchoLink, Shout, and Mumble) and private security controls, it offers a secure, instant communication environment.",
+      ],
+      note: "Built with React, Redux, TailwindCSS, Node.js, Express.js, MongoDB, and Socket.io. Deployed on Vercel.",
+    },
     technologiesUsed: {
       Frontend: "React.js, Redux, Tailwind CSS, Vite.js",
       Backend: "Node.js, Express.js",
@@ -258,12 +96,12 @@ export const projectsData = [
       Backend: "Render",
       Database: "MongoDB Atlas",
     },
-    machineLearningModels: [], // No ML models
     images: [
-      "/echorealm/thumbnail/4.jpeg",
+      "/echorealm/thumbnail/13.jpeg",
       "/echorealm/1.jpeg",
       "/echorealm/2.jpeg",
       "/echorealm/3.jpeg",
+      "/echorealm/4.jpeg",
       "/echorealm/5.jpeg",
       "/echorealm/6.jpeg",
       "/echorealm/7.jpeg",
@@ -271,16 +109,16 @@ export const projectsData = [
       "/echorealm/9.jpeg",
       "/echorealm/10.jpeg",
       "/echorealm/11.jpeg",
-      "/echorealm/13.jpeg",
       "/echorealm/12.jpeg",
     ],
   },
   {
     id: 3,
+    slug: "expensetracker",
     title: "Expense Tracker",
     shortDescription:
       "A full-stack expense tracking web app with authentication, budget goals, and receipt uploads, built for seamless personal finance management.",
-    thumbnail: "/expensetracker/thumbnail/4.jpeg", // update with your thumbnail path
+    thumbnail: "/expensetracker/thumbnail/4.jpeg",
     liveLink: "https://expense-nd-trackers.netlify.app",
     githubLink: "https://lnkd.in/gM_AGjvj",
     techStack: [
@@ -308,67 +146,13 @@ export const projectsData = [
       "Responsive design optimized for desktop and mobile",
       "Delete user account option",
     ],
-    detailedDescription: (
-      <>
-        <div className="space-y-6">
-          <p className="text-lg text-gray-300">
-            I'm excited to share the completion of my latest project: an Expense
-            Tracker web application! <span className="text-amber-400">🎉</span>
-          </p>
-
-          <p className="text-gray-400">
-            This is my first ever full-stack project. I learned a lot from
-            building this, and I'm looking forward to improving it further with
-            more experience.
-          </p>
-
-          <ul className="space-y-4">
-            {[
-              "Secure user authentication and JWT-based session management",
-              "Track expenses and income easily with categorized entries",
-              "Set budget goals and track them in real-time",
-              "Manage file uploads for receipts securely using Cloudinary",
-              "Fully responsive design for both desktop and mobile users",
-              "Comprehensive user profile management, including account deletion",
-            ].map((item, index) => (
-              <li key={index} className="flex items-start">
-                <span className="flex-shrink-0 bg-blue-900 bg-opacity-20 p-2 rounded-full mr-4">
-                  <svg
-                    className="w-6 h-6 text-blue-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </span>
-                <span className="text-gray-300">{item}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="bg-blue-900 bg-opacity-20 p-6 rounded-xl mt-8">
-            <p className="text-gray-300 mb-4">
-              Built with React.js (Context API) and Vite on the frontend,
-              Node.js, Express.js, and MongoDB on the backend, and deployed
-              using Netlify and Render.
-            </p>
-            <p className="text-gray-300">
-              <strong className="text-amber-400">Note:</strong> This is my first
-              full-stack project. You may face a few issues — if you do, please
-              let me know so I can improve the app!{" "}
-              <span className="text-amber-400">🚀</span>
-            </p>
-          </div>
-        </div>
-      </>
-    ),
-
+    detailedDescription: {
+      intro: [
+        "Expense Tracker is a full-stack financial management application that allows users to monitor their personal income and expenditure.",
+        "It includes JWT-based secure login, category-wise transaction tracking, cloud receipt uploading, and progress indicators for monthly budget targets.",
+      ],
+      note: "Built with React.js (Context API) and Vite on the frontend, Node.js, Express.js, and MongoDB on the backend, and deployed using Netlify and Render.",
+    },
     technologiesUsed: {
       Frontend: "React.js (Context API), Vite.js, Axios",
       Backend: "Node.js, Express.js",
@@ -392,17 +176,15 @@ export const projectsData = [
       "/expensetracker/8.jpeg",
       "/expensetracker/9.jpeg",
       "/expensetracker/10.jpeg",
-      "/expensetracker/11.jpeg",
-      "/expensetracker/13.jpeg",
-      "/expensetracker/12.jpeg",
     ],
   },
   {
     id: 4,
+    slug: "recipeheaven",
     title: "Recipe Sharing Platform",
     shortDescription:
       "A dynamic recipe-sharing web app where users can create, manage, and discover recipes with a vibrant food-loving community.",
-    thumbnail: "/recipeheaven/thumbnail/1.jpeg", // corrected path
+    thumbnail: "/recipeheaven/thumbnail/1.jpeg",
     liveLink: "https://nitish24.pythonanywhere.com/",
     githubLink: "https://github.com/nitishbytaru/RecipeHaven",
     techStack: ["HTML", "CSS", "Bootstrap", "Django", "Python", "SQLite"],
@@ -414,86 +196,13 @@ export const projectsData = [
       "Manage user profiles: update username, email, and password",
       "Responsive design for both desktop and mobile devices",
     ],
-    detailedDescription: (
-      <>
-        <div className="space-y-6">
-          <p className="text-lg text-gray-300">
-            I've been working on a dynamic recipe-sharing platform that allows
-            users to create and share recipes with a thriving community of food
-            enthusiasts.
-          </p>
-          <ul className="space-y-4">
-            {[
-              "Secure user authentication and account management",
-              "Create, edit, and delete personalized recipes",
-              "Browse, search, and filter recipes by names and categories",
-              "Review and rate recipes shared by other users",
-              "Update personal details like username, email, and password easily",
-              "Responsive web design optimized for both desktop and mobile users",
-            ].map((item, index) => (
-              <li key={index} className="flex items-start">
-                <span className="flex-shrink-0 bg-amber-900 bg-opacity-20 p-2 rounded-full mr-4">
-                  <svg
-                    className="w-6 h-6 text-amber-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </span>
-                <span className="text-gray-300">{item}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="space-y-4">
-            <p className="text-gray-300">
-              Built using Django for the backend and Bootstrap for a clean,
-              responsive frontend. Data management is handled with SQLite.
-            </p>
-            <div className="bg-blue-900 bg-opacity-20 p-4 rounded-xl">
-              <p className="flex items-center text-gray-300 mb-2">
-                <span className="inline-block bg-blue-900 bg-opacity-30 text-blue-400 rounded-full p-2 mr-3">
-                  🎯
-                </span>
-                <span>Check out the live project here: </span>
-                <a
-                  href="https://lnkd.in/g-Wa78Fp"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 ml-1"
-                >
-                  View Live
-                </a>
-              </p>
-              <p className="flex items-center text-gray-300">
-                <span className="inline-block bg-amber-900 bg-opacity-30 text-amber-400 rounded-full p-2 mr-3">
-                  💡
-                </span>
-                <span>GitHub Repository: </span>
-                <a
-                  href="https://github.com/nitishbytaru/RecipeHaven"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 ml-1"
-                >
-                  View Code
-                </a>
-              </p>
-            </div>
-            <p className="text-gray-300">
-              I would love your feedback so I can improve this website!{" "}
-              <span className="text-amber-400">🙌</span>
-            </p>
-          </div>
-        </div>
-      </>
-    ),
+    detailedDescription: {
+      intro: [
+        "Recipe Sharing Platform is a community-driven web application where users can discover and post culinary creations.",
+        "It offers features like rating systems, user feedback, advanced search keywords, and full profile security controls.",
+      ],
+      note: "Built using Django for the backend, Bootstrap for the frontend, and SQLite for lightweight data handling.",
+    },
     technologiesUsed: {
       Frontend: "HTML, CSS, Bootstrap",
       Backend: "Django, Python",
@@ -504,28 +213,24 @@ export const projectsData = [
       Backend: "Pythonanywhere",
       Database: "SQLite (local database)",
     },
-    folderStructure: {
-      Server:
-        "Django structure: settings.py, urls.py, models.py, views.py, templates, static",
-    },
-    machineLearningModels: [], // No ML models
     images: [
       "/recipeheaven/thumbnail/1.jpeg",
-      "/recipeheaven/5.jpeg",
       "/recipeheaven/2.jpeg",
       "/recipeheaven/3.jpeg",
       "/recipeheaven/4.jpeg",
+      "/recipeheaven/5.jpeg",
       "/recipeheaven/6.jpeg",
       "/recipeheaven/7.jpeg",
     ],
   },
   {
     id: 5,
-    title: "Instagram UI Clone - React Native",
+    slug: "insta",
+    title: "Instagram UI Clone",
     shortDescription:
       "A pixel-perfect Instagram UI Clone built with React Native to master mobile app development, navigation, and performance optimization.",
-    thumbnail: "/insta/thumbnail/6.jpeg", // corrected path
-    liveLink: "",
+    thumbnail: "/insta/thumbnail/1.png",
+    liveLink: "https://www.linkedin.com/posts/nitishbytaru_during-my-learning-journey-at-evaluate-health-activity-7394217921595523072-PPrk?utm_source=share&utm_medium=member_desktop&rcm=ACoAAECYhy0BjTqW8NV_A7nTP6_KGN5tzcO2gqk",
     githubLink: "https://github.com/nitishbytaru/Instagram_UI_Clone",
     techStack: ["React Native", "Tailwind CSS"],
     features: [
@@ -538,110 +243,26 @@ export const projectsData = [
       "State management with React hooks for seamless user interactions",
       "Cross-platform compatibility — tested and optimized for both Android and iOS",
     ],
-    detailedDescription: (
-      <>
-        <div className="space-y-6">
-          <p className="text-lg text-gray-300">
-            During my learning journey at Evaluate Health, I dove into Android
-            development with React Native and built a pixel-perfect Instagram UI
-            Clone as a hands-on proof of work.
-          </p>
-          <ul className="space-y-4">
-            {[
-              "Built a fully functional Instagram UI Clone using React Native",
-              "Deepened expertise in React Native components and Flexbox styling",
-              "Implemented smooth navigation using React Navigation (stack & tab navigators)",
-              "Mastered layout design for complex feed, stories, and profile screens",
-              "Optimized image handling with FastImage and proper caching techniques",
-              "Ensured pixel-perfect UI replication matching Instagram's native look and feel",
-              "Improved performance through efficient component rendering and state management",
-            ].map((item, index) => (
-              <li key={index} className="flex items-start">
-                <span className="flex-shrink-0 bg-amber-900 bg-opacity-20 p-2 rounded-full mr-4">
-                  <svg
-                    className="w-6 h-6 text-amber-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </span>
-                <span className="text-gray-300">{item}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="space-y-4">
-            <p className="text-gray-300">
-              Built using React Native for the Frontend and Tailwind CSS for a
-              clean, responsive usage. Data management is handled with Sample
-              Data.
-            </p>
-            <div className="bg-blue-900 bg-opacity-20 p-4 rounded-xl">
-              <p className="flex items-center text-gray-300 mb-2">
-                <span className="inline-block bg-blue-900 bg-opacity-30 text-blue-400 rounded-full p-2 mr-3">
-                  🎯
-                </span>
-                <span>Check out the Demo video: </span>
-                <a
-                  href="https://www.linkedin.com/posts/nitishbytaru_during-my-learning-journey-at-evaluate-health-activity-7394217921595523072-PPrk?utm_source=share&utm_medium=member_desktop&rcm=ACoAAECYhy0BjTqW8NV_A7nTP6_KGN5tzcO2gqk"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 ml-1"
-                >
-                  View Live
-                </a>
-              </p>
-              <p className="flex items-center text-gray-300">
-                <span className="inline-block bg-amber-900 bg-opacity-30 text-amber-400 rounded-full p-2 mr-3">
-                  💡
-                </span>
-                <span>GitHub Repository: </span>
-                <a
-                  href="https://github.com/nitishbytaru/Instagram_UI_Clone"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 ml-1"
-                >
-                  View Code
-                </a>
-              </p>
-            </div>
-            <p className="text-gray-300">
-              I would love your feedback so I can improve this website!{" "}
-              <span className="text-amber-400">🙌</span>
-            </p>
-          </div>
-        </div>
-      </>
-    ),
+    detailedDescription: {
+      intro: [
+        "A full mobile layout replica of Instagram built using React Native to explore mobile architecture.",
+        "It mimics feed rendering, story trays, scrollable posts grids, profile stats, and navigates seamlessly using React Navigation hooks.",
+      ],
+      note: "Built using React Native for components, Tailwind CSS (NativeWind) for styling, and mock data arrays.",
+    },
     technologiesUsed: {
       Frontend: "React Native, Tailwind CSS",
-      // Backend: "Django, Python",
-      // Database: "SQLite",
     },
     deployment: {
-      Frontend: "Django Templates (hosted with backend)",
-      Backend: "Pythonanywhere",
-      Database: "SQLite (local database)",
+      Frontend: "Android / iOS emulator package",
     },
-    folderStructure: {
-      Server:
-        "Django structure: settings.py, urls.py, models.py, views.py, templates, static",
-    },
-    machineLearningModels: [], // No ML models
     images: [
-      "/insta/thumbnail/6.png",
-      "/insta/5.png",
+      "/insta/thumbnail/1.png",
+      "/insta/1.png",
       "/insta/2.png",
       "/insta/3.png",
       "/insta/4.png",
-      "/insta/1.png",
+      "/insta/5.png",
       "/insta/6.png",
       "/insta/7.png",
     ],

@@ -1,54 +1,69 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Home from "./pages/Home";
-import Footer from "./components/ui/Footer";
-import Navbar from "./components/ui/Navbar";
-import AgroGuide from "./projects/AgroGuide";
-import EchoRealm from "./projects/EchoRealm";
-import ExpenseTracker from "./projects/ExpenseTracker";
-import RecipeHeaven from "./projects/RecipeHeaven";
-import Insta from "./projects/Insta";
+import Footer from "./components/layout/Footer";
+import Navbar from "./components/layout/Navbar";
+import ProjectDetails from "./pages/ProjectDetails";
+import { ThemeProvider } from "./context/ThemeContext";
+
+/* Page transition wrapper — fades in content on route change */
+const PageTransition = ({ children }) => {
+  const location = useLocation();
+  const [displayLocation, setDisplayLocation] = useState(location);
+  const [transitionStage, setTransitionStage] = useState("animate-fade-in");
+
+  useEffect(() => {
+    if (location.pathname !== displayLocation.pathname) {
+      setTransitionStage("opacity-0");
+      const timeout = setTimeout(() => {
+        setDisplayLocation(location);
+        setTransitionStage("animate-fade-in");
+      }, 200);
+      return () => clearTimeout(timeout);
+    }
+  }, [location, displayLocation]);
+
+  return (
+    <div
+      className={`${transitionStage} transition-opacity duration-200`}
+      style={{ animationFillMode: "both" }}
+    >
+      {children}
+    </div>
+  );
+};
+
+const AppContent = () => {
+  const location = useLocation();
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [location.pathname]);
+
+  return (
+    <div className="flex flex-col min-h-screen bg-background text-text transition-colors duration-300">
+      <Navbar />
+      <main className="flex-grow">
+        <PageTransition>
+          <Routes location={location}>
+            <Route path="/" element={<Home />} />
+            <Route path="/projects/:slug" element={<ProjectDetails />} />
+          </Routes>
+        </PageTransition>
+      </main>
+      <Footer />
+    </div>
+  );
+};
 
 const App = () => {
   return (
-    <Router>
-      <div className="flex flex-col min-h-screen bg-black">
-        <Navbar />
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            style: {
-              background: "#1e40af",
-              color: "#fff",
-            },
-            success: {
-              style: {
-                background: "#065f46",
-              },
-            },
-            error: {
-              style: {
-                background: "#991b1b",
-              },
-            },
-          }}
-        />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/projects/agroguide" element={<AgroGuide />} />
-            <Route path="/projects/echorealm" element={<EchoRealm />} />
-            <Route
-              path="/projects/expensetracker"
-              element={<ExpenseTracker />}
-            />
-            <Route path="/projects/recipeheaven" element={<RecipeHeaven />} />
-            <Route path="/projects/insta" element={<Insta />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </ThemeProvider>
   );
 };
 
