@@ -2,8 +2,7 @@ import HeroSection from "../components/sections/HeroSection";
 import Experience from "../components/sections/Experience";
 import Projects from "../components/sections/Projects";
 import SkillsSection from "../components/sections/SkillsSection";
-import Education from "../components/sections/Education";
-import Coding from "../components/sections/Coding";
+import GitHubAnalytics from "../components/sections/GitHubAnalytics";
 
 const Home = () => {
   return (
@@ -14,8 +13,7 @@ const Home = () => {
         <Projects />
       </section>
       <SkillsSection />
-      <Education />
-      <Coding />
+      <GitHubAnalytics />
     </div>
   );
 };

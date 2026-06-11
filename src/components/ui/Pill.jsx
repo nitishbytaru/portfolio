@@ -9,7 +9,7 @@ import React from "react";
  */
 const toneMap = {
   default: "bg-surface/80 text-text-secondary border-border",
-  solid: "bg-surface/90 text-text border-border",
+  solid: "bg-background/95 text-text font-bold border-border shadow-md",
   primary: "bg-primary/10 text-primary border-primary/20",
 };
 

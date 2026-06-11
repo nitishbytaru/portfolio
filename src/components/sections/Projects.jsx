@@ -28,23 +28,9 @@ const ProjectCardMedia = ({ project }) => (
         </Pill>
       ))}
       {project.techStack.length > 3 && (
-        <Pill tone="default" size="sm">
+        <Pill tone="solid" size="sm">
           +{project.techStack.length - 3}
         </Pill>
-      )}
-    </div>
-
-    {/* Link indicators */}
-    <div className="absolute right-4 top-4 z-20 flex gap-2">
-      {project.githubLink && (
-        <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface/80 text-text backdrop-blur-2xl">
-          <Github className="h-4 w-4" />
-        </span>
-      )}
-      {project.liveLink && (
-        <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface/80 text-text backdrop-blur-2xl">
-          <ExternalLink className="h-4 w-4" />
-        </span>
       )}
     </div>
 

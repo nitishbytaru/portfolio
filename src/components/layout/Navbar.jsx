@@ -77,12 +77,20 @@ const Navbar = () => {
         <div
           className={`relative flex items-center justify-between rounded-2xl transition-all duration-500 ${
             scrolled
-              ? "bg-surface/75 backdrop-blur-2xl border border-border shadow-xl shadow-primary/5 px-5 py-3"
+              ? "border border-border shadow-xl shadow-primary/5 px-5 py-3"
               : "bg-transparent px-2 py-1"
           }`}
         >
+          {/* Sibling background glass layer to prevent backdrop-filter rendering bugs in dropdowns */}
+          <div
+            className={`absolute inset-0 rounded-2xl transition-all duration-500 pointer-events-none -z-10 ${
+              scrolled
+                ? "bg-surface/75 backdrop-blur-2xl opacity-100"
+                : "bg-transparent opacity-0"
+            }`}
+          />
           {scrolled && (
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 pointer-events-none" />
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 pointer-events-none -z-10" />
           )}
 
           <Link
