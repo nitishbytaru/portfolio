@@ -10,7 +10,6 @@ import {
   Moon,
   Check,
   ChevronDown,
-  Mail,
 } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 
@@ -65,14 +64,15 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Projects", href: "/#projects" },
+    { name: "Experience", href: "/experience" },
+    { name: "Projects", href: "/projects" },
+    { name: "Skills", href: "/skills" },
+    { name: "GitHub", href: "/analytics" },
   ];
 
   const isActive = (href: string) => {
-    if (href === "/") return pathname === "/" && !hash;
-    if (href.startsWith("/#")) {
-      return pathname === "/" && hash === href.substring(1);
-    }
+    if (href === "/") return pathname === "/";
+    if (href === "/projects") return pathname.startsWith("/projects");
     return pathname === href;
   };
 
@@ -213,14 +213,6 @@ const Navbar = () => {
                 <Moon size={20} className="text-primary" />
               )}
             </button>
-
-            <a
-              href="mailto:bndnitish24@gmail.com"
-              className="btn-ripple inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold bg-primary text-white rounded-xl hover:bg-primary-hover transition-all duration-300 hover:scale-105 hover:shadow-glow-primary focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <Mail size={16} />
-              Let's Talk
-            </a>
           </div>
 
           <div className="md:hidden flex items-center gap-3 relative z-10">
@@ -297,16 +289,9 @@ const Navbar = () => {
                   </button>
                 ))}
               </div>
-            </div>
-
-            <a
-              href="mailto:bndnitish24@gmail.com"
-              className="text-center px-5 py-3 mt-4 font-semibold bg-primary text-white rounded-xl hover:bg-primary-hover transition-colors"
-            >
-              Let's Talk
-            </a>
           </div>
         </div>
+      </div>
       </div>
     </nav>
   );

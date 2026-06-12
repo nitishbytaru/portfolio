@@ -27,6 +27,7 @@ import {
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
+import { TechIcon } from "../ui/TechIcon";
 
 interface BentoCardProps {
   title?: string;
@@ -225,8 +226,9 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
                   {project.techStack.map((tech, i) => (
                     <span
                       key={i}
-                      className="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-background/70 backdrop-blur-xl text-text border border-border shadow-sm hover:bg-primary/10 hover:text-primary hover:border-primary/50 transition-all duration-300 cursor-default hover:-translate-y-1"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-background/70 backdrop-blur-xl text-text border border-border shadow-sm hover:bg-primary/10 hover:text-primary hover:border-primary/50 transition-all duration-300 cursor-default hover:-translate-y-1"
                     >
+                      <TechIcon name={tech} sizeClassName="w-4 h-4" />
                       {tech}
                     </span>
                   ))}
@@ -268,6 +270,21 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
                             <p className="text-sm font-medium text-text truncate">
                               {value}
                             </p>
+
+                            <div className="flex flex-wrap gap-1.5 mt-2">
+                              {value.split(",").map((item) => {
+                                const cleanItem = item.trim();
+                                return (
+                                  <div
+                                    key={cleanItem}
+                                    className="p-1 bg-surface-elevated/80 border border-border rounded-lg"
+                                    title={cleanItem}
+                                  >
+                                    <TechIcon name={cleanItem} sizeClassName="w-3.5 h-3.5" />
+                                  </div>
+                                );
+                              })}
+                            </div>
                           </div>
                         </div>
                       );
@@ -305,6 +322,21 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
                           <p className="text-sm font-medium text-text truncate">
                             {value}
                           </p>
+
+                          <div className="flex flex-wrap gap-1.5 mt-2">
+                            {value.split(",").map((item) => {
+                              const cleanItem = item.trim();
+                              return (
+                                <div
+                                  key={cleanItem}
+                                  className="p-1 bg-surface-elevated/80 border border-border rounded-lg"
+                                  title={cleanItem}
+                                >
+                                  <TechIcon name={cleanItem} sizeClassName="w-3.5 h-3.5" />
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
                       </div>
                     );

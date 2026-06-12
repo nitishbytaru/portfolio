@@ -8,14 +8,15 @@ import {
   Layers,
   Code2,
 } from "lucide-react";
-import { useScrollReveal } from "../../hooks/useScrollReveal";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
-import SectionShell from "../ui/SectionShell";
-import SectionHeader from "../ui/SectionHeader";
-import GlassCard from "../ui/GlassCard";
-import Pill from "../ui/Pill";
+import SectionShell from "@/components/ui/SectionShell";
+import SectionHeader from "@/components/ui/SectionHeader";
+import GlassCard from "@/components/ui/GlassCard";
+import Pill from "@/components/ui/Pill";
+import { TechIcon } from "@/components/ui/TechIcon";
 
-import { projectsData, Project } from "../../data/ProjectData";
+import { projectsData, Project } from "@/data/ProjectData";
 
 interface ProjectCardProps {
   project: Project & { span?: string };
@@ -26,7 +27,7 @@ const ProjectCardMedia: React.FC<ProjectCardProps> = ({ project }) => (
     {/* Tech chips */}
     <div className="absolute left-4 top-4 z-20 flex flex-wrap gap-2">
       {project.techStack.slice(0, 3).map((tech) => (
-        <Pill key={tech} tone="solid" size="sm">
+        <Pill key={tech} tone="solid" size="sm" iconElement={<TechIcon name={tech} sizeClassName="w-3.5 h-3.5" />}>
           {tech}
         </Pill>
       ))}
@@ -54,7 +55,7 @@ const ProjectCardBody: React.FC<ProjectCardProps> = ({ project }) => (
     <div className="mb-4 flex items-start justify-between gap-4">
       <div>
         <div className="mb-3 flex items-center gap-2">
-          <Pill icon={Code2} tone="primary" size="sm">
+          <Pill tone="primary" size="sm" iconElement={<TechIcon name={project.techStack[0]} sizeClassName="w-3.5 h-3.5" />}>
             {project.techStack[0]}
           </Pill>
         </div>
@@ -93,8 +94,9 @@ const ProjectCardBody: React.FC<ProjectCardProps> = ({ project }) => (
         {project.techStack.map((tech) => (
           <span
             key={tech}
-            className="px-2.5 py-1 text-xs font-medium text-text-secondary bg-surface/50 border border-border rounded-lg hover:border-primary/40 hover:text-text transition-all duration-200"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-text-secondary bg-surface/50 border border-border rounded-lg hover:border-primary/40 hover:text-text transition-all duration-200"
           >
+            <TechIcon name={tech} sizeClassName="w-3.5 h-3.5" />
             {tech}
           </span>
         ))}
@@ -151,41 +153,41 @@ const getBentoSpan = (index: number) => {
   }
 };
 
-const Projects: React.FC = () => {
+export default function ProjectsPage() {
   const gridReveal = useScrollReveal({ threshold: 0.05 });
 
   return (
-    <SectionShell id="projects">
-      <SectionHeader
-        eyebrow="Selected Works"
-        eyebrowIcon={Sparkles}
-        title="Featured Projects"
-        lead="A collection of polished, scalable, and practical digital products built across web, mobile, backend, and machine learning."
-        aside={
-          <Pill icon={Layers} tone="solid">
-            {projectsData.length} Projects
-          </Pill>
-        }
-      />
+    <div className="bg-background pt-16">
+      <SectionShell id="projects">
+        <SectionHeader
+          eyebrow="Selected Works"
+          eyebrowIcon={Sparkles}
+          title="Featured Projects"
+          lead="A collection of polished, scalable, and practical digital products built across web, mobile, backend, and machine learning."
+          aside={
+            <Pill icon={Layers} tone="solid">
+              {projectsData.length} Projects
+            </Pill>
+          }
+        />
 
-      <div
-        ref={gridReveal.ref}
-        className="grid auto-rows-fr gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8"
-      >
-        {projectsData.map((project, i) => {
-          const bentoSpan = getBentoSpan(i);
-          return (
-            <ProjectCard
-              key={project.id}
-              project={{ ...project, span: bentoSpan }}
-              index={i}
-              isVisible={gridReveal.isVisible}
-            />
-          );
-        })}
-      </div>
-    </SectionShell>
+        <div
+          ref={gridReveal.ref}
+          className="grid auto-rows-fr gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8"
+        >
+          {projectsData.map((project, i) => {
+            const bentoSpan = getBentoSpan(i);
+            return (
+              <ProjectCard
+                key={project.id}
+                project={{ ...project, span: bentoSpan }}
+                index={i}
+                isVisible={gridReveal.isVisible}
+              />
+            );
+          })}
+        </div>
+      </SectionShell>
+    </div>
   );
-};
-
-export default Projects;
+}

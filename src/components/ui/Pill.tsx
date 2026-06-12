@@ -18,6 +18,7 @@ const sizeMap: Record<Size, string> = {
 
 interface PillProps {
   icon?: LucideIcon;
+  iconElement?: React.ReactNode;
   children: React.ReactNode;
   tone?: Tone;
   size?: Size;
@@ -28,12 +29,13 @@ interface PillProps {
 
 const Pill: React.FC<PillProps> = ({
   icon: Icon,
-  children,
+  iconElement,
   tone = "default",
   size = "md",
   dot = false,
   className = "",
   uppercase = false,
+  children,
 }) => {
   return (
     <span
@@ -49,6 +51,7 @@ const Pill: React.FC<PillProps> = ({
         <span className="inline-flex h-2 w-2 rounded-full bg-primary motion-safe:animate-pulse" />
       )}
       {Icon && <Icon className="h-4 w-4 text-primary" />}
+      {iconElement}
       {children}
     </span>
   );

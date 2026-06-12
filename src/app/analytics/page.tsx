@@ -7,15 +7,15 @@ import {
   Zap, BarChart3, Globe, FolderGit2, Rocket, Trophy, Layers,
   LucideIcon,
 } from "lucide-react";
-import { useScrollReveal, useCountUp, useTilt } from "../../hooks/useScrollReveal";
-import SectionShell from "../ui/SectionShell";
-import SectionHeader from "../ui/SectionHeader";
-import GlassCard from "../ui/GlassCard";
-import Pill from "../ui/Pill";
+import { useScrollReveal, useCountUp, useTilt } from "@/hooks/useScrollReveal";
+import SectionShell from "@/components/ui/SectionShell";
+import SectionHeader from "@/components/ui/SectionHeader";
+import GlassCard from "@/components/ui/GlassCard";
+import Pill from "@/components/ui/Pill";
 import {
   fetchProfile, fetchRepos, fetchEvents, fetchContributions,
   computeAnalytics, formatEventType, timeAgo, LanguageMetric, TimelineItem, ContributionData
-} from "../../utils/githubApi";
+} from "@/utils/githubApi";
 
 /* ── Animated Counter ──────────────────────────────── */
 interface AnimatedStatProps {
@@ -552,8 +552,8 @@ const SkeletonCard: React.FC<{ className?: string }> = ({ className = "" }) => (
   </div>
 );
 
-/* ── Main Section ──────────────────────────────────── */
-export default function GitHubAnalytics() {
+/* ── Main Page Component ─────────────────────────────── */
+export default function AnalyticsPage() {
   const [analytics, setAnalytics] = useState<any | null>(null);
   const [events, setEvents] = useState<any[]>([]);
   const [contributions, setContributions] = useState<ContributionData | null>(null);
@@ -596,241 +596,247 @@ export default function GitHubAnalytics() {
 
   if (loading) {
     return (
-      <SectionShell id="analytics">
-        <SectionHeader eyebrow="Live from GitHub" eyebrowIcon={Github}
-          title="Developer Analytics" lead="Loading live GitHub data..." />
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {[...Array(4)].map((_, i) => <SkeletonCard key={i} />)}
-        </div>
-        <div className="grid gap-4 mt-4 md:grid-cols-2">
-          <SkeletonCard className="md:col-span-2 h-48" />
-        </div>
-      </SectionShell>
+      <div className="bg-background pt-16">
+        <SectionShell id="analytics">
+          <SectionHeader eyebrow="Live from GitHub" eyebrowIcon={Github}
+            title="Developer Analytics" lead="Loading live GitHub data..." />
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {[...Array(4)].map((_, i) => <SkeletonCard key={i} />)}
+          </div>
+          <div className="grid gap-4 mt-4 md:grid-cols-2">
+            <SkeletonCard className="md:col-span-2 h-48" />
+          </div>
+        </SectionShell>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <SectionShell id="analytics">
-        <SectionHeader eyebrow="Live from GitHub" eyebrowIcon={Github}
-          title="Developer Analytics" lead="Real-time insights from my GitHub profile." />
-        <GlassCard padding="p-10" className="text-center max-w-lg mx-auto">
-          <Github className="w-12 h-12 mx-auto mb-4 text-text-secondary opacity-50" />
-          <h3 className="text-xl font-bold text-text mb-2">Data Unavailable</h3>
-          <p className="text-text-secondary mb-6 text-sm">{error}</p>
-          <button onClick={() => window.location.reload()}
-            className="px-6 py-2.5 rounded-xl bg-primary text-white font-semibold hover:bg-primary-hover transition-colors">
-            Retry
-          </button>
-        </GlassCard>
-      </SectionShell>
+      <div className="bg-background pt-16">
+        <SectionShell id="analytics">
+          <SectionHeader eyebrow="Live from GitHub" eyebrowIcon={Github}
+            title="Developer Analytics" lead="Real-time insights from my GitHub profile." />
+          <GlassCard padding="p-10" className="text-center max-w-lg mx-auto">
+            <Github className="w-12 h-12 mx-auto mb-4 text-text-secondary opacity-50" />
+            <h3 className="text-xl font-bold text-text mb-2">Data Unavailable</h3>
+            <p className="text-text-secondary mb-6 text-sm">{error}</p>
+            <button onClick={() => window.location.reload()}
+              className="px-6 py-2.5 rounded-xl bg-primary text-white font-semibold hover:bg-primary-hover transition-colors">
+              Retry
+            </button>
+          </GlassCard>
+        </SectionShell>
+      </div>
     );
   }
 
   const { profile, stats, highlights, languages, timeline, topRepos } = analytics;
 
   return (
-    <SectionShell id="analytics">
-      <SectionHeader eyebrow="Live from GitHub" eyebrowIcon={Github}
-        title="Developer Analytics"
-        lead="Real-time insights, repository metrics, and contribution analytics pulled live from my GitHub profile."
-        aside={<Pill icon={Activity} tone="solid">{stats.totalRepos} Repositories</Pill>}
-      />
-
-      <div ref={statsReveal.ref} className="grid gap-4 md:gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-4 mb-6">
-        <GlassCard
-          ref={profileTilt.ref}
-          style={{
-            ...profileTilt.style,
-            transitionDelay: "0ms"
-          }}
-          onMouseMove={profileTilt.handleMouseMove}
-          onMouseLeave={profileTilt.handleMouseLeave}
-          padding="p-6"
-          className={`col-span-2 lg:row-span-2 transition-all duration-700 ease-out ${
-            statsReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
-        >
-          <div className="flex items-center gap-5 mb-5">
-            <img src={profile.avatar_url} alt={profile.name}
-              className="h-20 w-20 rounded-2xl border-2 border-border object-cover shadow-lg" />
-            <div>
-              <h3 className="text-xl font-bold text-text">{profile.name}</h3>
-              <a href={profile.html_url} target="_blank" rel="noopener noreferrer"
-                className="text-sm text-primary hover:underline flex items-center gap-1">
-                @{profile.login} <ExternalLink className="h-3 w-3" />
-              </a>
-              {profile.bio && <p className="text-xs text-text-secondary mt-1">{profile.bio}</p>}
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            <div className="text-center p-3 rounded-xl bg-background/50 border border-border/50">
-              <div className="text-lg font-bold text-text">{profile.followers}</div>
-              <div className="text-[10px] uppercase tracking-wider text-text-secondary">Followers</div>
-            </div>
-            <div className="text-center p-3 rounded-xl bg-background/50 border border-border/50">
-              <div className="text-lg font-bold text-text">{profile.following}</div>
-              <div className="text-[10px] uppercase tracking-wider text-text-secondary">Following</div>
-            </div>
-            <div className="text-center p-3 rounded-xl bg-background/50 border border-border/50">
-              <div className="text-lg font-bold text-text">{profile.accountAgeYears}y</div>
-              <div className="text-[10px] uppercase tracking-wider text-text-secondary">On GitHub</div>
-            </div>
-          </div>
-          <div className="mt-4 flex items-center gap-2 text-xs text-text-secondary">
-            <Calendar className="h-3.5 w-3.5" />
-            <span>Member since {profile.joinedDate}</span>
-          </div>
-        </GlassCard>
-
-        <div className={`transition-all duration-700 ease-out`} style={{ transitionDelay: "100ms" }}>
-          <AnimatedStat value={stats.totalRepos} label="Repositories" icon={FolderGit2} isVisible={statsReveal.isVisible} />
-        </div>
-
-        <div className={`transition-all duration-700 ease-out`} style={{ transitionDelay: "200ms" }}>
-          <AnimatedStat value={stats.totalStars} label="Stars Earned" icon={Star} isVisible={statsReveal.isVisible} />
-        </div>
-
-        <div className={`transition-all duration-700 ease-out`} style={{ transitionDelay: "300ms" }}>
-          <AnimatedStat value={stats.deployedCount} label="Deployed" icon={Rocket} isVisible={statsReveal.isVisible} />
-        </div>
-
-        <div className={`transition-all duration-700 ease-out`} style={{ transitionDelay: "400ms" }}>
-          <AnimatedStat value={languages.length} label="Languages" icon={Globe} isVisible={statsReveal.isVisible} />
-        </div>
-
-        <AvailabilityCard
-          profile={profile}
-          languages={languages}
-          isVisible={statsReveal.isVisible}
-          tilt={availabilityTilt}
-          delay="500ms"
+    <div className="bg-background pt-16">
+      <SectionShell id="analytics">
+        <SectionHeader eyebrow="Live from GitHub" eyebrowIcon={Github}
+          title="Developer Analytics"
+          lead="Real-time insights, repository metrics, and contribution analytics pulled live from my GitHub profile."
+          aside={<Pill icon={Activity} tone="solid">{stats.totalRepos} Repositories</Pill>}
         />
 
-        <AchievementsCard
-          stats={stats}
-          languages={languages}
-          events={events}
-          isVisible={statsReveal.isVisible}
-          tilt={achievementsTilt}
-          delay="600ms"
-        />
-      </div>
-
-      <div className="grid gap-4 md:gap-6 md:grid-cols-5 mb-6">
-        <GlassCard ref={langReveal.ref} padding="p-6" className="md:col-span-3" interactive={false}>
-          <div className="flex items-center gap-2 mb-6">
-            <BarChart3 className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-bold text-text">Language Distribution</h3>
-          </div>
-          <LanguageDonutChart languages={languages} isVisible={langReveal.isVisible} />
-        </GlassCard>
-
-        <GlassCard padding="p-6" className="md:col-span-2" interactive={false}>
-          <div className="flex items-center gap-2 mb-6">
-            <TrendingUp className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-bold text-text">Repository Insights</h3>
-          </div>
-          <div className="space-y-4">
-            {[
-              { label: "Most Starred", value: highlights.mostStarred?.name, sub: `⭐ ${highlights.mostStarred?.stargazers_count}` },
-              { label: "Most Forked", value: highlights.mostForked?.name, sub: `🍴 ${highlights.mostForked?.forks_count}` },
-              { label: "Most Active", value: highlights.mostActive?.name, sub: timeAgo(highlights.mostActive?.pushed_at) },
-              { label: "Original Projects", value: `${stats.ownRepos} / ${stats.totalRepos}`, sub: "repos" },
-            ].map((item) => (
-              <div key={item.label} className="flex items-center justify-between py-2 border-b border-border/30 last:border-0">
-                <span className="text-sm text-text-secondary">{item.label}</span>
-                <div className="text-right">
-                  <span className="text-sm font-semibold text-text truncate max-w-[120px] inline-block align-middle">{item.value}</span>
-                  <span className="text-xs text-text-secondary ml-2">{item.sub}</span>
-                </div>
+        <div ref={statsReveal.ref} className="grid gap-4 md:gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-4 mb-6">
+          <GlassCard
+            ref={profileTilt.ref}
+            style={{
+              ...profileTilt.style,
+              transitionDelay: "0ms"
+            }}
+            onMouseMove={profileTilt.handleMouseMove}
+            onMouseLeave={profileTilt.handleMouseLeave}
+            padding="p-6"
+            className={`col-span-2 lg:row-span-2 transition-all duration-700 ease-out ${
+              statsReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            }`}
+          >
+            <div className="flex items-center gap-5 mb-5">
+              <img src={profile.avatar_url} alt={profile.name}
+                className="h-20 w-20 rounded-2xl border-2 border-border object-cover shadow-lg" />
+              <div>
+                <h3 className="text-xl font-bold text-text">{profile.name}</h3>
+                <a href={profile.html_url} target="_blank" rel="noopener noreferrer"
+                  className="text-sm text-primary hover:underline flex items-center gap-1">
+                  @{profile.login} <ExternalLink className="h-3 w-3" />
+                </a>
+                {profile.bio && <p className="text-xs text-text-secondary mt-1">{profile.bio}</p>}
               </div>
-            ))}
-          </div>
-        </GlassCard>
-      </div>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="text-center p-3 rounded-xl bg-background/50 border border-border/50">
+                <div className="text-lg font-bold text-text">{profile.followers}</div>
+                <div className="text-[10px] uppercase tracking-wider text-text-secondary">Followers</div>
+              </div>
+              <div className="text-center p-3 rounded-xl bg-background/50 border border-border/50">
+                <div className="text-lg font-bold text-text">{profile.following}</div>
+                <div className="text-[10px] uppercase tracking-wider text-text-secondary">Following</div>
+              </div>
+              <div className="text-center p-3 rounded-xl bg-background/50 border border-border/50">
+                <div className="text-lg font-bold text-text">{profile.accountAgeYears}y</div>
+                <div className="text-[10px] uppercase tracking-wider text-text-secondary">On GitHub</div>
+              </div>
+            </div>
+            <div className="mt-4 flex items-center gap-2 text-xs text-text-secondary">
+              <Calendar className="h-3.5 w-3.5" />
+              <span>Member since {profile.joinedDate}</span>
+            </div>
+          </GlassCard>
 
-      <div className="grid gap-4 md:gap-6 md:grid-cols-2 mb-6">
-        <GlassCard ref={timelineReveal.ref} padding="p-6" interactive={false}>
-          <div className="flex items-center gap-2 mb-6">
-            <Layers className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-bold text-text">Coding Timeline</h3>
-            <span className="text-xs text-text-secondary ml-auto">Repos created per year</span>
+          <div className={`transition-all duration-700 ease-out`} style={{ transitionDelay: "100ms" }}>
+            <AnimatedStat value={stats.totalRepos} label="Repositories" icon={FolderGit2} isVisible={statsReveal.isVisible} />
           </div>
-          <TimelineChart timeline={timeline} isVisible={timelineReveal.isVisible} />
-        </GlassCard>
 
-        <GlassCard ref={activityReveal.ref} padding="p-6" interactive={false}>
+          <div className={`transition-all duration-700 ease-out`} style={{ transitionDelay: "200ms" }}>
+            <AnimatedStat value={stats.totalStars} label="Stars Earned" icon={Star} isVisible={statsReveal.isVisible} />
+          </div>
+
+          <div className={`transition-all duration-700 ease-out`} style={{ transitionDelay: "300ms" }}>
+            <AnimatedStat value={stats.deployedCount} label="Deployed" icon={Rocket} isVisible={statsReveal.isVisible} />
+          </div>
+
+          <div className={`transition-all duration-700 ease-out`} style={{ transitionDelay: "400ms" }}>
+            <AnimatedStat value={languages.length} label="Languages" icon={Globe} isVisible={statsReveal.isVisible} />
+          </div>
+
+          <AvailabilityCard
+            profile={profile}
+            languages={languages}
+            isVisible={statsReveal.isVisible}
+            tilt={availabilityTilt}
+            delay="500ms"
+          />
+
+          <AchievementsCard
+            stats={stats}
+            languages={languages}
+            events={events}
+            isVisible={statsReveal.isVisible}
+            tilt={achievementsTilt}
+            delay="600ms"
+          />
+        </div>
+
+        <div className="grid gap-4 md:gap-6 md:grid-cols-5 mb-6">
+          <GlassCard ref={langReveal.ref} padding="p-6" className="md:col-span-3" interactive={false}>
+            <div className="flex items-center gap-2 mb-6">
+              <BarChart3 className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-bold text-text">Language Distribution</h3>
+            </div>
+            <LanguageDonutChart languages={languages} isVisible={langReveal.isVisible} />
+          </GlassCard>
+
+          <GlassCard padding="p-6" className="md:col-span-2" interactive={false}>
+            <div className="flex items-center gap-2 mb-6">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-bold text-text">Repository Insights</h3>
+            </div>
+            <div className="space-y-4">
+              {[
+                { label: "Most Starred", value: highlights.mostStarred?.name, sub: `⭐ ${highlights.mostStarred?.stargazers_count}` },
+                { label: "Most Forked", value: highlights.mostForked?.name, sub: `🍴 ${highlights.mostForked?.forks_count}` },
+                { label: "Most Active", value: highlights.mostActive?.name, sub: timeAgo(highlights.mostActive?.pushed_at) },
+                { label: "Original Projects", value: `${stats.ownRepos} / ${stats.totalRepos}`, sub: "repos" },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center justify-between py-2 border-b border-border/30 last:border-0">
+                  <span className="text-sm text-text-secondary">{item.label}</span>
+                  <div className="text-right">
+                    <span className="text-sm font-semibold text-text truncate max-w-[120px] inline-block align-middle">{item.value}</span>
+                    <span className="text-xs text-text-secondary ml-2">{item.sub}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+        </div>
+
+        <div className="grid gap-4 md:gap-6 md:grid-cols-2 mb-6">
+          <GlassCard ref={timelineReveal.ref} padding="p-6" interactive={false}>
+            <div className="flex items-center gap-2 mb-6">
+              <Layers className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-bold text-text">Coding Timeline</h3>
+              <span className="text-xs text-text-secondary ml-auto">Repos created per year</span>
+            </div>
+            <TimelineChart timeline={timeline} isVisible={timelineReveal.isVisible} />
+          </GlassCard>
+
+          <GlassCard ref={activityReveal.ref} padding="p-6" interactive={false}>
+            <div className="flex items-center gap-2 mb-4">
+              <Zap className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-bold text-text">Recent Activity</h3>
+            </div>
+            <div className="max-h-72 overflow-y-auto pr-1 custom-scrollbar">
+              {events.length > 0 ? (
+                events.map((evt, i) => <ActivityItem key={i} event={evt} />)
+              ) : (
+                <p className="text-sm text-text-secondary text-center py-6">No recent activity</p>
+              )}
+            </div>
+          </GlassCard>
+        </div>
+
+        <GlassCard ref={calendarReveal.ref} padding="p-6" className="mb-6" interactive={false}>
           <div className="flex items-center gap-2 mb-4">
-            <Zap className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-bold text-text">Recent Activity</h3>
+            <Calendar className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-bold text-text">Contribution Calendar</h3>
           </div>
-          <div className="max-h-72 overflow-y-auto pr-1 custom-scrollbar">
-            {events.length > 0 ? (
-              events.map((evt, i) => <ActivityItem key={i} event={evt} />)
-            ) : (
-              <p className="text-sm text-text-secondary text-center py-6">No recent activity</p>
-            )}
-          </div>
+          <ContributionCalendar contributions={contributions} isVisible={calendarReveal.isVisible} />
         </GlassCard>
-      </div>
 
-      <GlassCard ref={calendarReveal.ref} padding="p-6" className="mb-6" interactive={false}>
-        <div className="flex items-center gap-2 mb-4">
-          <Calendar className="h-5 w-5 text-primary" />
-          <h3 className="text-lg font-bold text-text">Contribution Calendar</h3>
-        </div>
-        <ContributionCalendar contributions={contributions} isVisible={calendarReveal.isVisible} />
-      </GlassCard>
+        <div className="grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6">
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-2 mb-4 pl-1">
+              <FolderGit2 className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-bold text-text">Top Repositories</h3>
+            </div>
+            <div ref={reposReveal.ref} className="grid gap-4 sm:grid-cols-2">
+              {topRepos.slice(0, 6).map((repo: any, i: number) => (
+                <RepoCard key={repo.id} repo={repo} index={i} isVisible={reposReveal.isVisible} />
+              ))}
+            </div>
+          </div>
 
-      <div className="grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6">
-        <div className="lg:col-span-2">
-          <div className="flex items-center gap-2 mb-4 pl-1">
-            <FolderGit2 className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-bold text-text">Top Repositories</h3>
-          </div>
-          <div ref={reposReveal.ref} className="grid gap-4 sm:grid-cols-2">
-            {topRepos.slice(0, 6).map((repo: any, i: number) => (
-              <RepoCard key={repo.id} repo={repo} index={i} isVisible={reposReveal.isVisible} />
-            ))}
-          </div>
-        </div>
-
-        <GlassCard padding="p-6" interactive={false}>
-          <div className="flex items-center gap-2 mb-6">
-            <Trophy className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-bold text-text">Milestones</h3>
-          </div>
-          <div className="space-y-4">
-            {[
-              { icon: Award, label: `${profile.accountAgeYears}+ Years on GitHub`, desc: `Since ${new Date(profile.created_at).getFullYear()}` },
-              { icon: FolderGit2, label: `${stats.totalRepos} Repositories`, desc: `${stats.ownRepos} original projects` },
-              { icon: Rocket, label: `${stats.deployedCount} Deployed Projects`, desc: "Live on the web" },
-              { icon: Globe, label: `${languages.length} Languages Used`, desc: languages[0]?.name ? `Top: ${languages[0].name}` : "" },
-              { icon: Star, label: `${stats.totalStars} Stars Earned`, desc: highlights.mostStarred?.name || "" },
-            ].map((m) => (
-              <div key={m.label} className="flex items-start gap-3 p-3 rounded-xl bg-background/50 border border-border/30 hover:border-primary/30 transition-colors">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <m.icon className="h-4 w-4" />
+          <GlassCard padding="p-6" interactive={false}>
+            <div className="flex items-center gap-2 mb-6">
+              <Trophy className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-bold text-text">Milestones</h3>
+            </div>
+            <div className="space-y-4">
+              {[
+                { icon: Award, label: `${profile.accountAgeYears}+ Years on GitHub`, desc: `Since ${new Date(profile.created_at).getFullYear()}` },
+                { icon: FolderGit2, label: `${stats.totalRepos} Repositories`, desc: `${stats.ownRepos} original projects` },
+                { icon: Rocket, label: `${stats.deployedCount} Deployed Projects`, desc: "Live on the web" },
+                { icon: Globe, label: `${languages.length} Languages Used`, desc: languages[0]?.name ? `Top: ${languages[0].name}` : "" },
+                { icon: Star, label: `${stats.totalStars} Stars Earned`, desc: highlights.mostStarred?.name || "" },
+              ].map((m) => (
+                <div key={m.label} className="flex items-start gap-3 p-3 rounded-xl bg-background/50 border border-border/30 hover:border-primary/30 transition-colors">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <m.icon className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-text">{m.label}</p>
+                    <p className="text-xs text-text-secondary truncate max-w-[160px]">{m.desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-text">{m.label}</p>
-                  <p className="text-xs text-text-secondary truncate max-w-[160px]">{m.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </GlassCard>
-      </div>
+              ))}
+            </div>
+          </GlassCard>
+        </div>
 
-      <div className="text-center mt-8">
-        <a href={`https://github.com/${profile.login}`} target="_blank" rel="noopener noreferrer"
-          className="btn-ripple inline-flex items-center gap-2 px-8 py-3 rounded-xl border border-border bg-surface/90 text-text font-semibold backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:border-primary/50 hover:bg-surface-elevated">
-          <Github className="h-5 w-5" />
-          View Full Profile on GitHub
-          <ExternalLink className="h-4 w-4" />
-        </a>
-      </div>
-    </SectionShell>
+        <div className="text-center mt-8">
+          <a href={`https://github.com/${profile.login}`} target="_blank" rel="noopener noreferrer"
+            className="btn-ripple inline-flex items-center gap-2 px-8 py-3 rounded-xl border border-border bg-surface/90 text-text font-semibold backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:border-primary/50 hover:bg-surface-elevated">
+            <Github className="h-5 w-5" />
+            View Full Profile on GitHub
+            <ExternalLink className="h-4 w-4" />
+          </a>
+        </div>
+      </SectionShell>
+    </div>
   );
 }

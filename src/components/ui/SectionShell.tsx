@@ -20,7 +20,7 @@ const SectionShell: React.FC<SectionShellProps> = ({
   return (
     <section
       id={id}
-      className={`relative overflow-hidden bg-background py-24 px-4 sm:px-6 lg:px-8 ${className}`}
+      className={`relative overflow-hidden bg-background py-24 px-4 sm:px-6 lg:px-8 scroll-mt-20 ${className}`}
     >
       {/* Grid */}
       <div className="pointer-events-none absolute inset-0 opacity-[0.05] dark:opacity-[0.08] bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:48px_48px]" />
