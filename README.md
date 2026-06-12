@@ -7,33 +7,36 @@ This repository contains the source code for my personal portfolio website, desi
 This project is built using modern web technologies to ensure high performance, responsiveness, and maintainability.
 
 ### Core Technologies
-- **[React 19](https://react.dev/)**: Frontend library for building the user interface.
-- **[Vite](https://vitejs.dev/)**: Next-generation frontend tooling for fast development and optimized builds.
-- **[React Router DOM v7](https://reactrouter.com/)**: Handling client-side routing for seamless navigation.
+- **[Next.js 16 / React 19](https://nextjs.org/)**: React framework using the App Router for server-side rendering, static site generation, and optimized performance.
+- **[TypeScript](https://www.typescriptlang.org/)**: Strict type safety across components, layouts, routing params, and utilities.
 
 ### Styling & UI
 - **[Tailwind CSS v3](https://tailwindcss.com/)**: Utility-first CSS framework for rapid and responsive UI development.
+- **[shadcn/ui](https://ui.shadcn.com/)**: High-quality, accessible component library.
 - **[Lucide React](https://lucide.dev/)**: Beautiful, consistent icon library.
 - **[Swiper](https://swiperjs.com/)**: Modern touch slider for creating interactive carousels.
 - **[tailwindcss-animate](https://github.com/jamiebuilds/tailwindcss-animate)**: Tailwind plugin for crafting smooth animations.
-
-### Linting & Code Quality
-- **ESLint**: Configured with React-specific plugins to maintain code quality and consistency.
+- **[tw-animate-css](https://github.com/Wombosvideo/tw-animate-css)**: Modern Tailwind replacement for CSS animation utilities.
 
 ### Deployment
-- **Vercel**: The project includes a `vercel.json` configuration for seamless deployment and hosting on the Vercel platform.
+- **Vercel**: Optimized deployment configuration and static asset generation for hosting on the Vercel platform.
 
 ## 📂 Project Structure
 
-The codebase is organized logically to promote reusability and separation of concerns:
+The codebase is organized logically to promote reusability and separation of concerns using the Next.js App Router:
 
-- `src/components/`: Reusable, modular UI components used across the application.
-- `src/pages/`: Top-level page components corresponding to different routes.
-- `src/context/`: React Context providers for global state management.
-- `src/hooks/`: Custom React hooks for shared logic.
-- `src/data/`: Static data definitions (e.g., project details, skills).
-- `src/utils/`: Helper and utility functions.
-- `src/index.css`: Global styles and Tailwind configuration directives.
+- `src/app/`: The Next.js App Router containing route definitions, pages, layouts, and providers.
+  - `src/app/page.tsx`: Main dashboard and portfolio landing page.
+  - `src/app/projects/[slug]/`: Dynamic project detail routing.
+  - `src/app/globals.css`: Global styles, theme tokens, and custom scrollbars.
+- `src/components/`: Modular UI components:
+  - `layout/`: Global templates like `Navbar.tsx`, `Footer.tsx`, and `ProjectLayout.tsx`.
+  - `sections/`: Distinct page sections (e.g. `Experience`, `Projects`, `GitHubAnalytics`).
+  - `ui/`: Lower-level reusable items (e.g. `GlassCard`, `Pill`, `FloatingBadge`).
+- `src/context/`: React Context providers for global theme/color-palette management.
+- `src/hooks/`: Custom React hooks for interactive scroll reveal and 3D tilts.
+- `src/data/`: Static typed data definitions (e.g. project details, skills).
+- `src/utils/`: Helper and utility functions (e.g. GitHub API interaction).
 
 ## 💻 Getting Started
 
@@ -61,12 +64,17 @@ Follow these steps to run the project locally.
    npm run dev
    ```
 
-4. Open your browser and navigate to the local URL provided by Vite (usually `http://localhost:5173`).
+4. Open your browser and navigate to `http://localhost:3000`.
 
 ### Building for Production
 
-To create a production-ready build:
+To create an optimized production build:
 ```bash
 npm run build
 ```
-This will generate optimized assets in the `dist` directory. You can preview the production build locally using `npm run preview`.
+This will compile the TypeScript code, generate static paths for your dynamic project routes, and output optimized server assets in the `.next` directory.
+
+To run the production build locally:
+```bash
+npm run start
+```
