@@ -1,15 +1,17 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
+import { projectsData } from "../../data/ProjectData";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
-  Navigation,
   Pagination,
   Autoplay,
-  Keyboard,
   EffectFade,
 } from "swiper/modules";
 import {
   ArrowRight,
+  ArrowLeft,
+  LayoutGrid,
   Github,
   CheckCircle2,
   Layers,
@@ -23,7 +25,6 @@ import {
   ExternalLink,
 } from "lucide-react";
 import "swiper/css";
-import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 
@@ -35,9 +36,8 @@ const BentoCard = ({
   stagger = "",
 }) => (
   <div
-    className={`scroll-reveal ${stagger} ${
-      isVisible ? "revealed" : ""
-    } group relative bg-surface/70 backdrop-blur-2xl p-6 sm:p-8 rounded-3xl border border-border overflow-hidden transition-all duration-500 hover:bg-surface/90 hover:-translate-y-2 hover:border-primary/60 hover:shadow-2xl hover:shadow-primary/10 flex flex-col ${className}`}
+    className={`scroll-reveal ${stagger} ${isVisible ? "revealed" : ""
+      } group relative bg-surface/70 backdrop-blur-2xl p-6 sm:p-8 rounded-3xl border border-border overflow-hidden transition-all duration-500 hover:bg-surface/90 hover:-translate-y-2 hover:border-primary/60 hover:shadow-2xl hover:shadow-primary/10 flex flex-col ${className}`}
     style={{ animationFillMode: "both" }}
   >
     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
@@ -61,7 +61,11 @@ const BentoCard = ({
 const ProjectLayout = ({ project, onLiveLinkClick }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [project.slug]);
+
+  const currentIndex = projectsData.findIndex((item) => item.slug === project.slug);
+  const previousProject = currentIndex > 0 ? projectsData[currentIndex - 1] : null;
+  const nextProject = currentIndex < projectsData.length - 1 ? projectsData[currentIndex + 1] : null;
 
   const titleReveal = useScrollReveal({ threshold: 0.1 });
   const contentReveal = useScrollReveal({ threshold: 0.05 });
@@ -77,15 +81,9 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
       <div className="max-w-7xl mx-auto relative z-10">
         <div
           ref={titleReveal.ref}
-          className={`scroll-reveal ${
-            titleReveal.isVisible ? "revealed" : ""
-          } text-center mb-12 max-w-4xl mx-auto`}
+          className={`scroll-reveal ${titleReveal.isVisible ? "revealed" : ""
+            } text-center mb-12 max-w-4xl mx-auto`}
         >
-          <span className="inline-flex items-center px-4 py-1.5 text-sm font-medium text-text bg-surface/70 backdrop-blur-2xl rounded-full border border-border shadow-sm shimmer-badge mb-5">
-            <Sparkles className="w-4 h-4 mr-2 text-primary" />
-            Project Case Study
-          </span>
-
           <h1 className="text-4xl md:text-6xl font-extrabold text-text tracking-tight mb-4">
             <span className="gradient-text">{project.title}</span>
           </h1>
@@ -98,9 +96,8 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
         <div className="flex flex-col lg:flex-row gap-6">
           <div ref={contentReveal.ref} className="flex flex-col gap-6 lg:w-[70%]">
             <div
-              className={`scroll-reveal ${
-                contentReveal.isVisible ? "revealed" : ""
-              } relative group rounded-3xl overflow-hidden border border-border shadow-2xl shadow-primary/10 bg-surface/70 backdrop-blur-2xl p-2`}
+              className={`scroll-reveal ${contentReveal.isVisible ? "revealed" : ""
+                } relative group rounded-3xl overflow-hidden border border-border shadow-2xl shadow-primary/10 bg-surface/70 backdrop-blur-2xl p-2`}
             >
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
               <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-primary to-secondary scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 z-30" />
@@ -110,11 +107,9 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
                 slidesPerView={1}
                 effect="fade"
                 loop
-                modules={[Navigation, Pagination, Autoplay, Keyboard, EffectFade]}
-                navigation
+                modules={[Pagination, Autoplay, EffectFade]}
                 pagination={{ clickable: true, dynamicBullets: true }}
                 autoplay={{ delay: 5000, disableOnInteraction: false }}
-                keyboard={{ enabled: true }}
                 className="rounded-2xl overflow-hidden relative h-full min-h-[300px] md:min-h-[400px] lg:min-h-[500px]"
               >
                 {project.images?.map((src, i) => (
@@ -129,77 +124,56 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
               </Swiper>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <BentoCard
-                title="About Project"
-                className="h-full"
-                isVisible={contentReveal.isVisible}
-                stagger="stagger-2"
-              >
-                <div className="space-y-4">
-                  {project.detailedDescription?.intro?.map((paragraph, idx) => (
-                    <p
-                      key={idx}
-                      className="text-base sm:text-lg text-text-secondary leading-relaxed font-medium"
-                    >
-                      {paragraph}
+            <BentoCard
+              title="About Project"
+              className="w-full"
+              isVisible={contentReveal.isVisible}
+              stagger="stagger-2"
+            >
+              <div className="space-y-4">
+                {project.detailedDescription?.intro?.map((paragraph, idx) => (
+                  <p
+                    key={idx}
+                    className="text-base sm:text-lg text-text-secondary leading-relaxed font-medium"
+                  >
+                    {paragraph}
+                  </p>
+                ))}
+
+                {project.detailedDescription?.note && (
+                  <div className="bg-background/70 backdrop-blur-xl border border-border p-4 sm:p-5 rounded-2xl border-l-4 border-l-primary mt-4 transition-all duration-300 hover:bg-surface/70 flex items-start gap-4">
+                    <div className="bg-surface/80 p-2 rounded-xl shrink-0 mt-0.5 border border-border">
+                      <Info className="w-4 h-4 text-primary" />
+                    </div>
+
+                    <p className="text-sm text-text-secondary leading-relaxed">
+                      {project.detailedDescription.note}
                     </p>
-                  ))}
+                  </div>
+                )}
+              </div>
+            </BentoCard>
 
-                  {project.detailedDescription?.note && (
-                    <div className="bg-background/70 backdrop-blur-xl border border-border p-4 sm:p-5 rounded-2xl border-l-4 border-l-primary mt-4 transition-all duration-300 hover:bg-surface/70 flex items-start gap-4">
-                      <div className="bg-surface/80 p-2 rounded-xl shrink-0 mt-0.5 border border-border">
-                        <Info className="w-4 h-4 text-primary" />
-                      </div>
-
-                      <p className="text-sm text-text-secondary leading-relaxed">
-                        {project.detailedDescription.note}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </BentoCard>
-
-              <BentoCard
-                title="Key Features"
-                className="h-full"
-                isVisible={contentReveal.isVisible}
-                stagger="stagger-4"
-              >
-                <div className="flex flex-col gap-3">
-                  {project.features.map((feature, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start bg-background/70 backdrop-blur-xl p-4 rounded-2xl border border-border hover:bg-surface/80 hover:border-primary/40 transition-all duration-300"
-                    >
-                      <CheckCircle2 className="w-5 h-5 text-secondary mr-3 shrink-0 mt-0.5" />
-                      <span className="text-sm text-text-secondary leading-relaxed">
-                        {feature}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </BentoCard>
-            </div>
-
-            {project.techStack && project.techStack.length > 0 && (
-              <BentoCard
-                title="Core Stack"
-                isVisible={contentReveal.isVisible}
-                stagger="stagger-6"
-              >
-                <div className="flex flex-wrap gap-2 content-start">
-                  {project.techStack.map((tech, i) => (
-                    <span
-                      key={i}
-                      className="px-4 py-2 rounded-xl text-sm font-medium bg-background/70 backdrop-blur-xl text-text border border-border shadow-sm hover:bg-primary/10 hover:text-primary hover:border-primary/50 transition-all duration-300 cursor-default hover:-translate-y-1"
-                    >
-                      {tech}
+            <BentoCard
+              title="Key Features"
+              className="w-full"
+              isVisible={contentReveal.isVisible}
+              stagger="stagger-4"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {project.features.map((feature, i) => (
+                  <div
+                    key={i}
+                    className="flex items-start bg-background/70 backdrop-blur-xl p-4 rounded-2xl border border-border hover:bg-surface/80 hover:border-primary/40 transition-all duration-300 h-full"
+                  >
+                    <CheckCircle2 className="w-5 h-5 text-secondary mr-3 shrink-0 mt-0.5" />
+                    <span className="text-sm text-text-secondary leading-relaxed">
+                      {feature}
                     </span>
-                  ))}
-                </div>
-              </BentoCard>
-            )}
+                  </div>
+                ))}
+              </div>
+            </BentoCard>
           </div>
 
           <div ref={sidebarReveal.ref} className="flex flex-col gap-6 lg:w-[30%]">
@@ -210,7 +184,7 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
                   className="w-full group relative px-6 py-4 bg-primary text-white rounded-2xl hover:bg-primary-hover transition-all duration-300 font-bold shadow-lg overflow-hidden flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary hover:scale-[1.02] hover:shadow-glow-primary"
                 >
                   <span className="relative z-10 flex items-center text-sm sm:text-base">
-                    View Live Demo
+                    {project.liveLink && project.liveLink.includes("linkedin.com") ? "View LinkedIn Post" : "View Live Demo"}
                     <ArrowRight className="w-5 h-5 ml-2 transform transition-transform group-hover:-rotate-45" />
                   </span>
                 </button>
@@ -224,20 +198,27 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
                   <span>Source Code</span>
                   <Github className="w-5 h-5 ml-2 text-text-secondary group-hover:text-primary transition-colors" />
                 </a>
-
-                {project.liveLink && (
-                  <a
-                    href={project.liveLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full group flex items-center justify-center px-6 py-4 bg-background/70 backdrop-blur-xl text-text border border-border rounded-2xl hover:bg-surface/90 hover:border-primary/50 transition-all duration-300 font-bold shadow-md hover:shadow-xl text-sm sm:text-base"
-                  >
-                    <span>Open Link</span>
-                    <ExternalLink className="w-5 h-5 ml-2 text-text-secondary group-hover:text-primary transition-colors" />
-                  </a>
-                )}
               </div>
             </BentoCard>
+
+            {project.techStack && project.techStack.length > 0 && (
+              <BentoCard
+                title="Core Stack"
+                isVisible={sidebarReveal.isVisible}
+                stagger="stagger-2"
+              >
+                <div className="flex flex-wrap gap-2 content-start">
+                  {project.techStack.map((tech, i) => (
+                    <span
+                      key={i}
+                      className="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-background/70 backdrop-blur-xl text-text border border-border shadow-sm hover:bg-primary/10 hover:text-primary hover:border-primary/50 transition-all duration-300 cursor-default hover:-translate-y-1"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </BentoCard>
+            )}
 
             {project.technologiesUsed &&
               Object.keys(project.technologiesUsed).length > 0 && (
@@ -318,6 +299,58 @@ const ProjectLayout = ({ project, onLiveLinkClick }) => {
               </BentoCard>
             )}
           </div>
+        </div>
+
+        {project.images && project.images.length > 0 && (
+          <div className="mt-8 lg:mt-12">
+            <BentoCard title="Project Gallery" isVisible={contentReveal.isVisible} stagger="stagger-6">
+              <div className="columns-1 md:columns-2 gap-6 space-y-6">
+                {project.images.map((src, idx) => (
+                  <div
+                    key={idx}
+                    className="relative overflow-hidden rounded-2xl border border-border shadow-sm group break-inside-avoid"
+                  >
+                    <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none" />
+                    <img
+                      src={src}
+                      alt={`${project.title} gallery image ${idx + 1}`}
+                      className="w-full h-auto block transform transition-transform duration-700 group-hover:scale-110"
+                    />
+                  </div>
+                ))}
+              </div>
+            </BentoCard>
+          </div>
+        )}
+
+        <div className="mt-16 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-6 pb-8">
+          {previousProject ? (
+            <Link
+              to={`/projects/${previousProject.slug}`}
+              className="group flex items-center justify-center px-6 py-4 bg-surface/70 backdrop-blur-xl text-text border border-border rounded-2xl hover:bg-surface/90 hover:border-primary/50 transition-all duration-300 font-bold shadow-md hover:shadow-xl sm:w-auto w-full"
+            >
+              <ArrowLeft className="w-5 h-5 mr-3 transform transition-transform group-hover:-translate-x-1" />
+              <span>{previousProject.title}</span>
+            </Link>
+          ) : <div className="hidden sm:block sm:w-[200px]"></div>}
+
+          <Link
+            to="/#projects"
+            className="group flex items-center justify-center p-4 text-text-secondary hover:text-primary transition-colors duration-300 bg-surface/30 hover:bg-surface/70 rounded-full"
+            title="Back to all projects"
+          >
+            <LayoutGrid className="w-6 h-6" />
+          </Link>
+
+          {nextProject ? (
+            <Link
+              to={`/projects/${nextProject.slug}`}
+              className="group flex items-center justify-center px-6 py-4 bg-primary text-white border border-transparent rounded-2xl hover:bg-primary/90 transition-all duration-300 font-bold shadow-md hover:shadow-xl sm:w-auto w-full"
+            >
+              <span>{nextProject.title}</span>
+              <ArrowRight className="w-5 h-5 ml-3 transform transition-transform group-hover:translate-x-1" />
+            </Link>
+          ) : <div className="hidden sm:block sm:w-[200px]"></div>}
         </div>
       </div>
     </div>

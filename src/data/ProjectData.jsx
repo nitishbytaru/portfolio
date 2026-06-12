@@ -119,7 +119,7 @@ export const projectsData = [
     shortDescription:
       "A full-stack expense tracking web app with authentication, budget goals, and receipt uploads, built for seamless personal finance management.",
     thumbnail: "/expensetracker/thumbnail/4.jpeg",
-    liveLink: "https://expense-nd-trackers.netlify.app",
+    liveLink: "https://www.linkedin.com/posts/nitishbytaru_webdevelopment-reactjs-nodejs-ugcPost-7221061856231112704-po8f/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAECYhy0BjTqW8NV_A7nTP6_KGN5tzcO2gqk",
     githubLink: "https://lnkd.in/gM_AGjvj",
     techStack: [
       "React.js",
@@ -185,7 +185,7 @@ export const projectsData = [
     shortDescription:
       "A dynamic recipe-sharing web app where users can create, manage, and discover recipes with a vibrant food-loving community.",
     thumbnail: "/recipeheaven/thumbnail/1.jpeg",
-    liveLink: "https://nitish24.pythonanywhere.com/",
+    liveLink: "https://www.linkedin.com/posts/nitishbytaru_django-python-webdevelopment-ugcPost-7225117747255369728-zBy5/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAECYhy0BjTqW8NV_A7nTP6_KGN5tzcO2gqk",
     githubLink: "https://github.com/nitishbytaru/RecipeHaven",
     techStack: ["HTML", "CSS", "Bootstrap", "Django", "Python", "SQLite"],
     features: [
