@@ -598,8 +598,8 @@ export default function AnalyticsPage() {
     return (
       <div className="bg-background pt-16">
         <SectionShell id="analytics">
-          <SectionHeader eyebrow="Live from GitHub" eyebrowIcon={Github}
-            title="Developer Analytics" lead="Loading live GitHub data..." />
+          <SectionHeader
+            title="Developer Analytics" />
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[...Array(4)].map((_, i) => <SkeletonCard key={i} />)}
           </div>
@@ -615,8 +615,8 @@ export default function AnalyticsPage() {
     return (
       <div className="bg-background pt-16">
         <SectionShell id="analytics">
-          <SectionHeader eyebrow="Live from GitHub" eyebrowIcon={Github}
-            title="Developer Analytics" lead="Real-time insights from my GitHub profile." />
+          <SectionHeader
+            title="Developer Analytics" />
           <GlassCard padding="p-10" className="text-center max-w-lg mx-auto">
             <Github className="w-12 h-12 mx-auto mb-4 text-text-secondary opacity-50" />
             <h3 className="text-xl font-bold text-text mb-2">Data Unavailable</h3>
@@ -636,9 +636,8 @@ export default function AnalyticsPage() {
   return (
     <div className="bg-background pt-16">
       <SectionShell id="analytics">
-        <SectionHeader eyebrow="Live from GitHub" eyebrowIcon={Github}
+        <SectionHeader
           title="Developer Analytics"
-          lead="Real-time insights, repository metrics, and contribution analytics pulled live from my GitHub profile."
           aside={<Pill icon={Activity} tone="solid">{stats.totalRepos} Repositories</Pill>}
         />
 

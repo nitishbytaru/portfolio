@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import {
   ArrowRight,
-  Sparkles,
   Layers,
   Code2,
 } from "lucide-react";
@@ -160,10 +159,7 @@ export default function ProjectsPage() {
     <div className="bg-background pt-16">
       <SectionShell id="projects">
         <SectionHeader
-          eyebrow="Selected Works"
-          eyebrowIcon={Sparkles}
           title="Featured Projects"
-          lead="A collection of polished, scalable, and practical digital products built across web, mobile, backend, and machine learning."
           aside={
             <Pill icon={Layers} tone="solid">
               {projectsData.length} Projects

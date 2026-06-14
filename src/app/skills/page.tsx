@@ -1,9 +1,11 @@
 "use client";
 
 import React from "react";
-import { Sparkles, Zap, Layers } from "lucide-react";
+import { Zap, Layers } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { TechIcon } from "@/components/ui/TechIcon";
+import SectionHeader from "@/components/ui/SectionHeader";
+import GlassCard from "@/components/ui/GlassCard";
 
 interface CoreSkill {
   name: string;
@@ -73,7 +75,6 @@ const landscapeSkills: LandscapeSkill[] = [
 ];
 
 export default function SkillsPage() {
-  const titleReveal = useScrollReveal({ threshold: 0.2 });
   const bentoReveal = useScrollReveal({ threshold: 0.1 });
   const marqueeReveal = useScrollReveal({ threshold: 0.1 });
 
@@ -89,27 +90,7 @@ export default function SkillsPage() {
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-[150px] opacity-40 pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10">
-          <div
-            ref={titleReveal.ref}
-            className={`scroll-reveal ${
-              titleReveal.isVisible ? "revealed" : ""
-            } mb-16 text-center`}
-          >
-            <div className="mb-4">
-              <span className="inline-flex items-center px-4 py-1.5 text-sm font-medium text-text bg-surface/70 backdrop-blur-2xl rounded-full border border-border shadow-sm shimmer-badge">
-                <Sparkles className="w-4 h-4 mr-2 text-primary" />
-                Technical Expertise
-              </span>
-            </div>
-
-            <h2 className="text-4xl md:text-5xl font-extrabold text-text tracking-tight mb-4">
-              My Technical Arsenal
-            </h2>
-
-            <p className="text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
-              A comprehensive overview of the technologies, frameworks, and tools I use to build robust and scalable applications.
-            </p>
-          </div>
+          <SectionHeader title="My Technical Arsenal" />
 
           {/* CORE ARSENAL - BENTO GRID */}
           <div className="mb-24">
@@ -123,15 +104,16 @@ export default function SkillsPage() {
               className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
             >
               {coreSkills.map((skill, index) => (
-                <div
+                <GlassCard
                   key={index}
-                  className={`scroll-reveal stagger-${Math.min(index + 1, 10)} ${
+                  className={`${skill.colSpan} scroll-reveal stagger-${Math.min(index + 1, 10)} ${
                     bentoReveal.isVisible ? "revealed" : ""
-                  } ${skill.colSpan} group relative flex flex-col justify-between border border-border rounded-3xl p-6 sm:p-8 bg-surface/70 backdrop-blur-2xl overflow-hidden transition-all duration-500 hover:bg-surface/90 hover:-translate-y-1 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10`}
+                  } flex flex-col justify-between`}
+                  padding="p-6 sm:p-8"
+                  interactive={true}
+                  accentBar={true}
                 >
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-gradient-to-br from-primary/10 via-transparent to-secondary/5 pointer-events-none" />
-                  
-                  <div className="relative z-10 flex justify-between items-start mb-8">
+                  <div className="flex justify-between items-start mb-8">
                     <div className="flex justify-center items-center w-14 h-14 bg-surface-elevated/80 backdrop-blur-xl rounded-2xl border border-border/60 transition-all duration-500 shadow-sm group-hover:border-primary/45 group-hover:bg-surface-elevated">
                       <TechIcon
                         name={skill.name}
@@ -144,7 +126,7 @@ export default function SkillsPage() {
                     </span>
                   </div>
 
-                  <div className="relative z-10">
+                  <div>
                     <h4 className="text-2xl font-extrabold text-text mb-2 tracking-tight group-hover:text-primary transition-colors duration-300">
                       {skill.name}
                     </h4>
@@ -152,9 +134,7 @@ export default function SkillsPage() {
                       {skill.description}
                     </p>
                   </div>
-                  
-                  <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary to-secondary transition-transform duration-500 origin-left group-hover:scale-x-100 scale-x-0 w-full z-20" />
-                </div>
+                </GlassCard>
               ))}
             </div>
           </div>
