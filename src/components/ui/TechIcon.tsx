@@ -99,6 +99,8 @@ function getTechIconUrl(tech: string): { url: string } | null {
   }
 }
 
+export const hasTechIcon = (name: string) => getTechIconUrl(name) !== null;
+
 interface TechIconProps {
   name: string;
   className?: string;

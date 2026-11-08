@@ -106,11 +106,9 @@ export default function Home() {
             sizes="(min-width: 1024px) 50vw, 100vw"
             className="absolute -top-[11%] left-0 h-[124%] w-full max-w-none object-cover object-left-top"
           />
-          <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-ink transition-transform duration-300 group-hover:scale-110">
-            <ArrowRight className="h-6 w-6" aria-hidden="true" />
-          </span>
-          <span className="absolute bottom-4 left-4 rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink">
+          <span className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink">
             Open {echoRealm.title}
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
           </span>
         </Tile>
 

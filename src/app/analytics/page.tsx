@@ -2,11 +2,12 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Github, Star, GitFork, ExternalLink, FolderGit2, Rocket, Globe, Compass, Code2, Zap, Eye, Award,
+  ArrowUpRight, Github, GitCommitHorizontal, GitFork, Star, ExternalLink, Plus, Rocket, Compass, Code2, Zap, Eye,
   LucideIcon,
 } from "lucide-react";
 import Tile, { TileTone } from "@/components/board/Tile";
 import Wordmark from "@/components/board/Wordmark";
+import { TechIcon } from "@/components/ui/TechIcon";
 import {
   fetchProfile, fetchRepos, fetchEvents, fetchContributions,
   computeAnalytics, formatEventType, timeAgo, LanguageMetric, TimelineItem, ContributionData,
@@ -159,6 +160,44 @@ const achievementsFor = (stats: any, languages: LanguageMetric[], events: any[])
   ].slice(0, 4);
 };
 
+interface Milestone { when: string; title: string; detail: string }
+
+const milestonesFor = (profile: any, timeline: TimelineItem[], highlights: any): Milestone[] => {
+  const busiest = timeline.reduce<TimelineItem | null>((top, item) => (!top || item.count > top.count ? item : top), null);
+  const starred = highlights.mostStarred;
+  const active = highlights.mostActive;
+  const list: (Milestone | null)[] = [
+    { when: String(new Date(profile.created_at).getFullYear()), title: "Joined GitHub", detail: `Member since ${profile.joinedDate}` },
+    busiest && { when: String(busiest.year), title: "Busiest year", detail: `${plural(busiest.count, "repo")} created` },
+    starred?.stargazers_count > 0
+      ? { when: String(new Date(starred.created_at).getFullYear()), title: "Most starred", detail: `${starred.name}, ${plural(starred.stargazers_count, "star")}` }
+      : null,
+    active && { when: "Now", title: "Latest push", detail: `${active.name}, ${timeAgo(active.pushed_at)}` },
+  ];
+  return list.filter((item): item is Milestone => item !== null);
+};
+
+interface ActivityGroup { repo: string; type: string; count: number; label: string; when: string }
+
+// Consecutive events on one repo read as a single line.
+const groupActivity = (events: any[]): ActivityGroup[] => {
+  const groups: ActivityGroup[] = [];
+  for (const event of events) {
+    const repo = event.repo?.name?.split("/")[1] ?? event.repo?.name ?? "";
+    const last = groups[groups.length - 1];
+    if (last && last.repo === repo && last.type === event.type) {
+      last.count += 1;
+    } else {
+      groups.push({ repo, type: event.type, count: 1, label: formatEventType(event.type), when: timeAgo(event.created_at) });
+    }
+  }
+  return groups.slice(0, 6).map((group) =>
+    group.type === "PushEvent"
+      ? { ...group, label: group.count === 1 ? "1 push" : `${group.count} pushes` }
+      : group
+  );
+};
+
 const Shell = ({ children }: { children: React.ReactNode }) => (
   <div>
     <Wordmark className="mb-6">GitHub Stats</Wordmark>
@@ -182,7 +221,7 @@ export default function AnalyticsPage() {
         ]);
         if (cancelled) return;
         setAnalytics(computeAnalytics(profile, repos));
-        setEvents(evts.slice(0, 10));
+        setEvents(evts);
         setContributions(contribs);
       } catch {
         if (!cancelled) setFailed(true);
@@ -226,7 +265,9 @@ export default function AnalyticsPage() {
   }
 
   const { profile, stats, highlights, languages, timeline, topRepos } = analytics;
-  const achievements = achievementsFor(stats, languages, events);
+  const achievements = achievementsFor(stats, languages, events.slice(0, 10));
+  const milestones = milestonesFor(profile, timeline, highlights);
+  const activity = groupActivity(events);
 
   return (
     <Shell>
@@ -302,57 +343,86 @@ export default function AnalyticsPage() {
           </Tile>
         ) : null}
 
-        <div className="col-span-2 grid gap-4 sm:grid-cols-2 lg:col-span-3 lg:grid-rows-[auto_1fr_1fr_1fr] lg:gap-5">
-          <h2 className="wide text-xl font-extrabold sm:col-span-2">Top Repositories</h2>
-          {topRepos.slice(0, 6).map((repo: any) => (
-            <Tile key={repo.id} as="a" href={repo.html_url} target="_blank" rel="noopener noreferrer" tone="white" interactive corner className="flex flex-col p-5">
-              <h3 className="break-all pr-6 font-bold"><FolderGit2 className="mr-2 inline h-5 w-5" aria-hidden="true" />{repo.name}</h3>
-              {repo.description && <p className="mb-4 mt-2 text-sm leading-relaxed">{repo.description}</p>}
-              <p className="mt-auto flex items-center gap-4 pt-2 text-sm">
-                {repo.language && <span>{repo.language}</span>}
-                <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5" aria-hidden="true" />{repo.stargazers_count}</span>
-                <span className="inline-flex items-center gap-1"><GitFork className="h-3.5 w-3.5" aria-hidden="true" />{repo.forks_count}</span>
-              </p>
-            </Tile>
-          ))}
-        </div>
+        <Tile as="section" tone="pink" aria-labelledby="milestones-heading" className="col-span-2 p-6 lg:col-span-4">
+          <h2 id="milestones-heading" className="wide mb-6 text-xl font-extrabold">Milestones</h2>
+          <ol className="grid gap-y-6 md:grid-cols-4">
+            {milestones.map((item) => (
+              <li key={item.title} className="relative border-l-2 border-ink pl-5 md:border-l-0 md:border-t-2 md:pl-0 md:pr-6 md:pt-5">
+                <span aria-hidden="true" className="absolute -left-[7px] top-1 h-3 w-3 rounded-full bg-ink md:-top-[7px] md:left-0" />
+                <p className="wide text-3xl font-extrabold">{item.when}</p>
+                <p className="mt-2 font-bold">{item.title}</p>
+                <p className="break-words text-sm">{item.detail}</p>
+              </li>
+            ))}
+          </ol>
+        </Tile>
 
-        <div className="col-span-2 flex flex-col gap-4 lg:col-span-1 lg:gap-5">
-          <Tile tone="pink" className="p-6">
-            <TileTitle>Milestones</TileTitle>
-            <ul className="space-y-3">
-              {[
-                { Icon: Award, label: `${profile.accountAgeYears}+ years on GitHub`, desc: `Since ${new Date(profile.created_at).getFullYear()}` },
-                { Icon: FolderGit2, label: plural(stats.totalRepos, "repository").replace("repositorys", "repositories"), desc: `${stats.ownRepos} original` },
-                { Icon: Rocket, label: `${stats.deployedCount} deployed`, desc: "Live on the web" },
-                { Icon: Globe, label: plural(languages.length, "language"), desc: languages[0]?.name ? `Top: ${languages[0].name}` : "" },
-              ].map(({ Icon, label, desc }) => (
-                <li key={label} className="flex gap-3">
-                  <Icon className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
-                  <span><span className="block font-semibold">{label}</span><span className="block text-sm">{desc}</span></span>
-                </li>
-              ))}
-            </ul>
-          </Tile>
-          <Tile tone="violet" className="flex-1 p-6">
-            <TileTitle>Recent Activity</TileTitle>
-            {events.length > 0 ? (
-              <ul className="space-y-3">
-                {events.slice(0, 5).map((event, i) => (
-                  <li key={i}>
-                    <span className="block font-semibold">{formatEventType(event.type)} {event.repo?.name?.split("/")[1] ?? event.repo?.name}</span>
-                    <span className="block text-sm">{timeAgo(event.created_at)}</span>
+        <Tile as="section" tone="white" aria-labelledby="repos-heading" className="col-span-2 p-6">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <h2 id="repos-heading" className="wide text-xl font-extrabold">Top Repositories</h2>
+            <a
+              href={`https://github.com/${profile.login}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-4 text-sm font-semibold text-white transition-colors hover:bg-graphite"
+            >
+              <Github className="h-4 w-4" aria-hidden="true" />
+              View Full Profile on GitHub
+            </a>
+          </div>
+          <ul className="divide-y divide-ink/10">
+            {topRepos.slice(0, 6).map((repo: any) => (
+              <li key={repo.id}>
+                <a
+                  href={repo.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group -mx-2 flex items-center gap-4 rounded-xl px-2 py-3 transition-colors hover:bg-frame"
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-page">
+                    <TechIcon name={repo.language ?? ""} sizeClassName="w-5 h-5" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block break-words font-bold">{repo.name}</span>
+                    <span className="block text-sm">
+                      {repo.language ?? "Code"}{repo.description ? `, ${repo.description}` : ""}
+                    </span>
+                  </span>
+                  <span className="flex shrink-0 items-center gap-3 text-sm font-medium">
+                    <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only">Stars</span>{repo.stargazers_count}</span>
+                    <span className="inline-flex items-center gap-1"><GitFork className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only">Forks</span>{repo.forks_count}</span>
+                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </Tile>
+
+        <Tile as="section" tone="violet" aria-labelledby="activity-heading" className="col-span-2 p-6">
+          <h2 id="activity-heading" className="wide mb-3 text-xl font-extrabold">Recent Activity</h2>
+          {activity.length > 0 ? (
+            <ol>
+              {activity.map((item, i) => {
+                const Icon = item.type === "PushEvent" ? GitCommitHorizontal : item.type === "CreateEvent" ? Plus : Zap;
+                return (
+                  <li key={`${item.repo}-${i}`} className="relative flex items-center gap-4 py-3">
+                    {i < activity.length - 1 && (
+                      <span aria-hidden="true" className="absolute bottom-[-14px] left-[21px] top-[58px] w-0.5 bg-ink/25" />
+                    )}
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-frame">
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block break-words font-bold">{item.repo}</span>
+                      <span className="block text-sm">{item.label}</span>
+                    </span>
+                    <span className="shrink-0 text-sm font-medium">{item.when}</span>
                   </li>
-                ))}
-              </ul>
-            ) : <p>No recent activity</p>}
-          </Tile>
-        </div>
-
-        <Tile as="a" href={`https://github.com/${profile.login}`} target="_blank" rel="noopener noreferrer" tone="black" interactive className="col-span-2 flex items-center justify-center gap-3 p-5 font-semibold lg:col-span-4">
-          <Github className="h-5 w-5" aria-hidden="true" />
-          View Full Profile on GitHub
-          <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                );
+              })}
+            </ol>
+          ) : <p>No public activity in the last few weeks.</p>}
         </Tile>
       </div>
     </Shell>
