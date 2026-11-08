@@ -25,3 +25,6 @@ dist-ssr
 .next
 
 /ref
+
+# Impeccable design tool working files
+.impeccable/
