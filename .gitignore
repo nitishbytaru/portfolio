@@ -24,3 +24,4 @@ dist-ssr
 # Next.js build output
 .next
 
+/ref

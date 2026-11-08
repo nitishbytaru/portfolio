@@ -1,404 +1,186 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useScrollReveal } from "../../hooks/useScrollReveal";
+import { ArrowLeft, ArrowRight, Github, LayoutGrid } from "lucide-react";
 import { projectsData, Project } from "../../data/ProjectData";
-import { Swiper, SwiperSlide } from "swiper/react";
-import {
-  Pagination,
-  EffectFade,
-} from "swiper/modules";
-import {
-  ArrowRight,
-  ArrowLeft,
-  LayoutGrid,
-  Github,
-  CheckCircle2,
-  Layers,
-  Server,
-  Globe,
-  Database,
-  MonitorSmartphone,
-  Cpu,
-  Info,
-} from "lucide-react";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/effect-fade";
 import { TechIcon } from "../ui/TechIcon";
-
-interface BentoCardProps {
-  title?: string;
-  children: React.ReactNode;
-  className?: string;
-  isVisible?: boolean;
-  stagger?: string;
-}
-
-const BentoCard: React.FC<BentoCardProps> = ({
-  title,
-  children,
-  className = "",
-  isVisible = true,
-  stagger = "",
-}) => (
-  <div
-    className={`scroll-reveal ${stagger} ${
-      isVisible ? "revealed" : ""
-    } group relative bg-surface/70 backdrop-blur-2xl p-6 sm:p-8 rounded-3xl border border-border overflow-hidden transition-all duration-500 hover:bg-surface/90 hover:-translate-y-2 hover:border-primary/60 hover:shadow-2xl hover:shadow-primary/10 flex flex-col ${className}`}
-    style={{ animationFillMode: "both" }}
-  >
-    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
-    <div className="absolute top-0 left-0 h-1 bg-gradient-to-r from-primary to-secondary transition-transform duration-500 origin-left group-hover:scale-x-100 scale-x-0 w-full z-20" />
-
-    {title && (
-      <h2 className="relative z-10 text-xl sm:text-2xl font-bold text-text mb-6 border-b border-border pb-4 flex items-center shrink-0">
-        <span className="w-7 h-1 bg-primary rounded-full mr-3" />
-        {title}
-      </h2>
-    )}
-
-    <div className="relative z-10 flex-grow flex flex-col justify-start">
-      {children}
-    </div>
-
-    <div className="absolute inset-0 rounded-3xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 shadow-glow-inset" />
-  </div>
-);
+import Tile from "../board/Tile";
+import Wordmark from "../board/Wordmark";
 
 interface ProjectLayoutProps {
   project: Project;
   onLiveLinkClick: () => void;
 }
 
+const SectionTitle = ({ children }: { children: React.ReactNode }) => (
+  <h2 className="wide mb-4 text-2xl font-extrabold">{children}</h2>
+);
+
+const SpecList = ({ entries }: { entries: Record<string, string> }) => (
+  <dl className="space-y-4">
+    {Object.entries(entries).map(([key, value]) => (
+      <div key={key}>
+        <dt className="text-sm font-bold">{key.replace(/_/g, " ")}</dt>
+        <dd className="break-words">{value}</dd>
+      </div>
+    ))}
+  </dl>
+);
+
 const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick }) => {
+  const images = project.images ?? [];
+  const [activeImage, setActiveImage] = useState(images[0] ?? project.thumbnail);
+  const viewerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [project.slug]);
+    setActiveImage(project.images?.[0] ?? project.thumbnail);
+  }, [project]);
 
   const currentIndex = projectsData.findIndex((item) => item.slug === project.slug);
   const previousProject = currentIndex > 0 ? projectsData[currentIndex - 1] : null;
   const nextProject = currentIndex < projectsData.length - 1 ? projectsData[currentIndex + 1] : null;
-
-  const titleReveal = useScrollReveal({ threshold: 0.1 });
-  const contentReveal = useScrollReveal({ threshold: 0.05 });
-  const sidebarReveal = useScrollReveal({ threshold: 0.05 });
+  const isLinkedIn = project.liveLink?.includes("linkedin.com");
+  const architecture = project.technologiesUsed ?? {};
+  const deployment = project.deployment ?? {};
 
   return (
-    <div className="pt-28 pb-20 px-4 sm:px-6 lg:px-8 bg-background min-h-screen relative overflow-hidden transition-colors duration-300">
-      <div className="absolute inset-0 pointer-events-none opacity-[0.08] bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:48px_48px]" />
+    <div>
+      <Wordmark className="!text-[clamp(2.25rem,6.6vw,5.75rem)]">{project.title}</Wordmark>
+      <p className="mb-6 mt-3 max-w-[65ch] text-lg leading-relaxed text-graphite">{project.shortDescription}</p>
 
-      <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-primary/10 rounded-full blur-[160px] opacity-50 pointer-events-none" />
-      <div className="absolute bottom-[20%] right-[-5%] w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[150px] opacity-40 pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div
-          ref={titleReveal.ref}
-          className={`scroll-reveal ${titleReveal.isVisible ? "revealed" : ""
-            } text-center mb-12 max-w-4xl mx-auto`}
-        >
-          <h1 className="text-4xl md:text-6xl font-extrabold text-text tracking-tight mb-4">
-            <span className="gradient-text">{project.title}</span>
-          </h1>
-
-          <p className="text-lg md:text-xl text-text-secondary leading-relaxed">
-            {project.shortDescription}
-          </p>
+      <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
+        <div ref={viewerRef} className="scroll-mt-6 lg:col-span-8">
+          <Tile tone="black" className="aspect-[16/10]">
+            <img
+              src={activeImage}
+              alt={`${project.title} screenshot`}
+              className="h-full w-full object-contain"
+            />
+          </Tile>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div ref={contentReveal.ref} className="flex flex-col gap-6 lg:w-[70%]">
-            {project.images?.length > 0 && <div
-              className={`scroll-reveal ${contentReveal.isVisible ? "revealed" : ""
-                } relative group rounded-3xl overflow-hidden border border-border shadow-2xl shadow-primary/10 bg-surface/70 backdrop-blur-2xl p-2`}
+        <div className="flex flex-col gap-4 lg:col-span-4 lg:gap-5">
+          <div className="grid grid-cols-2 gap-4 lg:gap-5">
+            <Tile
+              as="button"
+              type="button"
+              onClick={onLiveLinkClick}
+              tone="amber"
+              interactive
+              corner
+              className="min-h-32 p-5 text-left"
             >
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
-              <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-primary to-secondary scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 z-30" />
-
-              <Swiper
-                spaceBetween={0}
-                slidesPerView={1}
-                effect="fade"
-                loop
-                modules={[Pagination, EffectFade]}
-                pagination={{ clickable: true, dynamicBullets: true }}
-                className="rounded-2xl overflow-hidden relative h-full min-h-[300px] md:min-h-[400px] lg:min-h-[500px]"
-              >
-                {project.images?.map((src, i) => (
-                  <SwiperSlide key={i} className="h-full bg-background/70">
-                    <img
-                      src={src}
-                      alt={`${project.title} Screenshot ${i + 1}`}
-                      loading={i === 0 ? "eager" : "lazy"}
-                      className="w-full h-full object-contain transform transition-transform duration-1000 group-hover:scale-[1.01]"
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>}
-
-            <BentoCard
-              title="About Project"
-              className="w-full"
-              isVisible={contentReveal.isVisible}
-              stagger="stagger-2"
+              <ArrowRight className="mb-3 h-6 w-6" aria-hidden="true" />
+              <span className="wide block text-lg font-extrabold leading-tight">
+                {isLinkedIn ? "View LinkedIn Post" : "View Live Demo"}
+              </span>
+            </Tile>
+            <Tile
+              as="a"
+              href={project.githubLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              tone="graphite"
+              interactive
+              corner
+              className="min-h-32 p-5"
             >
-              <div className="space-y-4">
-                {project.detailedDescription?.intro?.map((paragraph, idx) => (
-                  <p
-                    key={idx}
-                    className="text-base sm:text-lg text-text-secondary leading-relaxed font-medium"
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-
-                {project.detailedDescription?.note && (
-                  <div className="bg-background/70 backdrop-blur-xl border border-border p-4 sm:p-5 rounded-2xl mt-4 transition-all duration-300 hover:bg-surface/70 flex items-start gap-4">
-                    <div className="bg-surface/80 p-2 rounded-xl shrink-0 mt-0.5 border border-border">
-                      <Info className="w-4 h-4 text-primary" />
-                    </div>
-
-                    <p className="text-sm text-text-secondary leading-relaxed">
-                      {project.detailedDescription.note}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </BentoCard>
-
-            <BentoCard
-              title="Key Features"
-              className="w-full"
-              isVisible={contentReveal.isVisible}
-              stagger="stagger-4"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {project.features.map((feature, i) => (
-                  <div
-                    key={i}
-                    className="flex items-start bg-background/70 backdrop-blur-xl p-4 rounded-2xl border border-border hover:bg-surface/80 hover:border-primary/40 transition-all duration-300 h-full"
-                  >
-                    <CheckCircle2 className="w-5 h-5 text-secondary mr-3 shrink-0 mt-0.5" />
-                    <span className="text-sm text-text-secondary leading-relaxed">
-                      {feature}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </BentoCard>
+              <Github className="mb-3 h-6 w-6" aria-hidden="true" />
+              <span className="wide block text-lg font-extrabold leading-tight">Source Code</span>
+            </Tile>
           </div>
 
-          <div ref={sidebarReveal.ref} className="flex flex-col gap-6 lg:w-[30%]">
-            <BentoCard isVisible={sidebarReveal.isVisible} stagger="stagger-1">
-              <div className="flex flex-col gap-4">
-                <button
-                  onClick={onLiveLinkClick}
-                  className="w-full group relative px-6 py-4 bg-primary text-primary-foreground rounded-2xl hover:bg-primary-hover transition-all duration-300 font-bold shadow-lg overflow-hidden flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary hover:scale-[1.02] hover:shadow-glow-primary"
-                >
-                  <span className="relative z-10 flex items-center text-sm sm:text-base">
-                    {project.liveLink && project.liveLink.includes("linkedin.com") ? "View LinkedIn Post" : "View Live Demo"}
-                    <ArrowRight className="w-5 h-5 ml-2 transform transition-transform group-hover:-rotate-45" />
-                  </span>
-                </button>
-
-                <a
-                  href={project.githubLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full group flex items-center justify-center px-6 py-4 bg-background/70 backdrop-blur-xl text-text border border-border rounded-2xl hover:bg-surface/90 hover:border-primary/50 transition-all duration-300 font-bold shadow-md hover:shadow-xl text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                  <span>Source Code</span>
-                  <Github className="w-5 h-5 ml-2 text-text-secondary group-hover:text-primary transition-colors" />
-                </a>
-              </div>
-            </BentoCard>
-
-            {project.techStack && project.techStack.length > 0 && (
-              <BentoCard
-                title="Core Stack"
-                isVisible={sidebarReveal.isVisible}
-                stagger="stagger-2"
-              >
-                <div className="flex flex-wrap gap-2 content-start">
-                  {project.techStack.map((tech, i) => (
-                    <span
-                      key={i}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-background/70 backdrop-blur-xl text-text border border-border shadow-sm hover:bg-primary/10 hover:text-primary hover:border-primary/50 transition-all duration-300 cursor-default hover:-translate-y-1"
-                    >
-                      <TechIcon name={tech} sizeClassName="w-4 h-4" />
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </BentoCard>
-            )}
-
-            {project.technologiesUsed &&
-              Object.keys(project.technologiesUsed).length > 0 && (
-                <BentoCard
-                  title="Architecture"
-                  isVisible={sidebarReveal.isVisible}
-                  stagger="stagger-3"
-                >
-                  <div className="flex flex-col gap-3">
-                    {Object.entries(project.technologiesUsed).map(([key, value]) => {
-                      let Icon = Layers;
-                      if (key.toLowerCase().includes("frontend"))
-                        Icon = MonitorSmartphone;
-                      else if (key.toLowerCase().includes("backend")) Icon = Server;
-                      else if (key.toLowerCase().includes("database"))
-                        Icon = Database;
-                      else if (key.toLowerCase().includes("machine")) Icon = Cpu;
-
-                      return (
-                        <div
-                          key={key}
-                          className="group flex items-center bg-background/70 backdrop-blur-xl p-4 rounded-2xl border border-border hover:bg-surface/80 hover:border-primary/40 transition-all duration-300"
-                        >
-                          <div className="p-3 bg-surface/80 rounded-xl mr-4 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shrink-0 border border-border text-primary">
-                            <Icon className="w-5 h-5" />
-                          </div>
-
-                          <div className="min-w-0">
-                            <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">
-                              {key.replace(/_/g, " ")}
-                            </h3>
-
-                            <p className="text-sm font-medium text-text break-words">
-                              {value}
-                            </p>
-
-                            <div className="flex flex-wrap gap-1.5 mt-2">
-                              {value.split(",").map((item) => {
-                                const cleanItem = item.trim();
-                                return (
-                                  <div
-                                    key={cleanItem}
-                                    className="p-1 bg-surface-elevated/80 border border-border rounded-lg"
-                                    title={cleanItem}
-                                  >
-                                    <TechIcon name={cleanItem} sizeClassName="w-3.5 h-3.5" />
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </BentoCard>
-              )}
-
-            {project.deployment && Object.keys(project.deployment).length > 0 && (
-              <BentoCard
-                title="Infrastructure"
-                isVisible={sidebarReveal.isVisible}
-                stagger="stagger-5"
-              >
-                <div className="flex flex-col gap-3">
-                  {Object.entries(project.deployment).map(([key, value]) => {
-                    let Icon = Globe;
-                    if (key.toLowerCase().includes("backend")) Icon = Server;
-                    else if (key.toLowerCase().includes("database")) Icon = Database;
-
-                    return (
-                      <div
-                        key={key}
-                        className="group flex items-center bg-background/70 backdrop-blur-xl p-4 rounded-2xl border border-border hover:bg-surface/80 hover:border-primary/40 transition-all duration-300"
-                      >
-                        <div className="p-3 bg-surface/80 rounded-xl mr-4 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shrink-0 border border-border text-primary">
-                          <Icon className="w-5 h-5" />
-                        </div>
-
-                        <div className="min-w-0">
-                          <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">
-                            {key.replace(/_/g, " ")}
-                          </h3>
-
-                          <p className="text-sm font-medium text-text break-words">
-                            {value}
-                          </p>
-
-                          <div className="flex flex-wrap gap-1.5 mt-2">
-                            {value.split(",").map((item) => {
-                              const cleanItem = item.trim();
-                              return (
-                                <div
-                                  key={cleanItem}
-                                  className="p-1 bg-surface-elevated/80 border border-border rounded-lg"
-                                  title={cleanItem}
-                                >
-                                  <TechIcon name={cleanItem} sizeClassName="w-3.5 h-3.5" />
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </BentoCard>
-            )}
-          </div>
+          {project.techStack?.length > 0 && (
+            <Tile tone="mint" className="flex-1 p-6">
+              <SectionTitle>Core Stack</SectionTitle>
+              <ul className="flex flex-wrap gap-2">
+                {project.techStack.map((tech) => (
+                  <li
+                    key={tech}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-frame px-3 py-1.5 text-sm font-medium"
+                  >
+                    <TechIcon name={tech} sizeClassName="w-4 h-4" />
+                    {tech}
+                  </li>
+                ))}
+              </ul>
+            </Tile>
+          )}
         </div>
 
-        {project.images && project.images.length > 0 && (
-          <div className="mt-8 lg:mt-12">
-            <BentoCard title="Project Gallery" isVisible={contentReveal.isVisible} stagger="stagger-6">
-              <div className="columns-1 md:columns-2 gap-6 space-y-6">
-                {project.images.map((src, idx) => (
-                  <div
-                    key={idx}
-                    className="relative overflow-hidden rounded-2xl border border-border shadow-sm group break-inside-avoid"
-                  >
-                    <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none" />
-                    <img
-                      src={src}
-                      alt={`${project.title} gallery image ${idx + 1}`}
-                      loading="lazy"
-                      className="w-full h-auto block transform transition-transform duration-700 group-hover:scale-110"
-                    />
-                  </div>
-                ))}
-              </div>
-            </BentoCard>
+        <Tile tone="periwinkle" className="p-6 lg:col-span-7">
+          <SectionTitle>About Project</SectionTitle>
+          <div className="max-w-[68ch] space-y-3 text-lg leading-relaxed">
+            {project.detailedDescription?.intro?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            {project.detailedDescription?.note && <p className="text-base">{project.detailedDescription.note}</p>}
           </div>
+        </Tile>
+
+        <Tile tone="pink" className="p-6 lg:col-span-5">
+          <SectionTitle>Key Features</SectionTitle>
+          <ul className="list-disc space-y-2 pl-5 leading-relaxed">
+            {project.features.map((feature) => <li key={feature}>{feature}</li>)}
+          </ul>
+        </Tile>
+
+        {Object.keys(architecture).length > 0 && (
+          <Tile tone="amber" className={`p-6 ${Object.keys(deployment).length ? "lg:col-span-7" : "lg:col-span-12"}`}>
+            <SectionTitle>Architecture</SectionTitle>
+            <SpecList entries={architecture} />
+          </Tile>
         )}
 
-        <div className="mt-16 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-6 pb-8">
+        {Object.keys(deployment).length > 0 && (
+          <Tile tone="violet" className={`p-6 ${Object.keys(architecture).length ? "lg:col-span-5" : "lg:col-span-12"}`}>
+            <SectionTitle>Infrastructure</SectionTitle>
+            <SpecList entries={deployment} />
+          </Tile>
+        )}
+
+        {images.length > 1 && (
+          <Tile tone="plain" className="p-6 lg:col-span-12">
+            <SectionTitle>Project Gallery</SectionTitle>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+              {images.map((src, idx) => (
+                <button
+                  key={src}
+                  type="button"
+                  aria-label={`Show screenshot ${idx + 1}`}
+                  aria-pressed={activeImage === src}
+                  onClick={() => {
+                    setActiveImage(src);
+                    viewerRef.current?.scrollIntoView();
+                  }}
+                  className={`overflow-hidden rounded-xl border-2 bg-ink ${
+                    activeImage === src ? "border-ink" : "border-transparent"
+                  }`}
+                >
+                  <img src={src} alt="" loading="lazy" className="aspect-[16/10] w-full object-cover object-top" />
+                </button>
+              ))}
+            </div>
+          </Tile>
+        )}
+
+        <nav aria-label="Other projects" className="grid grid-cols-[1fr_auto_1fr] gap-4 lg:col-span-12 lg:gap-5">
           {previousProject ? (
-            <Link
-              href={`/projects/${previousProject.slug}`}
-              className="group flex items-center justify-center px-6 py-4 bg-surface/70 backdrop-blur-xl text-text border border-border rounded-2xl hover:bg-surface/90 hover:border-primary/50 transition-all duration-300 font-bold shadow-md hover:shadow-xl sm:w-auto w-full"
-            >
-              <ArrowLeft className="w-5 h-5 mr-3 transform transition-transform group-hover:-translate-x-1" />
-              <span>{previousProject.title}</span>
-            </Link>
-          ) : <div className="hidden sm:block sm:w-[200px]"></div>}
-
-          <Link
-            href="/projects"
-            aria-label="Back to all projects"
-            className="group flex items-center justify-center p-4 text-text-secondary hover:text-primary transition-colors duration-300 bg-surface/30 hover:bg-surface/70 rounded-full"
-            title="Back to all projects"
-          >
-            <LayoutGrid className="w-6 h-6" />
-          </Link>
-
+            <Tile as={Link} href={`/projects/${previousProject.slug}`} tone="white" interactive className="flex min-h-11 items-center gap-3 p-4 font-semibold">
+              <ArrowLeft className="h-5 w-5 shrink-0" aria-hidden="true" />
+              {previousProject.title}
+            </Tile>
+          ) : <span />}
+          <Tile as={Link} href="/projects" tone="black" interactive aria-label="Back to all projects" className="flex h-full min-h-11 w-14 items-center justify-center">
+            <LayoutGrid className="h-5 w-5" aria-hidden="true" />
+          </Tile>
           {nextProject ? (
-            <Link
-              href={`/projects/${nextProject.slug}`}
-              className="group flex items-center justify-center px-6 py-4 bg-primary text-primary-foreground border border-transparent rounded-2xl hover:bg-primary/90 transition-all duration-300 font-bold shadow-md hover:shadow-xl sm:w-auto w-full"
-            >
-              <span>{nextProject.title}</span>
-              <ArrowRight className="w-5 h-5 ml-3 transform transition-transform group-hover:translate-x-1" />
-            </Link>
-          ) : <div className="hidden sm:block sm:w-[200px]"></div>}
-        </div>
+            <Tile as={Link} href={`/projects/${nextProject.slug}`} tone="white" interactive className="flex min-h-11 items-center justify-end gap-3 p-4 text-right font-semibold">
+              {nextProject.title}
+              <ArrowRight className="h-5 w-5 shrink-0" aria-hidden="true" />
+            </Tile>
+          ) : <span />}
+        </nav>
       </div>
     </div>
   );

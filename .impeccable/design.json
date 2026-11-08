@@ -1,0 +1,376 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-08T16:17:43+00:00",
+  "title": "Design System: Nitish Durga Bytaru Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "periwinkle": {
+        "role": "primary",
+        "displayName": "Periwinkle Board",
+        "canonical": "#7D82D0",
+        "tonalRamp": [
+          "oklch(15.0% 0.079 279.7)",
+          "oklch(26.4% 0.116 279.7)",
+          "oklch(37.9% 0.116 279.7)",
+          "oklch(49.3% 0.116 279.7)",
+          "oklch(60.7% 0.116 279.7)",
+          "oklch(72.1% 0.116 279.7)",
+          "oklch(83.6% 0.085 279.7)",
+          "oklch(95.0% 0.030 279.7)"
+        ]
+      },
+      "pink": {
+        "role": "secondary",
+        "displayName": "Orchid Pink",
+        "canonical": "#F0ADFF",
+        "tonalRamp": [
+          "oklch(15.0% 0.090 320.1)",
+          "oklch(26.4% 0.132 320.1)",
+          "oklch(37.9% 0.132 320.1)",
+          "oklch(49.3% 0.132 320.1)",
+          "oklch(60.7% 0.132 320.1)",
+          "oklch(72.1% 0.132 320.1)",
+          "oklch(83.6% 0.097 320.1)",
+          "oklch(95.0% 0.033 320.1)"
+        ]
+      },
+      "mint": {
+        "role": "secondary",
+        "displayName": "Pale Mint",
+        "canonical": "#A7D8D6",
+        "tonalRamp": [
+          "oklch(15.0% 0.035 193.1)",
+          "oklch(26.4% 0.051 193.1)",
+          "oklch(37.9% 0.051 193.1)",
+          "oklch(49.3% 0.051 193.1)",
+          "oklch(60.7% 0.051 193.1)",
+          "oklch(72.1% 0.051 193.1)",
+          "oklch(83.6% 0.037 193.1)",
+          "oklch(95.0% 0.013 193.1)"
+        ]
+      },
+      "violet": {
+        "role": "secondary",
+        "displayName": "Dusty Violet",
+        "canonical": "#8D6FBD",
+        "tonalRamp": [
+          "oklch(15.0% 0.081 300.6)",
+          "oklch(26.4% 0.119 300.6)",
+          "oklch(37.9% 0.119 300.6)",
+          "oklch(49.3% 0.119 300.6)",
+          "oklch(60.7% 0.119 300.6)",
+          "oklch(72.1% 0.119 300.6)",
+          "oklch(83.6% 0.087 300.6)",
+          "oklch(95.0% 0.030 300.6)"
+        ]
+      },
+      "amber": {
+        "role": "secondary",
+        "displayName": "Warm Amber",
+        "canonical": "#FEC067",
+        "tonalRamp": [
+          "oklch(15.0% 0.087 74.5)",
+          "oklch(26.4% 0.128 74.5)",
+          "oklch(37.9% 0.128 74.5)",
+          "oklch(49.3% 0.128 74.5)",
+          "oklch(60.7% 0.128 74.5)",
+          "oklch(72.1% 0.128 74.5)",
+          "oklch(83.6% 0.094 74.5)",
+          "oklch(95.0% 0.032 74.5)"
+        ]
+      },
+      "page": {
+        "role": "neutral",
+        "displayName": "Page Gray",
+        "canonical": "#E1E1E1",
+        "tonalRamp": [
+          "oklch(15.0% 0.000 89.9)",
+          "oklch(26.4% 0.000 89.9)",
+          "oklch(37.9% 0.000 89.9)",
+          "oklch(49.3% 0.000 89.9)",
+          "oklch(60.7% 0.000 89.9)",
+          "oklch(72.1% 0.000 89.9)",
+          "oklch(83.6% 0.000 89.9)",
+          "oklch(95.0% 0.000 89.9)"
+        ]
+      },
+      "frame": {
+        "role": "neutral",
+        "displayName": "Sheet White",
+        "canonical": "#F6F6F6",
+        "tonalRamp": [
+          "oklch(15.0% 0.000 89.9)",
+          "oklch(26.4% 0.000 89.9)",
+          "oklch(37.9% 0.000 89.9)",
+          "oklch(49.3% 0.000 89.9)",
+          "oklch(60.7% 0.000 89.9)",
+          "oklch(72.1% 0.000 89.9)",
+          "oklch(83.6% 0.000 89.9)",
+          "oklch(95.0% 0.000 89.9)"
+        ]
+      },
+      "graphite": {
+        "role": "neutral",
+        "displayName": "Graphite",
+        "canonical": "#595959",
+        "tonalRamp": [
+          "oklch(15.0% 0.000 89.9)",
+          "oklch(26.4% 0.000 89.9)",
+          "oklch(37.9% 0.000 89.9)",
+          "oklch(49.3% 0.000 89.9)",
+          "oklch(60.7% 0.000 89.9)",
+          "oklch(72.1% 0.000 89.9)",
+          "oklch(83.6% 0.000 89.9)",
+          "oklch(95.0% 0.000 89.9)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#000000",
+        "tonalRamp": [
+          "oklch(15.0% 0.000 0.0)",
+          "oklch(26.4% 0.000 0.0)",
+          "oklch(37.9% 0.000 0.0)",
+          "oklch(49.3% 0.000 0.0)",
+          "oklch(60.7% 0.000 0.0)",
+          "oklch(72.1% 0.000 0.0)",
+          "oklch(83.6% 0.000 0.0)",
+          "oklch(95.0% 0.000 0.0)"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "Pure White",
+        "canonical": "#FFFFFF",
+        "tonalRamp": [
+          "oklch(15.0% 0.000 89.9)",
+          "oklch(26.4% 0.000 89.9)",
+          "oklch(37.9% 0.000 89.9)",
+          "oklch(49.3% 0.000 89.9)",
+          "oklch(60.7% 0.000 89.9)",
+          "oklch(72.1% 0.000 89.9)",
+          "oklch(83.6% 0.000 89.9)",
+          "oklch(95.0% 0.000 89.9)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "One per page, naming it. Home enlarges it to min(11.5vw, 11rem) from lg up."
+      },
+      "wordmark-detail": {
+        "displayName": "Wordmark Detail",
+        "purpose": "Project titles, which run longer."
+      },
+      "numeral": {
+        "displayName": "Numeral",
+        "purpose": "Counts inside stat tiles."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section and tile headings."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Smaller tile headings and route tiles."
+      },
+      "body-lg": {
+        "displayName": "Body Large",
+        "purpose": "Long-form copy in content tiles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default descriptions."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Image labels, chips and tile metadata, in sentence case."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sheet-lift",
+        "value": "0 24px 60px -24px rgb(0 0 0 / 0.3)",
+        "purpose": "The sheet only."
+      },
+      {
+        "name": "popover",
+        "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+        "purpose": "The mobile menu only."
+      },
+      {
+        "name": "focus-halo",
+        "value": "0 0 0 4px #fff",
+        "purpose": "White halo paired with a 2px ink outline at 2px offset, so focus holds on any tile."
+      }
+    ],
+    "motion": [
+      {
+        "name": "tile-lift",
+        "value": "transform 300ms, translateY(-4px)",
+        "purpose": "Standalone door tiles on hover."
+      },
+      {
+        "name": "segment-dim",
+        "value": "filter 300ms, brightness(0.95)",
+        "purpose": "Segments inside a clipped split on hover."
+      },
+      {
+        "name": "disc-scale",
+        "value": "transform 300ms, scale(1.1)",
+        "purpose": "Home arrow disc on hover."
+      },
+      {
+        "name": "badge-spin",
+        "value": "spin 18s linear infinite",
+        "purpose": "Spin Badge text; motion-safe only."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Door Tile",
+      "kind": "card",
+      "refersTo": "tile-graphite",
+      "description": "Standalone route tile with corner bracket; rises on hover.",
+      "html": "<a class=\"ds-tile\" href=\"#\"><span class=\"ds-tile-title\">Skills</span><span class=\"ds-tile-corner\"></span></a>",
+      "css": ".ds-tile{position:relative;display:flex;align-items:center;justify-content:center;width:280px;height:144px;border-radius:20px;background:#595959;color:#fff;text-decoration:none;overflow:hidden;transition:transform 300ms;}.ds-tile:hover{transform:translateY(-4px);}.ds-tile:focus-visible{outline:2px solid #000;outline-offset:2px;box-shadow:0 0 0 4px #fff;}.ds-tile-title{font-family:Archivo,sans-serif;font-stretch:125%;font-size:20px;}.ds-tile-corner{position:absolute;right:16px;top:16px;width:12px;height:12px;border-top:2px solid currentColor;border-right:2px solid currentColor;}"
+    },
+    {
+      "name": "Split Count Tile",
+      "kind": "custom",
+      "refersTo": "tile-mint",
+      "description": "Two seamless count segments in one clipped 20px container; segments dim on hover.",
+      "html": "<div class=\"ds-split\"><a class=\"ds-seg ds-mint\" href=\"#\"><span class=\"ds-num\">5</span><span class=\"ds-cap\">Projects</span><i></i></a><a class=\"ds-seg ds-violet\" href=\"#\"><span class=\"ds-num ds-w\">2</span><span class=\"ds-cap\">Internships</span><i></i></a></div>",
+      "css": ".ds-split{display:grid;grid-template-columns:1fr 1fr;width:360px;border-radius:20px;overflow:hidden;}.ds-seg{position:relative;display:flex;flex-direction:column;justify-content:center;padding:20px;min-height:128px;color:#000;text-decoration:none;transition:filter 300ms;}.ds-seg:hover{filter:brightness(.95);}.ds-seg:focus-visible{outline:2px solid #000;outline-offset:2px;box-shadow:0 0 0 4px #fff;}.ds-seg i{position:absolute;right:16px;top:16px;width:12px;height:12px;border-top:2px solid currentColor;border-right:2px solid currentColor;}.ds-mint{background:#A7D8D6;}.ds-violet{background:#8D6FBD;}.ds-num{font-family:Archivo,sans-serif;font-stretch:125%;font-size:36px;font-weight:800;line-height:40px;}.ds-w{color:#fff;}.ds-cap{font-family:Archivo,sans-serif;font-stretch:125%;font-size:16px;margin-top:4px;}"
+    },
+    {
+      "name": "Wordmark",
+      "kind": "custom",
+      "refersTo": "wordmark",
+      "description": "Giant expanded page name with an em-scaled corner bracket.",
+      "html": "<p class=\"ds-wordmark\">Projects<span></span></p>",
+      "css": ".ds-wordmark{font-family:Archivo,sans-serif;font-stretch:125%;position:relative;display:inline-block;margin:0;padding-right:.1em;font-size:72px;font-weight:700;line-height:.95;color:#000;}.ds-wordmark span{position:absolute;right:0;top:.08em;width:.14em;height:.14em;border-top:.04em solid #000;border-right:.04em solid #000;}"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Static technology fact seated on a color tile.",
+      "html": "<div class=\"ds-chip-bed\"><span class=\"ds-chip\">TypeScript</span><span class=\"ds-chip\">React Native</span></div>",
+      "css": ".ds-chip-bed{display:flex;gap:8px;padding:24px;background:#A7D8D6;border-radius:20px;}.ds-chip{font-family:Archivo,sans-serif;display:inline-flex;padding:6px 12px;border-radius:9999px;background:#F6F6F6;color:#000;font-size:14px;font-weight:500;line-height:20px;}"
+    },
+    {
+      "name": "Primary Pill Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Page-level and recovery action.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Try again</button>",
+      "css": ".ds-btn-primary{font-family:Archivo,sans-serif;min-height:44px;padding:0 24px;border:0;border-radius:9999px;background:#000;color:#fff;font-size:16px;font-weight:600;cursor:pointer;}.ds-btn-primary:focus-visible{outline:2px solid #000;outline-offset:2px;box-shadow:0 0 0 4px #fff;}"
+    },
+    {
+      "name": "Secondary Pill Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Companion action seated on a color tile.",
+      "html": "<div class=\"ds-btn-bed\"><a class=\"ds-btn-secondary\" href=\"#\">Open GitHub profile</a></div>",
+      "css": ".ds-btn-bed{padding:24px;background:#FEC067;border-radius:20px;}.ds-btn-secondary{font-family:Archivo,sans-serif;display:inline-flex;align-items:center;min-height:44px;padding:0 24px;border-radius:9999px;background:#F6F6F6;color:#000;font-size:16px;font-weight:600;text-decoration:none;}.ds-btn-secondary:focus-visible{outline:2px solid #000;outline-offset:2px;box-shadow:0 0 0 4px #fff;}"
+    },
+    {
+      "name": "Screenshot Door",
+      "kind": "card",
+      "refersTo": "image-label",
+      "description": "Black image tile with white arrow disc and destination pill.",
+      "html": "<a class=\"ds-shot\" href=\"#\"><span class=\"ds-disc\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></span><span class=\"ds-pill\">Open EchoRealm</span></a>",
+      "css": ".ds-shot{position:relative;display:block;width:400px;aspect-ratio:16/10;border-radius:20px;background:#000;overflow:hidden;transition:transform 300ms;}.ds-shot:hover{transform:translateY(-4px);}.ds-shot:focus-visible{outline:2px solid #000;outline-offset:2px;box-shadow:0 0 0 4px #fff;}.ds-disc{position:absolute;left:50%;top:50%;display:flex;align-items:center;justify-content:center;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:9999px;background:#fff;color:#000;transition:transform 300ms;}.ds-shot:hover .ds-disc{transform:scale(1.1);}.ds-pill{font-family:Archivo,sans-serif;position:absolute;left:16px;bottom:16px;padding:8px 16px;border-radius:9999px;background:#fff;color:#000;font-size:14px;font-weight:600;line-height:20px;}"
+    },
+    {
+      "name": "Side Rail Navigation",
+      "kind": "nav",
+      "refersTo": "label",
+      "description": "Rotated labels on the sheet's left edge; current page is heavier with an ink dot.",
+      "html": "<nav class=\"ds-rail\" aria-label=\"Main\"><a class=\"ds-rail-link ds-on\" href=\"#\" aria-current=\"page\">Home<span></span></a><a class=\"ds-rail-link\" href=\"#\">Experience</a><a class=\"ds-rail-link\" href=\"#\">Projects</a></nav>",
+      "css": ".ds-rail{display:flex;flex-direction:column;align-items:center;gap:20px;width:80px;padding:24px 0;background:#F6F6F6;}.ds-rail-link{font-family:Archivo,sans-serif;position:relative;padding:8px 12px;writing-mode:vertical-rl;transform:rotate(180deg);color:#000;font-size:14px;font-weight:500;text-decoration:none;}.ds-rail-link:focus-visible{outline:2px solid #000;outline-offset:2px;box-shadow:0 0 0 4px #fff;}.ds-on{font-weight:800;}.ds-on span{position:absolute;left:0;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:9999px;background:#000;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Framed Color Board",
+    "overview": "Every page is one near-white sheet lifted off a pale gray page, and on that sheet sits a packed arrangement of flat, saturated tiles. A tile is the unit of everything: an introduction, a count, a screenshot, a skill, a route. Real screenshots share the board with color fields at the same radius, so proof and decoration read as one surface.\n\nThe voice is loud at the top and plain underneath. A giant expanded Archivo wordmark names each page and carries a small corner bracket; below it, tiles do the talking in heavy expanded headings and ordinary-width body copy. The board stays dense. Tiles sit a narrow gutter apart, and color alone separates them.\n\nThe world is pinned by the owner's reference, `ref/image.png`, and runs on one fixed light theme.",
+    "keyCharacteristics": [
+      "A single rounded sheet framed by a gray page on desktop, full-bleed on small screens.",
+      "Flat color tiles with one shared radius and no tile shadows.",
+      "One typeface in two widths: expanded for display, normal for reading.",
+      "Small corner brackets and rotated side labels as the recurring marks.",
+      "Real screenshots and real counts inside the tile grid."
+    ],
+    "rules": [
+      {
+        "name": "The Ink On Color Rule",
+        "body": "Text on periwinkle, pink, mint, violet and amber defaults to Ink. Text on graphite and black is white.",
+        "section": "colors"
+      },
+      {
+        "name": "The Large White Rule",
+        "body": "White on periwinkle (3.51:1) or violet (4.08:1) is reserved for display sizes, 30px and up. Reading copy on those fields stays Ink.",
+        "section": "colors"
+      },
+      {
+        "name": "The Rotating Tones Rule",
+        "body": "Repeated tiles cycle through the tone set, so neighbors differ. No single hue owns a page's content grid.",
+        "section": "colors"
+      },
+      {
+        "name": "The Width Means Display Rule",
+        "body": "Expanded width belongs to wordmarks, headings, numerals and route names. Paragraphs, lists, chips and metadata stay at normal width, apart from the short label under a Home count.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sentence Case Rule",
+        "body": "Text is set in sentence case with default tracking. The Spin Badge's circular text is the one uppercase setting.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Tile Rule",
+        "body": "Tiles carry no shadow at rest or on hover. Hover response is a lift in position or a change in brightness.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Seamless Split Rule",
+        "body": "Two fields that belong together share one 20px clipped container with square inner edges and no gutter between them.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do open every page with one Wordmark and its bracket, then go straight into the tile grid.",
+      "Do build new content from Tile tones, at the 20px radius with 16px to 20px gutters.",
+      "Do use real screenshots and real counts inside tiles.",
+      "Do vary tile spans and rotate tones so a page reads as a composed board.",
+      "Do keep tap targets at 44px minimum and retain the global focus ring.",
+      "Do respect reduced motion; the global rule removes animation and shortens transitions."
+    ],
+    "donts": [
+      "Don't add a dark theme or theme switch; the world is one fixed light theme.",
+      "Don't put shadows on tiles; shadows belong to the sheet and the mobile popover.",
+      "Don't introduce a second typeface; width and weight within Archivo carry the hierarchy.",
+      "Don't set reading copy in white on periwinkle or violet.",
+      "Don't add a page-level dark hero, stats row or uniform card grid; the board replaced them.",
+      "Don't invent counts, clients or awards to fill a tile."
+    ]
+  }
+}

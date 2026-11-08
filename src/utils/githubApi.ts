@@ -96,37 +96,30 @@ export async function fetchContributions(): Promise<ContributionData> {
 
   try {
     const res = await fetch(
-      `https://github-contributions-api.deno.dev/${USERNAME}.json`
+      `https://github-contributions-api.jogruber.de/v4/${USERNAME}?y=last`
     );
     if (!res.ok) throw new Error("Contributions fetch failed");
-    const json = await res.json();
-    
-    const levelMap: Record<string, number> = {
-      NONE: 0,
-      FIRST_QUARTILE: 1,
-      SECOND_QUARTILE: 2,
-      THIRD_QUARTILE: 3,
-      FOURTH_QUARTILE: 4,
-    };
+    const json: {
+      total: { lastYear: number };
+      contributions: ContributionDay[];
+    } = await res.json();
 
-    const weeks = json.contributions.map((week: any) =>
-      week.map((day: any) => ({
-        date: day.date,
-        level: levelMap[day.contributionLevel] ?? 0,
-        count: day.contributionCount,
-      }))
+    // The API returns a flat list of days; the calendar draws Sunday-first weeks.
+    const firstSunday = json.contributions.findIndex(
+      (day) => new Date(`${day.date}T00:00:00Z`).getUTCDay() === 0
     );
-
-    const totalContributions = json.contributions.reduce(
-      (sum: number, week: any) => sum + week.reduce((wSum: number, d: any) => wSum + d.contributionCount, 0),
-      0
-    );
+    const days = json.contributions.slice(Math.max(firstSunday, 0));
+    const weeks: ContributionDay[][] = [];
+    for (let i = 0; i < days.length; i += 7) {
+      weeks.push(days.slice(i, i + 7));
+    }
+    const totalContributions = json.total.lastYear;
 
     const data: ContributionData = { weeks, totalContributions };
     setCache("contributions", data);
     return data;
   } catch (err) {
-    console.error("fetchContributions error:", err);
+    console.warn("Contribution data unavailable:", err);
     return { weeks: [], totalContributions: 0 };
   }
 }
@@ -143,8 +136,8 @@ export interface TimelineItem {
   count: number;
 }
 
-// Accent and gray from the site palette, plus a 60% step of each toward the base color.
-const LANGUAGE_COLORS = ["#06B6D4", "#A1A1AA", "#0D778A", "#6A6A71"];
+// Tile colors from the site palette, assigned by language rank.
+const LANGUAGE_COLORS = ["#7D82D0", "#FEC067", "#A7D8D6", "#8D6FBD", "#F0ADFF", "#595959"];
 
 export function computeAnalytics(profile: any, repos: any[]) {
   const now = new Date();

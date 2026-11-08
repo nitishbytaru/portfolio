@@ -1,189 +1,55 @@
-"use client";
-
-import React from "react";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Layers,
-  Code2,
-} from "lucide-react";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
-
-import SectionShell from "@/components/ui/SectionShell";
-import SectionHeader from "@/components/ui/SectionHeader";
-import GlassCard from "@/components/ui/GlassCard";
-import Pill from "@/components/ui/Pill";
+import { ArrowRight } from "lucide-react";
+import Tile, { TileTone } from "@/components/board/Tile";
+import Wordmark from "@/components/board/Wordmark";
 import { TechIcon } from "@/components/ui/TechIcon";
+import { projectsData } from "@/data/ProjectData";
 
-import { projectsData, Project } from "@/data/ProjectData";
-
-interface ProjectCardProps {
-  project: Project & { span?: string };
-}
-
-const ProjectCardMedia: React.FC<ProjectCardProps> = ({ project }) => (
-  <div className="relative h-72 w-full shrink-0 overflow-hidden border-b border-border sm:h-80">
-    {/* Tech chips */}
-    <div className="absolute left-4 top-4 z-20 flex flex-wrap gap-2">
-      {project.techStack.slice(0, 3).map((tech) => (
-        <Pill key={tech} tone="solid" size="sm" iconElement={<TechIcon name={tech} sizeClassName="w-3.5 h-3.5" />}>
-          {tech}
-        </Pill>
-      ))}
-      {project.techStack.length > 3 && (
-        <Pill tone="solid" size="sm">
-          +{project.techStack.length - 3}
-        </Pill>
-      )}
-    </div>
-
-    {/* Image scrim */}
-    <div className="absolute inset-0 z-10 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-60" />
-
-    <img
-      src={project.thumbnail}
-      alt={`${project.title} preview`}
-      loading="lazy"
-      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-    />
-  </div>
-);
-
-const ProjectCardBody: React.FC<ProjectCardProps> = ({ project }) => (
-  <div className="relative z-20 flex flex-grow flex-col p-8">
-    <div className="mb-4 flex items-start justify-between gap-4">
-      <div>
-        <div className="mb-3 flex items-center gap-2">
-          <Pill tone="primary" size="sm" iconElement={<TechIcon name={project.techStack[0]} sizeClassName="w-3.5 h-3.5" />}>
-            {project.techStack[0]}
-          </Pill>
-        </div>
-        <h3 className="text-2xl font-bold text-text transition-colors group-hover:text-primary">
-          {project.title}
-        </h3>
-      </div>
-
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border bg-border/70 text-text backdrop-blur-xl transition-all duration-300 group-hover:-rotate-45 group-hover:bg-primary group-hover:text-primary-foreground">
-        <ArrowRight className="h-5 w-5" />
-      </div>
-    </div>
-
-    <p className="mb-2 line-clamp-3 flex-grow leading-relaxed text-text-secondary">
-      {project.shortDescription}
-    </p>
-
-    <ul className="mb-6 space-y-3">
-      {project.features.slice(0, 2).map((feature, i) => (
-        <li
-          key={i}
-          className="flex items-start gap-2 text-sm text-text-secondary"
-        >
-          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-          <span>{feature}</span>
-        </li>
-      ))}
-    </ul>
-
-    <div className="mt-auto flex flex-col border-t border-border pt-5">
-      <div className="text-xs font-bold uppercase tracking-wider text-text-secondary mb-3 flex items-center gap-1.5">
-        <Code2 className="w-3.5 h-3.5 text-primary" />
-        Tech Stack
-      </div>
-      <div className="flex flex-wrap gap-2 mb-4">
-        {project.techStack.map((tech) => (
-          <span
-            key={tech}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-text-secondary bg-surface/50 border border-border rounded-lg hover:border-primary/40 hover:text-text transition-all duration-200"
-          >
-            <TechIcon name={tech} sizeClassName="w-3.5 h-3.5" />
-            {tech}
-          </span>
-        ))}
-      </div>
-      <div className="mt-auto flex items-center justify-end">
-        <span className="inline-flex items-center text-sm font-semibold text-text transition-colors group-hover:text-primary">
-          Explore
-          <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-1" />
-        </span>
-      </div>
-    </div>
-  </div>
-);
-
-interface ProjectCardWrapperProps extends ProjectCardProps {
-  index: number;
-  isVisible: boolean;
-}
-
-const ProjectCard: React.FC<ProjectCardWrapperProps> = ({ project, index, isVisible }) => (
-  <GlassCard
-    as={Link}
-    href={`/projects/${project.slug}`}
-    padding="p-0"
-    className={[
-      "flex flex-col",
-      project.span ?? "",
-      "scroll-reveal",
-      `stagger-${Math.min(index + 1, 10)}`,
-      isVisible ? "revealed" : "",
-    ].join(" ")}
-  >
-    {/* Soft hover wash sits above accent bar but below content */}
-    <span className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-    <ProjectCardMedia project={project} />
-    <ProjectCardBody project={project} />
-  </GlassCard>
-);
-
-const getBentoSpan = (index: number) => {
-  switch (index) {
-    case 0:
-      return "md:col-span-2 lg:col-span-2";
-    case 1:
-      return "md:col-span-1 lg:col-span-1";
-    case 2:
-      return "md:col-span-1 lg:col-span-1";
-    case 3:
-      return "md:col-span-1 lg:col-span-1";
-    case 4:
-      return "md:col-span-2 lg:col-span-1";
-    default:
-      return "";
-  }
-};
+const TONES: TileTone[] = ["mint", "amber", "pink", "periwinkle", "violet"];
 
 export default function ProjectsPage() {
-  const gridReveal = useScrollReveal({ threshold: 0.05 });
-
   return (
-    <div className="bg-background pt-16">
-      <SectionShell id="projects">
-        <SectionHeader
-          title="Projects"
-          aside={
-            <Pill icon={Layers} tone="solid">
-              {projectsData.length} Projects
-            </Pill>
-          }
-        />
-
-        <div
-          ref={gridReveal.ref}
-          className="grid auto-rows-fr gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8"
-        >
-          {projectsData.map((project, i) => {
-            const bentoSpan = getBentoSpan(i);
-            return (
-              <ProjectCard
-                key={project.id}
-                project={{ ...project, span: bentoSpan }}
-                index={i}
-                isVisible={gridReveal.isVisible}
+    <div>
+      <Wordmark className="mb-6">Projects</Wordmark>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6 lg:gap-5">
+        {projectsData.map((project, i) => (
+          <Tile
+            key={project.slug}
+            as={Link}
+            href={`/projects/${project.slug}`}
+            tone={TONES[i % TONES.length]}
+            interactive
+            className={`group flex flex-col ${i < 2 ? "lg:col-span-3" : "lg:col-span-2"} ${i === 4 ? "md:col-span-2 lg:col-span-2" : ""}`}
+          >
+            <div className="relative aspect-[16/10] w-full bg-ink">
+              <img
+                src={project.thumbnail}
+                alt={`${project.title} preview`}
+                loading={i < 2 ? "eager" : "lazy"}
+                className="h-full w-full object-cover object-left-top"
               />
-            );
-          })}
-        </div>
-      </SectionShell>
+              <span className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white text-ink transition-transform duration-300 group-hover:translate-x-1">
+                <ArrowRight className="h-5 w-5" aria-hidden="true" />
+              </span>
+            </div>
+            <div className="flex flex-1 flex-col p-5 lg:p-6">
+              <h2 className="wide text-2xl font-extrabold">{project.title}</h2>
+              <p className="mb-5 mt-2 max-w-[60ch] leading-relaxed">{project.shortDescription}</p>
+              <ul className="mt-auto flex flex-wrap gap-2" aria-label="Tech stack">
+                {project.techStack.map((tech) => (
+                  <li
+                    key={tech}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-frame px-3 py-1.5 text-sm font-medium text-ink"
+                  >
+                    <TechIcon name={tech} sizeClassName="w-4 h-4" />
+                    {tech}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Tile>
+        ))}
+      </div>
     </div>
   );
 }

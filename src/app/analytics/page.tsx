@@ -1,472 +1,130 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
-  Github, Star, GitFork, Code2, Calendar,
-  Activity, TrendingUp, Award, ExternalLink,
-  Zap, BarChart3, Globe, FolderGit2, Rocket, Trophy, Layers,
+  Github, Star, GitFork, ExternalLink, FolderGit2, Rocket, Globe, Compass, Code2, Zap, Eye, Award,
   LucideIcon,
 } from "lucide-react";
-import { useScrollReveal, useCountUp, useTilt } from "@/hooks/useScrollReveal";
-import SectionShell from "@/components/ui/SectionShell";
-import SectionHeader from "@/components/ui/SectionHeader";
-import GlassCard from "@/components/ui/GlassCard";
-import Pill from "@/components/ui/Pill";
+import Tile, { TileTone } from "@/components/board/Tile";
+import Wordmark from "@/components/board/Wordmark";
 import {
   fetchProfile, fetchRepos, fetchEvents, fetchContributions,
-  computeAnalytics, formatEventType, timeAgo, LanguageMetric, TimelineItem, ContributionData
+  computeAnalytics, formatEventType, timeAgo, LanguageMetric, TimelineItem, ContributionData,
 } from "@/utils/githubApi";
 
-/* ── Animated Counter ──────────────────────────────── */
-interface AnimatedStatProps {
-  value: number;
-  suffix?: string;
-  label: string;
-  icon: LucideIcon;
-  isVisible: boolean;
-}
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
-const AnimatedStat: React.FC<AnimatedStatProps> = ({ value, suffix = "", label, icon: Icon, isVisible }) => {
-  const count = useCountUp(value ?? 0, 1400, isVisible);
-  const tilt = useTilt(4);
-  return (
-    <GlassCard
-      ref={tilt.ref}
-      style={tilt.style}
-      onMouseMove={tilt.handleMouseMove}
-      onMouseLeave={tilt.handleMouseLeave}
-      padding="p-5"
-      className="text-center"
-      interactive={true}
-    >
-      <div className="mb-3 mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-        <Icon className="h-5 w-5" />
-      </div>
-      <div className="font-mono text-3xl font-bold text-text mb-1">
-        {count}{suffix}
-      </div>
-      <div className="text-xs font-medium text-text-secondary uppercase tracking-wider">{label}</div>
-    </GlassCard>
-  );
-};
+const TileTitle = ({ children }: { children: React.ReactNode }) => (
+  <h2 className="wide mb-4 text-xl font-extrabold">{children}</h2>
+);
 
-/* ── Language Donut Chart ────────────────────────── */
-interface LanguageDonutChartProps {
-  languages: LanguageMetric[];
-  isVisible: boolean;
-}
+const Stat = ({ value, label, tone }: { value: number; label: string; tone: TileTone }) => (
+  <Tile tone={tone} corner className="flex min-h-32 flex-col justify-center p-5">
+    <span className="wide block text-4xl font-extrabold">{value}</span>
+    <span className="mt-1 block">{label}</span>
+  </Tile>
+);
 
-const LanguageDonutChart: React.FC<LanguageDonutChartProps> = ({ languages, isVisible }) => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
+const LanguageDonut = ({ languages }: { languages: LanguageMetric[] }) => {
+  const [hovered, setHovered] = useState<number | null>(null);
   const radius = 50;
-  const strokeWidth = 14;
   const circumference = 2 * Math.PI * radius;
-
-  const validLangs = useMemo(() => {
-    return languages.filter(lang => parseFloat(lang.percentage) > 0);
-  }, [languages]);
-
-  const computedSlices = useMemo(() => {
-    let accumulatedPercent = 0;
-    return validLangs.map((lang, index) => {
-      const percent = parseFloat(lang.percentage);
-      const sliceSize = (percent / 100) * circumference;
-      const rotationAngle = (accumulatedPercent / 100) * 360 - 90;
-      accumulatedPercent += percent;
-      return {
-        ...lang,
-        sliceSize,
-        rotationAngle,
-        index,
-      };
-    });
-  }, [validLangs, circumference]);
-
-  const activeLang = hoveredIndex !== null ? computedSlices[hoveredIndex] : computedSlices[0];
+  const slices = useMemo(() => {
+    let accumulated = 0;
+    return languages
+      .filter((lang) => parseFloat(lang.percentage) > 0)
+      .map((lang) => {
+        const percent = parseFloat(lang.percentage);
+        const rotation = (accumulated / 100) * 360 - 90;
+        accumulated += percent;
+        return { ...lang, size: (percent / 100) * circumference, rotation };
+      });
+  }, [languages, circumference]);
+  const active = slices[hovered ?? 0];
 
   return (
-    <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 py-2">
-      <div className="relative w-48 h-48 flex-shrink-0">
-        <svg viewBox="0 0 120 120" className="w-full h-full">
-          <circle
-            cx="60"
-            cy="60"
-            r={radius}
-            fill="transparent"
-            stroke="var(--border)"
-            strokeWidth={strokeWidth - 4}
-            className="opacity-20"
-          />
-          {computedSlices.map((slice) => {
-            const isHovered = hoveredIndex === slice.index;
-            const currentStrokeWidth = isHovered ? strokeWidth + 3 : strokeWidth;
-            return (
-              <circle
-                key={slice.name}
-                cx="60"
-                cy="60"
-                r={radius}
-                fill="transparent"
-                stroke={slice.color}
-                strokeWidth={currentStrokeWidth}
-                strokeDasharray={`${isVisible ? slice.sliceSize : 0} ${circumference}`}
-                transform={`rotate(${slice.rotationAngle} 60 60)`}
-                className="transition-all duration-500 ease-out cursor-pointer"
-                style={{
-                  filter: isHovered
-                    ? `drop-shadow(0 0 6px ${slice.color}80)`
-                    : "none",
-                }}
-                onMouseEnter={() => setHoveredIndex(slice.index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-              />
-            );
-          })}
+    <div className="flex flex-col items-center gap-8 md:flex-row">
+      <div className="relative h-48 w-48 shrink-0">
+        <svg viewBox="0 0 120 120" className="h-full w-full" aria-hidden="true">
+          {slices.map((slice, i) => (
+            <circle
+              key={slice.name}
+              cx="60" cy="60" r={radius} fill="transparent"
+              stroke={slice.color}
+              strokeWidth={hovered === i ? 17 : 14}
+              strokeDasharray={`${slice.size} ${circumference}`}
+              transform={`rotate(${slice.rotation} 60 60)`}
+              className="cursor-pointer transition-[stroke-width] duration-200"
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}
+            />
+          ))}
         </svg>
-
-        {activeLang && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
-            <span className="text-2xl font-bold font-mono text-text">
-              {activeLang.percentage}%
-            </span>
-            <span
-              className="text-[11px] font-bold uppercase tracking-wider transition-colors duration-300 max-w-[110px] truncate"
-              style={{ color: activeLang.color }}
-            >
-              {activeLang.name}
-            </span>
-            <span className="text-[10px] text-text-muted mt-0.5">
-              {activeLang.count} {activeLang.count === 1 ? "repo" : "repos"}
-            </span>
+        {active && (
+          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
+            <span className="wide text-2xl font-extrabold">{active.percentage}%</span>
+            <span className="max-w-[110px] text-xs font-bold">{active.name}</span>
+            <span className="text-xs">{plural(active.count, "repo")}</span>
           </div>
         )}
       </div>
-
-      <div className="flex-1 w-full space-y-3">
-        {computedSlices.map((slice) => {
-          const isHovered = hoveredIndex === slice.index;
-          return (
-            <div
-              key={slice.name}
-              className={`flex items-center gap-4 p-2.5 rounded-xl border transition-all duration-300 cursor-pointer ${
-                isHovered
-                  ? "bg-surface-elevated border-primary/30 scale-[1.02] shadow-sm"
-                  : "bg-transparent border-transparent hover:bg-surface/30"
-              }`}
-              onMouseEnter={() => setHoveredIndex(slice.index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              <span
-                className="h-3.5 w-3.5 rounded-full shrink-0 shadow-inner transition-transform duration-300"
-                style={{
-                  backgroundColor: slice.color,
-                  transform: isHovered ? "scale(1.2)" : "scale(1)",
-                  boxShadow: isHovered ? `0 0 8px ${slice.color}` : "none",
-                }}
-              />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-semibold text-text truncate">
-                    {slice.name}
-                  </span>
-                  <span className="font-mono font-bold text-text">
-                    {slice.percentage}%
-                  </span>
-                </div>
-                <div className="mt-1.5 h-1.5 w-full bg-border/20 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-1000 ease-out"
-                    style={{
-                      width: isVisible ? `${slice.percentage}%` : "0%",
-                      backgroundColor: slice.color,
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <ul className="w-full flex-1 space-y-2">
+        {slices.map((slice, i) => (
+          <li
+            key={slice.name}
+            className="flex items-center gap-3"
+            onMouseEnter={() => setHovered(i)}
+            onMouseLeave={() => setHovered(null)}
+          >
+            <span className="h-3.5 w-3.5 shrink-0 rounded-full" style={{ backgroundColor: slice.color }} />
+            <span className="flex-1 font-semibold">{slice.name}</span>
+            <span className="font-bold tabular-nums">{slice.percentage}%</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
 
-/* ── Timeline Bar Chart (SVG) ─────────────────────── */
-interface TimelineChartProps {
-  timeline: TimelineItem[];
-  isVisible: boolean;
-}
-
-const TimelineChart: React.FC<TimelineChartProps> = ({ timeline, isVisible }) => {
-  const maxCount = Math.max(...timeline.map((t) => t.count), 1);
-  const wUnit = timeline.length ? 400 / timeline.length : 0;
+const TimelineChart = ({ timeline }: { timeline: TimelineItem[] }) => {
+  const max = Math.max(...timeline.map((t) => t.count), 1);
   return (
-    <div className="relative h-40 w-full">
-      <svg viewBox="0 0 400 160" className="w-full h-full" preserveAspectRatio="none">
-        {timeline.map((item, i) => {
-          const barH = (item.count / maxCount) * 120;
-          const x = i * wUnit + 10;
-          const w = wUnit - 20;
-          return (
-            <g key={item.year}>
-              <rect
-                x={x} y={140 - (isVisible ? barH : 0)} width={w > 0 ? w : 0} rx="6"
-                height={isVisible ? (barH > 0 ? barH : 0) : 0}
-                fill="var(--primary)" opacity="0.7"
-                className="transition-all duration-1000 ease-out"
-                style={{ transitionDelay: `${i * 150}ms` }}
-              />
-              <text x={x + (w > 0 ? w : 0) / 2} y="156" textAnchor="middle" fontSize="11"
-                fill="var(--text-secondary)" fontFamily="Inter">
-                {item.year}
-              </text>
-              {isVisible && (
-                <text x={x + (w > 0 ? w : 0) / 2} y={135 - barH} textAnchor="middle" fontSize="12"
-                  fill="var(--text)" fontWeight="bold" fontFamily="Inter">
-                  {item.count}
-                </text>
-              )}
-            </g>
-          );
-        })}
-      </svg>
+    <div className="flex h-44 items-end gap-3" role="img" aria-label={timeline.map((t) => `${t.year}: ${plural(t.count, "repo")}`).join(", ")}>
+      {timeline.map((item) => (
+        <div key={item.year} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+          <span className="text-sm font-bold">{item.count}</span>
+          <div className="w-full rounded-t-lg bg-violet" style={{ height: `${(item.count / max) * 70}%` }} />
+          <span className="text-sm">{item.year}</span>
+        </div>
+      ))}
     </div>
   );
 };
 
-/* ── Availability Bento Card ────────────────────────── */
-interface AvailabilityCardProps {
-  profile: any;
-  languages: LanguageMetric[];
-  isVisible: boolean;
-  tilt: any;
-  delay: string;
-}
+const LEVEL_COLORS = ["#E1E1E1", "#A7D8D6", "#7D82D0", "#8D6FBD", "#000000"];
 
-const AvailabilityCard: React.FC<AvailabilityCardProps> = ({ profile, languages, isVisible, tilt, delay }) => {
-  const topLanguages = useMemo(() => {
-    return languages.slice(0, 3).map(l => l.name);
-  }, [languages]);
-
+const ContributionCalendar = ({ contributions }: { contributions: ContributionData | null }) => {
+  if (!contributions) return null;
   return (
-    <GlassCard
-      ref={tilt.ref}
-      style={{
-        ...tilt.style,
-        transitionDelay: delay
-      }}
-      onMouseMove={tilt.handleMouseMove}
-      onMouseLeave={tilt.handleMouseLeave}
-      padding="p-6"
-      className={`col-span-2 transition-all duration-700 ease-out ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-      }`}
-      interactive={true}
-    >
-      <div className="flex flex-col h-full justify-between space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-            </span>
-            <span>Available for Opportunities</span>
-          </div>
-          <span className="text-xs text-text-secondary font-medium">{profile.location || "Remote / India"}</span>
-        </div>
-
-        <div>
-          <h4 className="text-sm font-semibold uppercase tracking-wider text-text-secondary mb-1">Current Focus</h4>
-          <p className="text-text font-medium text-sm">
-            Developing premium full-stack web applications and interactive client experiences.
-          </p>
-        </div>
-
-        <div>
-          <h4 className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-2">Preferred Stack</h4>
-          <div className="flex flex-wrap gap-1.5">
-            {topLanguages.map((lang) => (
-              <span
-                key={lang}
-                className="px-2 py-0.5 rounded bg-primary/10 border border-primary/20 text-primary text-xs font-semibold"
-              >
-                {lang}
-              </span>
-            ))}
-            <span className="px-2 py-0.5 rounded bg-surface-elevated border border-border text-text-secondary text-xs font-medium">React</span>
-            <span className="px-2 py-0.5 rounded bg-surface-elevated border border-border text-text-secondary text-xs font-medium">Tailwind</span>
-          </div>
-        </div>
-      </div>
-    </GlassCard>
-  );
-};
-
-/* ── GitHub Achievements Bento Card ───────────────────── */
-interface AchievementsCardProps {
-  stats: any;
-  languages: LanguageMetric[];
-  events: any[];
-  isVisible: boolean;
-  tilt: any;
-  delay: string;
-}
-
-const AchievementsCard: React.FC<AchievementsCardProps> = ({ stats, languages, events, isVisible, tilt, delay }) => {
-  const achievements = useMemo(() => {
-    const list = [];
-    if (stats.totalStars > 0) {
-      list.push({
-        id: "star_collector",
-        title: "Star Collector",
-        desc: `${stats.totalStars} stars earned`,
-        color: "from-primary to-primary-hover",
-        icon: "⭐",
-      });
-    } else {
-      list.push({
-        id: "explorer",
-        title: "Explorer",
-        desc: "Beginning the journey",
-        color: "from-primary to-primary-hover",
-        icon: "🧭",
-      });
-    }
-
-    if (stats.deployedCount > 0) {
-      list.push({
-        id: "deployer",
-        title: "Live Deployer",
-        desc: `${stats.deployedCount} active links`,
-        color: "from-primary to-primary-hover",
-        icon: "🚀",
-      });
-    }
-
-    if (languages.length > 2) {
-      list.push({
-        id: "polyglot",
-        title: "Polyglot",
-        desc: `${languages.length} languages used`,
-        color: "from-primary to-primary-hover",
-        icon: "💻",
-      });
-    }
-
-    const commitEventsCount = events.filter(e => e.type === "PushEvent").length;
-    if (commitEventsCount > 0) {
-      list.push({
-        id: "pr_creator",
-        title: "Active Pusher",
-        desc: `${commitEventsCount} push events recently`,
-        color: "from-primary to-primary-hover",
-        icon: "⚡",
-      });
-    } else {
-      list.push({
-        id: "observer",
-        title: "Watchtower",
-        desc: "Monitoring events",
-        color: "from-primary to-primary-hover",
-        icon: "👁️",
-      });
-    }
-    return list.slice(0, 4);
-  }, [stats, languages, events]);
-
-  return (
-    <GlassCard
-      ref={tilt.ref}
-      style={{
-        ...tilt.style,
-        transitionDelay: delay
-      }}
-      onMouseMove={tilt.handleMouseMove}
-      onMouseLeave={tilt.handleMouseLeave}
-      padding="p-6"
-      className={`col-span-2 transition-all duration-700 ease-out ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-      }`}
-      interactive={true}
-    >
-      <div className="flex flex-col h-full justify-between space-y-4">
-        <div className="flex items-center gap-2 pl-1">
-          <Trophy className="h-4.5 w-4.5 text-primary animate-pulse" />
-          <h4 className="text-sm font-semibold uppercase tracking-wider text-text-secondary">GitHub Achievements</h4>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          {achievements.map((ach) => (
-            <div
-              key={ach.id}
-              className="group/badge flex items-center gap-2.5 p-2 rounded-xl bg-surface-elevated/40 border border-border/40 hover:border-primary/20 hover:bg-surface-elevated/80 transition-all duration-300"
-            >
-              <div
-                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${ach.color} text-lg shadow-md group-hover/badge:scale-110 group-hover/badge:rotate-6 transition-transform duration-300`}
-              >
-                <span className="grayscale">{ach.icon}</span>
-              </div>
-              <div className="min-w-0">
-                <div className="text-xs font-bold text-text truncate">{ach.title}</div>
-                <div className="text-[10px] text-text-secondary truncate">{ach.desc}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </GlassCard>
-  );
-};
-
-/* ── Contribution Calendar ─────────────────────────── */
-interface ContributionCalendarProps {
-  contributions: ContributionData | null;
-  isVisible: boolean;
-}
-
-const ContributionCalendar: React.FC<ContributionCalendarProps> = ({ contributions, isVisible }) => {
-  if (!contributions?.weeks?.length) {
-    return (
-      <div className="text-center py-10 text-text-secondary">
-        <Calendar className="w-8 h-8 mx-auto mb-3 opacity-50" />
-        <p className="text-sm">Contribution data unavailable</p>
-      </div>
-    );
-  }
-  const levelColors = [
-    "color-mix(in srgb, var(--border) 30%, transparent)",
-    "color-mix(in srgb, var(--primary) 20%, transparent)",
-    "color-mix(in srgb, var(--primary) 40%, transparent)",
-    "color-mix(in srgb, var(--primary) 60%, transparent)",
-    "color-mix(in srgb, var(--primary) 90%, transparent)",
-  ];
-  return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-sm font-medium text-text-secondary">
-          {contributions.totalContributions} contributions in the last year
+    <div>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-sm">
+        <span className="font-medium">{contributions.totalContributions} contributions in the last year</span>
+        <span className="flex items-center gap-1.5">
+          Less
+          {LEVEL_COLORS.map((color) => <span key={color} className="h-3 w-3 rounded-sm" style={{ backgroundColor: color }} />)}
+          More
         </span>
-        <div className="flex items-center gap-1.5 text-xs text-text-secondary">
-          <span>Less</span>
-          {levelColors.map((color, i) => (
-            <div key={i} className="h-3 w-3 rounded-sm" style={{ backgroundColor: color }} />
-          ))}
-          <span>More</span>
-        </div>
       </div>
       <div className="overflow-x-auto pb-2">
-        <div className="flex gap-[3px] min-w-[720px]">
+        <div className="flex min-w-[720px] gap-[3px]">
           {contributions.weeks.slice(-52).map((week, wi) => (
             <div key={wi} className="flex flex-col gap-[3px]">
               {week.map((day, di) => (
                 <div
                   key={di}
                   className="h-3 w-3 rounded-sm"
-                  style={{
-                    backgroundColor: levelColors[day.level] || levelColors[0]
-                  }}
-                  title={`${day.date}: Level ${day.level} (${day.count} contributions)`}
+                  style={{ backgroundColor: LEVEL_COLORS[day.level] ?? LEVEL_COLORS[0] }}
+                  title={`${day.date}: ${plural(day.count, "contribution")}`}
                 />
               ))}
             </div>
@@ -477,103 +135,40 @@ const ContributionCalendar: React.FC<ContributionCalendarProps> = ({ contributio
   );
 };
 
-/* ── Repo Card ─────────────────────────────────────── */
-interface RepoCardProps {
-  repo: any;
-  index: number;
-  isVisible: boolean;
-}
+interface Achievement { title: string; desc: string; Icon: LucideIcon }
 
-const RepoCard: React.FC<RepoCardProps> = ({ repo, index, isVisible }) => (
-  <GlassCard
-    as="a" href={repo.html_url} target="_blank" rel="noopener noreferrer"
-    padding="p-5"
-    className={`scroll-reveal stagger-${Math.min(index + 1, 10)} ${isVisible ? "revealed" : ""}`}
-  >
-    <div className="flex items-start justify-between mb-3">
-      <div className="flex items-center gap-2">
-        <FolderGit2 className="h-5 w-5 text-primary" />
-        <h4 className="font-bold text-text group-hover:text-primary transition-colors truncate max-w-[180px]">
-          {repo.name}
-        </h4>
-      </div>
-      <ExternalLink className="h-4 w-4 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-    </div>
-    {repo.description && (
-      <p className="text-xs text-text-secondary line-clamp-2 mb-4 leading-relaxed">
-        {repo.description}
-      </p>
-    )}
-    <div className="mt-auto flex items-center gap-4 text-xs text-text-secondary">
-      {repo.language && (
-        <span className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full" style={{
-            backgroundColor: "var(--primary)"
-          }} />
-          {repo.language}
-        </span>
-      )}
-      <span className="flex items-center gap-1"><Star className="h-3 w-3" />{repo.stargazers_count}</span>
-      <span className="flex items-center gap-1"><GitFork className="h-3 w-3" />{repo.forks_count}</span>
-    </div>
-  </GlassCard>
-);
-
-/* ── Activity Event ────────────────────────────────── */
-const ActivityItem: React.FC<{ event: any }> = ({ event }) => {
-  const repoName = event.repo?.name?.split("/")[1] || event.repo?.name;
-  return (
-    <div className="flex items-start gap-3 py-3 border-b border-border/50 last:border-0">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-        <Activity className="h-4 w-4" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-sm text-text truncate">
-          <span className="font-semibold">{formatEventType(event.type)}</span>{" "}
-          <span className="text-primary">{repoName}</span>
-        </p>
-        <p className="text-xs text-text-secondary mt-0.5">{timeAgo(event.created_at)}</p>
-      </div>
-    </div>
-  );
+const achievementsFor = (stats: any, languages: LanguageMetric[], events: any[]): Achievement[] => {
+  const pushes = events.filter((e) => e.type === "PushEvent").length;
+  return [
+    stats.totalStars > 0
+      ? { title: "Star Collector", desc: `${plural(stats.totalStars, "star")} earned`, Icon: Star }
+      : { title: "Explorer", desc: "Beginning the journey", Icon: Compass },
+    ...(stats.deployedCount > 0 ? [{ title: "Live Deployer", desc: plural(stats.deployedCount, "active link"), Icon: Rocket }] : []),
+    ...(languages.length > 2 ? [{ title: "Polyglot", desc: `${plural(languages.length, "language")} used`, Icon: Code2 }] : []),
+    pushes > 0
+      ? { title: "Active Pusher", desc: `${plural(pushes, "push event")} recently`, Icon: Zap }
+      : { title: "Watchtower", desc: "Monitoring events", Icon: Eye },
+  ].slice(0, 4);
 };
 
-/* ── Skeleton Loader ───────────────────────────────── */
-const SkeletonCard: React.FC<{ className?: string }> = ({ className = "" }) => (
-  <div className={`rounded-3xl border border-border bg-surface/50 p-6 ${className}`}>
-    <div className="animate-pulse space-y-4">
-      <div className="h-4 w-1/3 rounded-full bg-border/50" />
-      <div className="h-8 w-1/2 rounded-full bg-border/50" />
-      <div className="h-3 w-2/3 rounded-full bg-border/50" />
-    </div>
+const Shell = ({ children }: { children: React.ReactNode }) => (
+  <div>
+    <Wordmark className="mb-6">GitHub Stats</Wordmark>
+    {children}
   </div>
 );
 
-/* ── Main Page Component ─────────────────────────────── */
 export default function AnalyticsPage() {
   const [analytics, setAnalytics] = useState<any | null>(null);
   const [events, setEvents] = useState<any[]>([]);
   const [contributions, setContributions] = useState<ContributionData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const statsReveal = useScrollReveal({ threshold: 0.1 });
-  const langReveal = useScrollReveal({ threshold: 0.1 });
-  const timelineReveal = useScrollReveal({ threshold: 0.1 });
-  const calendarReveal = useScrollReveal({ threshold: 0.05 });
-  const reposReveal = useScrollReveal({ threshold: 0.1 });
-  const activityReveal = useScrollReveal({ threshold: 0.1 });
-
-  const profileTilt = useTilt(3);
-  const availabilityTilt = useTilt(3);
-  const achievementsTilt = useTilt(3);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     async function load() {
       try {
-        setLoading(true);
-        setError(null);
         const [profile, repos, evts, contribs] = await Promise.all([
           fetchProfile(), fetchRepos(), fetchEvents(), fetchContributions(),
         ]);
@@ -581,8 +176,8 @@ export default function AnalyticsPage() {
         setAnalytics(computeAnalytics(profile, repos));
         setEvents(evts.slice(0, 10));
         setContributions(contribs);
-      } catch (err: any) {
-        if (!cancelled) setError(err.message);
+      } catch {
+        if (!cancelled) setFailed(true);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -593,246 +188,164 @@ export default function AnalyticsPage() {
 
   if (loading) {
     return (
-      <div className="bg-background pt-16">
-        <SectionShell id="analytics">
-          <SectionHeader
-            title="Developer Analytics" />
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {[...Array(4)].map((_, i) => <SkeletonCard key={i} />)}
-          </div>
-          <div className="grid gap-4 mt-4 md:grid-cols-2">
-            <SkeletonCard className="md:col-span-2 h-48" />
-          </div>
-        </SectionShell>
-      </div>
+      <Shell>
+        <div className="grid animate-pulse grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5" aria-label="Loading GitHub stats" role="status">
+          {["bg-mint", "bg-violet", "bg-amber", "bg-pink"].map((c) => <div key={c} className={`h-32 rounded-[20px] ${c}`} />)}
+          <div className="col-span-2 h-56 rounded-[20px] bg-page lg:col-span-4" />
+        </div>
+      </Shell>
     );
   }
 
-  if (error) {
+  if (failed || !analytics) {
     return (
-      <div className="bg-background pt-16">
-        <SectionShell id="analytics">
-          <SectionHeader
-            title="Developer Analytics" />
-          <GlassCard padding="p-10" className="text-center max-w-lg mx-auto">
-            <Github className="w-12 h-12 mx-auto mb-4 text-text-secondary opacity-50" />
-            <h3 className="text-xl font-bold text-text mb-2">Data Unavailable</h3>
-            <p className="text-text-secondary mb-6 text-sm">{error}</p>
-            <button onClick={() => window.location.reload()}
-              className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary-hover transition-colors">
-              Retry
+      <Shell>
+        <Tile tone="amber" className="max-w-xl p-8">
+          <h2 className="wide text-2xl font-extrabold">GitHub stats couldn&apos;t load</h2>
+          <p className="mb-6 mt-2 text-lg">GitHub may be limiting requests for a moment. Try again, or see the profile directly.</p>
+          <div className="flex flex-wrap gap-3">
+            <button type="button" onClick={() => window.location.reload()} className="min-h-11 rounded-full bg-ink px-6 font-semibold text-white">
+              Try again
             </button>
-          </GlassCard>
-        </SectionShell>
-      </div>
+            <a href="https://github.com/nitishbytaru" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center rounded-full bg-frame px-6 font-semibold">
+              Open GitHub profile
+            </a>
+          </div>
+        </Tile>
+      </Shell>
     );
   }
 
   const { profile, stats, highlights, languages, timeline, topRepos } = analytics;
+  const achievements = achievementsFor(stats, languages, events);
 
   return (
-    <div className="bg-background pt-16">
-      <SectionShell id="analytics">
-        <SectionHeader
-          title="Developer Analytics"
-          aside={<Pill icon={Activity} tone="solid">{stats.totalRepos} Repositories</Pill>}
-        />
-
-        <div ref={statsReveal.ref} className="grid gap-4 md:gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-4 mb-6">
-          <GlassCard
-            ref={profileTilt.ref}
-            style={{
-              ...profileTilt.style,
-              transitionDelay: "0ms"
-            }}
-            onMouseMove={profileTilt.handleMouseMove}
-            onMouseLeave={profileTilt.handleMouseLeave}
-            padding="p-6"
-            className={`col-span-2 lg:row-span-2 transition-all duration-700 ease-out ${
-              statsReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-          >
-            <div className="flex items-center gap-5 mb-5">
-              <img src={profile.avatar_url} alt={profile.name}
-                className="h-20 w-20 rounded-2xl border-2 border-border object-cover shadow-lg" />
-              <div>
-                <h3 className="text-xl font-bold text-text">{profile.name}</h3>
-                <a href={profile.html_url} target="_blank" rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline flex items-center gap-1">
-                  @{profile.login} <ExternalLink className="h-3 w-3" />
-                </a>
-                {profile.bio && <p className="text-xs text-text-secondary mt-1">{profile.bio}</p>}
-              </div>
+    <Shell>
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5">
+        <Tile tone="periwinkle" className="col-span-2 p-6 lg:row-span-2">
+          <div className="flex items-center gap-5">
+            <img src={profile.avatar_url} alt={profile.name} className="h-20 w-20 rounded-full object-cover" />
+            <div className="min-w-0">
+              <h2 className="wide text-2xl font-extrabold">{profile.name}</h2>
+              <a href={profile.html_url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1 font-semibold underline underline-offset-4">
+                @{profile.login} <ExternalLink className="h-4 w-4" aria-hidden="true" />
+              </a>
             </div>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="text-center p-3 rounded-xl bg-background/50 border border-border/50">
-                <div className="text-lg font-bold text-text">{profile.followers}</div>
-                <div className="text-[10px] uppercase tracking-wider text-text-secondary">Followers</div>
+          </div>
+          {profile.bio && <p className="mt-3 max-w-[60ch]">{profile.bio}</p>}
+          <dl className="mt-6 grid grid-cols-3 gap-4 border-t border-ink/30 pt-4">
+            <div><dd className="wide text-2xl font-extrabold">{profile.followers}</dd><dt className="text-sm">Followers</dt></div>
+            <div><dd className="wide text-2xl font-extrabold">{profile.following}</dd><dt className="text-sm">Following</dt></div>
+            <div><dd className="wide text-2xl font-extrabold">{profile.accountAgeYears}y</dd><dt className="text-sm">On GitHub</dt></div>
+          </dl>
+          <p className="mt-4 text-sm">Member since {profile.joinedDate}</p>
+        </Tile>
+
+        <Stat value={stats.totalRepos} label="Repositories" tone="mint" />
+        <Stat value={stats.totalStars} label="Stars Earned" tone="amber" />
+        <Stat value={stats.deployedCount} label="Deployed" tone="violet" />
+        <Stat value={languages.length} label="Languages" tone="pink" />
+
+        <Tile tone="plain" className="col-span-2 p-6 lg:col-span-3">
+          <TileTitle>Language Distribution</TileTitle>
+          <LanguageDonut languages={languages} />
+        </Tile>
+
+        <Tile tone="periwinkle" className="col-span-2 p-6 lg:col-span-1">
+          <TileTitle>Achievements</TileTitle>
+          <ul className="space-y-4">
+            {achievements.map(({ title, desc, Icon }) => (
+              <li key={title} className="flex items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-ink"><Icon className="h-5 w-5" aria-hidden="true" /></span>
+                <span><span className="block font-bold">{title}</span><span className="block text-sm">{desc}</span></span>
+              </li>
+            ))}
+          </ul>
+        </Tile>
+
+        <Tile tone="amber" className="col-span-2 p-6">
+          <TileTitle>Repository Insights</TileTitle>
+          <dl className="divide-y divide-ink/20">
+            {[
+              { label: "Most Starred", value: highlights.mostStarred?.name, sub: plural(highlights.mostStarred?.stargazers_count ?? 0, "star") },
+              { label: "Most Forked", value: highlights.mostForked?.name, sub: plural(highlights.mostForked?.forks_count ?? 0, "fork") },
+              { label: "Most Active", value: highlights.mostActive?.name, sub: timeAgo(highlights.mostActive?.pushed_at) },
+              { label: "Original Projects", value: `${stats.ownRepos} / ${stats.totalRepos}`, sub: "repos" },
+            ].map((item) => (
+              <div key={item.label} className="flex flex-wrap items-baseline justify-between gap-x-4 py-2.5">
+                <dt>{item.label}</dt>
+                <dd className="break-all text-right"><span className="font-bold">{item.value}</span> <span className="text-sm">{item.sub}</span></dd>
               </div>
-              <div className="text-center p-3 rounded-xl bg-background/50 border border-border/50">
-                <div className="text-lg font-bold text-text">{profile.following}</div>
-                <div className="text-[10px] uppercase tracking-wider text-text-secondary">Following</div>
-              </div>
-              <div className="text-center p-3 rounded-xl bg-background/50 border border-border/50">
-                <div className="text-lg font-bold text-text">{profile.accountAgeYears}y</div>
-                <div className="text-[10px] uppercase tracking-wider text-text-secondary">On GitHub</div>
-              </div>
-            </div>
-            <div className="mt-4 flex items-center gap-2 text-xs text-text-secondary">
-              <Calendar className="h-3.5 w-3.5" />
-              <span>Member since {profile.joinedDate}</span>
-            </div>
-          </GlassCard>
+            ))}
+          </dl>
+        </Tile>
 
-          <div className={`transition-all duration-700 ease-out`} style={{ transitionDelay: "100ms" }}>
-            <AnimatedStat value={stats.totalRepos} label="Repositories" icon={FolderGit2} isVisible={statsReveal.isVisible} />
-          </div>
+        <Tile tone="mint" className="col-span-2 p-6">
+          <TileTitle>Coding Timeline</TileTitle>
+          <TimelineChart timeline={timeline} />
+          <p className="mt-2 text-sm">Repos created per year</p>
+        </Tile>
 
-          <div className={`transition-all duration-700 ease-out`} style={{ transitionDelay: "200ms" }}>
-            <AnimatedStat value={stats.totalStars} label="Stars Earned" icon={Star} isVisible={statsReveal.isVisible} />
-          </div>
+        {contributions?.weeks?.length ? (
+          <Tile tone="plain" className="col-span-2 p-6 lg:col-span-4">
+            <TileTitle>Contribution Calendar</TileTitle>
+            <ContributionCalendar contributions={contributions} />
+          </Tile>
+        ) : null}
 
-          <div className={`transition-all duration-700 ease-out`} style={{ transitionDelay: "300ms" }}>
-            <AnimatedStat value={stats.deployedCount} label="Deployed" icon={Rocket} isVisible={statsReveal.isVisible} />
-          </div>
-
-          <div className={`transition-all duration-700 ease-out`} style={{ transitionDelay: "400ms" }}>
-            <AnimatedStat value={languages.length} label="Languages" icon={Globe} isVisible={statsReveal.isVisible} />
-          </div>
-
-          <AvailabilityCard
-            profile={profile}
-            languages={languages}
-            isVisible={statsReveal.isVisible}
-            tilt={availabilityTilt}
-            delay="500ms"
-          />
-
-          <AchievementsCard
-            stats={stats}
-            languages={languages}
-            events={events}
-            isVisible={statsReveal.isVisible}
-            tilt={achievementsTilt}
-            delay="600ms"
-          />
+        <div className="col-span-2 grid gap-4 sm:grid-cols-2 lg:col-span-3 lg:grid-rows-[auto_1fr_1fr_1fr] lg:gap-5">
+          <h2 className="wide text-xl font-extrabold sm:col-span-2">Top Repositories</h2>
+          {topRepos.slice(0, 6).map((repo: any) => (
+            <Tile key={repo.id} as="a" href={repo.html_url} target="_blank" rel="noopener noreferrer" tone="white" interactive corner className="flex flex-col p-5">
+              <h3 className="break-all pr-6 font-bold"><FolderGit2 className="mr-2 inline h-5 w-5" aria-hidden="true" />{repo.name}</h3>
+              {repo.description && <p className="mb-4 mt-2 text-sm leading-relaxed">{repo.description}</p>}
+              <p className="mt-auto flex items-center gap-4 pt-2 text-sm">
+                {repo.language && <span>{repo.language}</span>}
+                <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5" aria-hidden="true" />{repo.stargazers_count}</span>
+                <span className="inline-flex items-center gap-1"><GitFork className="h-3.5 w-3.5" aria-hidden="true" />{repo.forks_count}</span>
+              </p>
+            </Tile>
+          ))}
         </div>
 
-        <div className="grid gap-4 md:gap-6 md:grid-cols-5 mb-6">
-          <GlassCard ref={langReveal.ref} padding="p-6" className="md:col-span-3" interactive={false}>
-            <div className="flex items-center gap-2 mb-6">
-              <BarChart3 className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-bold text-text">Language Distribution</h3>
-            </div>
-            <LanguageDonutChart languages={languages} isVisible={langReveal.isVisible} />
-          </GlassCard>
-
-          <GlassCard padding="p-6" className="md:col-span-2" interactive={false}>
-            <div className="flex items-center gap-2 mb-6">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-bold text-text">Repository Insights</h3>
-            </div>
-            <div className="space-y-4">
+        <div className="col-span-2 flex flex-col gap-4 lg:col-span-1 lg:gap-5">
+          <Tile tone="pink" className="p-6">
+            <TileTitle>Milestones</TileTitle>
+            <ul className="space-y-3">
               {[
-                { label: "Most Starred", value: highlights.mostStarred?.name, sub: `⭐ ${highlights.mostStarred?.stargazers_count}` },
-                { label: "Most Forked", value: highlights.mostForked?.name, sub: `🍴 ${highlights.mostForked?.forks_count}` },
-                { label: "Most Active", value: highlights.mostActive?.name, sub: timeAgo(highlights.mostActive?.pushed_at) },
-                { label: "Original Projects", value: `${stats.ownRepos} / ${stats.totalRepos}`, sub: "repos" },
-              ].map((item) => (
-                <div key={item.label} className="flex items-center justify-between py-2 border-b border-border/30 last:border-0">
-                  <span className="text-sm text-text-secondary">{item.label}</span>
-                  <div className="text-right">
-                    <span className="text-sm font-semibold text-text truncate max-w-[120px] inline-block align-middle">{item.value}</span>
-                    <span className="text-xs text-text-secondary ml-2">{item.sub}</span>
-                  </div>
-                </div>
+                { Icon: Award, label: `${profile.accountAgeYears}+ years on GitHub`, desc: `Since ${new Date(profile.created_at).getFullYear()}` },
+                { Icon: FolderGit2, label: plural(stats.totalRepos, "repository").replace("repositorys", "repositories"), desc: `${stats.ownRepos} original` },
+                { Icon: Rocket, label: `${stats.deployedCount} deployed`, desc: "Live on the web" },
+                { Icon: Globe, label: plural(languages.length, "language"), desc: languages[0]?.name ? `Top: ${languages[0].name}` : "" },
+              ].map(({ Icon, label, desc }) => (
+                <li key={label} className="flex gap-3">
+                  <Icon className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
+                  <span><span className="block font-semibold">{label}</span><span className="block text-sm">{desc}</span></span>
+                </li>
               ))}
-            </div>
-          </GlassCard>
+            </ul>
+          </Tile>
+          <Tile tone="violet" className="flex-1 p-6">
+            <TileTitle>Recent Activity</TileTitle>
+            {events.length > 0 ? (
+              <ul className="space-y-3">
+                {events.slice(0, 5).map((event, i) => (
+                  <li key={i}>
+                    <span className="block font-semibold">{formatEventType(event.type)} {event.repo?.name?.split("/")[1] ?? event.repo?.name}</span>
+                    <span className="block text-sm">{timeAgo(event.created_at)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : <p>No recent activity</p>}
+          </Tile>
         </div>
 
-        <div className="grid gap-4 md:gap-6 md:grid-cols-2 mb-6">
-          <GlassCard ref={timelineReveal.ref} padding="p-6" interactive={false}>
-            <div className="flex items-center gap-2 mb-6">
-              <Layers className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-bold text-text">Coding Timeline</h3>
-              <span className="text-xs text-text-secondary ml-auto">Repos created per year</span>
-            </div>
-            <TimelineChart timeline={timeline} isVisible={timelineReveal.isVisible} />
-          </GlassCard>
-
-          <GlassCard ref={activityReveal.ref} padding="p-6" interactive={false}>
-            <div className="flex items-center gap-2 mb-4">
-              <Zap className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-bold text-text">Recent Activity</h3>
-            </div>
-            <div className="max-h-72 overflow-y-auto pr-1 custom-scrollbar">
-              {events.length > 0 ? (
-                events.map((evt, i) => <ActivityItem key={i} event={evt} />)
-              ) : (
-                <p className="text-sm text-text-secondary text-center py-6">No recent activity</p>
-              )}
-            </div>
-          </GlassCard>
-        </div>
-
-        <GlassCard ref={calendarReveal.ref} padding="p-6" className="mb-6" interactive={false}>
-          <div className="flex items-center gap-2 mb-4">
-            <Calendar className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-bold text-text">Contribution Calendar</h3>
-          </div>
-          <ContributionCalendar contributions={contributions} isVisible={calendarReveal.isVisible} />
-        </GlassCard>
-
-        <div className="grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6">
-          <div className="lg:col-span-2">
-            <div className="flex items-center gap-2 mb-4 pl-1">
-              <FolderGit2 className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-bold text-text">Top Repositories</h3>
-            </div>
-            <div ref={reposReveal.ref} className="grid gap-4 sm:grid-cols-2">
-              {topRepos.slice(0, 6).map((repo: any, i: number) => (
-                <RepoCard key={repo.id} repo={repo} index={i} isVisible={reposReveal.isVisible} />
-              ))}
-            </div>
-          </div>
-
-          <GlassCard padding="p-6" interactive={false}>
-            <div className="flex items-center gap-2 mb-6">
-              <Trophy className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-bold text-text">Milestones</h3>
-            </div>
-            <div className="space-y-4">
-              {[
-                { icon: Award, label: `${profile.accountAgeYears}+ Years on GitHub`, desc: `Since ${new Date(profile.created_at).getFullYear()}` },
-                { icon: FolderGit2, label: `${stats.totalRepos} Repositories`, desc: `${stats.ownRepos} original projects` },
-                { icon: Rocket, label: `${stats.deployedCount} Deployed Projects`, desc: "Live on the web" },
-                { icon: Globe, label: `${languages.length} Languages Used`, desc: languages[0]?.name ? `Top: ${languages[0].name}` : "" },
-                { icon: Star, label: `${stats.totalStars} Stars Earned`, desc: highlights.mostStarred?.name || "" },
-              ].map((m) => (
-                <div key={m.label} className="flex items-start gap-3 p-3 rounded-xl bg-background/50 border border-border/30 hover:border-primary/30 transition-colors">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <m.icon className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-text">{m.label}</p>
-                    <p className="text-xs text-text-secondary truncate max-w-[160px]">{m.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </GlassCard>
-        </div>
-
-        <div className="text-center mt-8">
-          <a href={`https://github.com/${profile.login}`} target="_blank" rel="noopener noreferrer"
-            className="btn-ripple inline-flex items-center gap-2 px-8 py-3 rounded-xl border border-border bg-surface/90 text-text font-semibold backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:border-primary/50 hover:bg-surface-elevated">
-            <Github className="h-5 w-5" />
-            View Full Profile on GitHub
-            <ExternalLink className="h-4 w-4" />
-          </a>
-        </div>
-      </SectionShell>
-    </div>
+        <Tile as="a" href={`https://github.com/${profile.login}`} target="_blank" rel="noopener noreferrer" tone="black" interactive className="col-span-2 flex items-center justify-center gap-3 p-5 font-semibold lg:col-span-4">
+          <Github className="h-5 w-5" aria-hidden="true" />
+          View Full Profile on GitHub
+          <ExternalLink className="h-4 w-4" aria-hidden="true" />
+        </Tile>
+      </div>
+    </Shell>
   );
 }

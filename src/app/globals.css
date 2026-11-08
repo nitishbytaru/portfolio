@@ -3,452 +3,49 @@
 @tailwind utilities;
 
 :root {
-  --gradient-soft: radial-gradient(
-    circle at top right,
-    color-mix(in srgb, var(--primary) 16%, transparent),
-    transparent 35%
-  );
-
-  --gradient-subtle: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--primary) 18%, transparent),
-    color-mix(in srgb, var(--secondary) 10%, transparent)
-  );
+  color-scheme: light;
 }
 
-@layer utilities {
-  .shadow-glow-primary {
-    box-shadow: 0 0 30px color-mix(in srgb, var(--primary) 30%, transparent);
-  }
-  .shadow-glow-inset {
-    box-shadow: inset 0 0 20px color-mix(in srgb, var(--primary) 5%, transparent);
-  }
+html {
+  scroll-behavior: smooth;
+  overflow-y: scroll;
 }
 
-/* Single fixed theme */
-:root {
-  color-scheme: dark;
-  /* 60% base, 30% gray, 10% accent. Surfaces and borders are tints of these only. */
-  --bg: #18181B;
-  --surface: color-mix(in srgb, #A1A1AA 10%, #18181B);
-  --surface-elevated: color-mix(in srgb, #A1A1AA 16%, #18181B);
-  --border: color-mix(in srgb, #A1A1AA 30%, #18181B);
-  --secondary: #A1A1AA;
-  --primary: #06B6D4;
-  --primary-hover: color-mix(in srgb, #06B6D4 85%, #18181B);
-  --text: #A1A1AA;
-  --text-secondary: #A1A1AA;
-  --muted-text: #A1A1AA;
-  --radius: 0.625rem;
+body {
+  background-color: #e1e1e1;
+  color: #000;
+  font-family: var(--font-archivo), sans-serif;
 }
 
-/* ============================================
-   GLOBAL BASE
-   ============================================ */
-@layer base {
-  html {
-    scroll-behavior: smooth;
-    overflow-y: scroll;
-    @apply font-sans;
-  }
-
-  body {
-    font-family: var(--font-inter), sans-serif;
-    background-color: var(--bg);
-    color: var(--text-secondary);
-    @apply bg-background text-foreground;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    color: var(--text);
-    font-weight: 600;
-  }
-  * {
-    @apply border-border;
-  }
+/* Expanded width of the Archivo variable font, for display type */
+.wide {
+  font-stretch: 125%;
 }
 
-/* ============================================
-   SCROLL REVEAL SYSTEM
-   ============================================ */
-.scroll-reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+::selection {
+  background-color: #fec067;
+  color: #000;
 }
 
-.scroll-reveal.revealed {
-  opacity: 1;
-  transform: translateY(0);
+:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px #fff;
 }
 
-.scroll-reveal-left {
-  opacity: 0;
-  transform: translateX(-40px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.scroll-reveal-left.revealed {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.scroll-reveal-right {
-  opacity: 0;
-  transform: translateX(40px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.scroll-reveal-right.revealed {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.scroll-reveal-scale {
-  opacity: 0;
-  transform: scale(0.9);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.scroll-reveal-scale.revealed {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* Stagger delay utilities */
-.stagger-1 { transition-delay: 0.05s; }
-.stagger-2 { transition-delay: 0.1s; }
-.stagger-3 { transition-delay: 0.15s; }
-.stagger-4 { transition-delay: 0.2s; }
-.stagger-5 { transition-delay: 0.25s; }
-.stagger-6 { transition-delay: 0.3s; }
-.stagger-7 { transition-delay: 0.35s; }
-.stagger-8 { transition-delay: 0.4s; }
-.stagger-9 { transition-delay: 0.45s; }
-.stagger-10 { transition-delay: 0.5s; }
-
-/* ============================================
-   ANIMATED GRADIENT TEXT
-   ============================================ */
-.gradient-text {
-  background: linear-gradient(
-    135deg,
-    var(--text) 0%,
-    var(--primary) 25%,
-    var(--text-secondary) 50%,
-    var(--primary-hover) 75%,
-    var(--text) 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: text-gradient 4s ease infinite;
-}
-
-/* ============================================
-   TYPEWRITER EFFECT
-   ============================================ */
-.typewriter {
-  overflow: hidden;
-  white-space: nowrap;
-  border-right: 3px solid;
-  animation: typewriter 2s steps(26) 0.8s both,
-             blink-caret 0.75s step-end infinite;
-}
-
-@keyframes typewriter {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
-@keyframes blink-caret {
-  0%, 100% { border-color: transparent; }
-  50% { border-color: var(--primary); }
-}
-
-/* ============================================
-   SHIMMER BADGE
-   ============================================ */
-.shimmer-badge {
-  position: relative;
-  overflow: hidden;
-}
-
-.shimmer-badge::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    color-mix(in srgb, var(--primary) 10%, transparent) 50%,
-    transparent 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 2.5s ease-in-out infinite;
-}
-
-/* ============================================
-   GLOW BORDER (for profile image)
-   ============================================ */
-.glow-border {
-  position: relative;
-}
-
-.glow-border::before {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    var(--primary),
-    var(--secondary),
-    var(--border),
-    var(--secondary),
-    var(--primary)
-  );
-  animation: spin-slow 6s linear infinite;
-  z-index: -1;
-}
-
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* ============================================
-   TIMELINE CONNECTOR
-   ============================================ */
-.timeline-connector {
-  position: relative;
-}
-
-.timeline-connector::before {
-  content: "";
-  position: absolute;
-  left: 2rem;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: linear-gradient(to bottom, var(--border), var(--secondary), var(--border));
-  opacity: 0.8;
-}
-
-.timeline-dot {
-  position: relative;
-}
-
-.timeline-dot::before {
-  content: "";
-  position: absolute;
-  left: -2.15rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: var(--secondary);
-  border: 2px solid var(--bg);
-  z-index: 10;
-  transition: all 0.3s;
-}
-
-.timeline-dot:hover::before {
-  background-color: var(--primary);
-  transform: translateY(-50%) scale(1.3);
-}
-
-/* ============================================
-   MAGNETIC BUTTON RIPPLE
-   ============================================ */
-.btn-ripple {
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-ripple::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at var(--ripple-x, 50%) var(--ripple-y, 50%),
-    color-mix(in srgb, var(--secondary) 15%, transparent) 0%,
-    transparent 60%
-  );
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.btn-ripple:hover::after {
-  opacity: 1;
-}
-
-/* ============================================
-   FLOATING PARTICLES (CSS-only)
-   ============================================ */
-.particle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background-color: var(--secondary);
-  opacity: 0.2;
-  pointer-events: none;
-}
-
-.particle-1 { top: 10%; left: 15%; animation: float 4s ease-in-out infinite; }
-.particle-2 { top: 25%; right: 20%; animation: float 5s ease-in-out 1s infinite; }
-.particle-3 { bottom: 30%; left: 25%; animation: float 6s ease-in-out 0.5s infinite; }
-.particle-4 { top: 50%; right: 10%; animation: float 4.5s ease-in-out 1.5s infinite; }
-.particle-5 { bottom: 15%; right: 30%; animation: float 5.5s ease-in-out 0.8s infinite; }
-.particle-6 { top: 35%; left: 5%; animation: float 3.5s ease-in-out 2s infinite; }
-
-@keyframes float {
-  0%, 100% { transform: translateY(0) translateX(0); }
-  25% { transform: translateY(-8px) translateX(4px); }
-  50% { transform: translateY(-15px) translateX(-3px); }
-  75% { transform: translateY(-6px) translateX(6px); }
-}
-
-/* ============================================
-   SWIPER OVERRIDES
-   ============================================ */
-.prose {
-  line-height: 1.6;
-}
-
-.prose p {
-  margin-bottom: 1rem;
-}
-
-.swiper-button-next,
-.swiper-button-prev {
-  color: var(--primary) !important;
-}
-
-.swiper-pagination-bullet-active {
-  background-color: var(--primary) !important;
-}
-
-.swiper-pagination-bullet {
-  background-color: var(--secondary) !important;
-  opacity: 1 !important;
-}
-
-/* ============================================
-   CUSTOM SCROLLBAR
-   ============================================ */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: var(--bg);
+  background-color: #e1e1e1;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--border);
+  background-color: #595959;
   border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: var(--secondary);
-}
-
-/* ============================================
-   PROSE ADJUSTMENTS
-   ============================================ */
-.prose {
-  color: var(--text-secondary);
-}
-
-.prose strong {
-  color: var(--text);
-}
-
-.prose a {
-  color: var(--primary);
-}
-
-.prose a:hover {
-  color: var(--primary-hover);
-  text-decoration: underline;
-}
-
-/* ============================================
-   MISC UTILITY
-   ============================================ */
-
-/* Social icon rotate on hover */
-.social-icon-rotate {
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.social-icon-rotate:hover {
-  transform: rotate(360deg) scale(1.15);
-}
-
-@keyframes float-delayed {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-18px);
-  }
-}
-
-.animate-float-delayed {
-  animation: float-delayed 7s ease-in-out infinite;
-}
-
-/* ============================================
-   MARQUEE ANIMATIONS
-   ============================================ */
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-@keyframes marquee-reverse {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0); }
-}
-
-.animate-marquee {
-  animation: marquee 40s linear infinite;
-}
-
-.animate-marquee-reverse {
-  animation: marquee-reverse 40s linear infinite;
-}
-
-.animate-marquee:hover,
-.animate-marquee-reverse:hover {
-  animation-play-state: paused;
-}
-
-/* ============================================
-   BROWSER SURFACES
-   ============================================ */
-::selection {
-  background-color: var(--primary);
-  color: var(--bg);
-}
-
-:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-
-/* ============================================
-   REDUCED MOTION
-   ============================================ */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -457,28 +54,7 @@
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-delay: 0s !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    transition-delay: 0s !important;
-  }
-
-  .scroll-reveal,
-  .scroll-reveal-left,
-  .scroll-reveal-right,
-  .scroll-reveal-scale {
-    opacity: 1;
-    transform: none;
-  }
-
-  .animate-marquee,
-  .animate-marquee-reverse {
     animation: none !important;
-  }
-
-  .marquee-track {
-    width: 100%;
-    overflow-x: auto;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -113,16 +113,15 @@ export const TechIcon: React.FC<TechIconProps> = ({
   const iconData = getTechIconUrl(name);
   if (!iconData) {
     // Render a default Code2 icon if the specific technology icon is not found
-    return <Code2 className={`${sizeClassName} text-primary/70 shrink-0 ${className}`} />;
+    return <Code2 className={`${sizeClassName} shrink-0 ${className}`} />;
   }
 
   return (
     <img
       src={iconData.url}
       alt={name}
-      className={`${sizeClassName} object-contain grayscale brightness-[1.8] ${
-        iconData.darkInvert ? "invert" : ""
-      } ${className}`}
+      loading="lazy"
+      className={`${sizeClassName} object-contain ${className}`}
     />
   );
 };

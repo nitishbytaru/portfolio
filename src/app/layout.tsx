@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Archivo } from "next/font/google";
 import "./globals.css";
-import "../../node_modules/tw-animate-css/dist/tw-animate.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import SideNav from "@/components/board/SideNav";
+import BoardFooter from "@/components/board/BoardFooter";
 
-const inter = Inter({
+const archivo = Archivo({
   subsets: ["latin"],
-  variable: "--font-inter",
+  axes: ["wdth"],
+  variable: "--font-archivo",
   display: "swap",
 });
 
@@ -26,25 +26,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
-      <head>
-        <noscript>
-          <style>{`.scroll-reveal,.scroll-reveal-left,.scroll-reveal-right,.scroll-reveal-scale{opacity:1;transform:none}`}</style>
-        </noscript>
-      </head>
+    <html lang="en" className={archivo.variable}>
       <body>
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-xl focus:bg-primary focus:px-4 focus:py-3 focus:font-semibold focus:text-primary-foreground"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-xl focus:bg-ink focus:px-4 focus:py-3 focus:font-semibold focus:text-white"
         >
           Skip to content
         </a>
-        <div className="flex min-h-screen flex-col bg-background text-text">
-          <Navbar />
-          <main id="main" tabIndex={-1} className="flex-grow outline-none">
-            {children}
-          </main>
-          <Footer />
+        <div className="min-h-screen lg:p-6">
+          <div className="mx-auto flex min-h-screen max-w-[1560px] flex-col bg-frame shadow-[0_24px_60px_-24px_rgb(0_0_0/0.3)] lg:min-h-[calc(100vh-3rem)] lg:flex-row lg:rounded-[28px]">
+            <SideNav />
+            <div className="flex min-w-0 flex-1 flex-col lg:pr-8">
+              <main id="main" tabIndex={-1} className="flex-grow px-4 pb-6 outline-none sm:px-6 lg:px-0 lg:pb-3 lg:pt-8">
+                {children}
+              </main>
+              <BoardFooter />
+            </div>
+          </div>
         </div>
       </body>
     </html>
