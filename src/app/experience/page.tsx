@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import React from "react";
 import {
   Briefcase,
@@ -116,6 +117,8 @@ const ROLE_TONES: { main: TileTone; side: TileTone }[] = [
   { main: "amber", side: "pink" },
 ];
 
+export const metadata: Metadata = { title: "Experience" };
+
 export default function ExperiencePage() {
   return (
     <div>
@@ -133,7 +136,7 @@ export default function ExperiencePage() {
                   <span className="inline-flex items-center gap-1.5"><Calendar className="h-4 w-4" aria-hidden="true" />{exp.date}</span>
                   <span>{exp.type}, {exp.summaryLabel}</span>
                 </p>
-                <ul className="mt-6 max-w-[70ch] list-disc space-y-3 pl-5 text-lg leading-relaxed">
+                <ul className="mt-6 max-w-[56ch] list-disc space-y-3 pl-5 text-lg leading-relaxed">
                   {exp.points.map((point) => <li key={point}>{highlightKeywords(point)}</li>)}
                 </ul>
                 <dl className="mt-6 grid grid-cols-2 gap-4 border-t border-ink/30 pt-5 sm:grid-cols-4">

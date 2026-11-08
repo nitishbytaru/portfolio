@@ -40,7 +40,7 @@ export default function SideNav() {
       {/* Desktop: rotated labels down the sheet's left edge */}
       <nav
         aria-label="Main"
-        className="sticky top-6 hidden h-[calc(100vh-3rem)] w-20 shrink-0 flex-col items-center justify-center gap-5 lg:flex"
+        className="sticky top-6 hidden h-[calc(100vh-3rem)] w-20 shrink-0 flex-col items-center gap-5 overflow-y-auto py-2 lg:flex [justify-content:safe_center]"
       >
         {NAV_LINKS.map((link) => {
           const active = isActive(link.href);
@@ -48,6 +48,7 @@ export default function SideNav() {
             <Link
               key={link.href}
               href={link.href}
+              prefetch={link.href === "/" ? false : undefined}
               aria-current={active ? "page" : undefined}
               className={`relative rotate-180 px-3 py-2 text-sm text-ink underline-offset-4 [writing-mode:vertical-rl] hover:underline ${
                 active ? "font-extrabold" : "font-medium"
@@ -67,7 +68,7 @@ export default function SideNav() {
 
       {/* Mobile: top bar with menu */}
       <nav aria-label="Main" className="relative z-40 flex items-center justify-between px-4 py-3 lg:hidden">
-        <Link href="/" className="text-lg font-extrabold text-ink">
+        <Link href="/" prefetch={false} className="wide text-lg font-extrabold text-ink">
           Nitish Durga Bytaru
         </Link>
         <button
@@ -92,6 +93,7 @@ export default function SideNav() {
               <Link
                 key={link.href}
                 href={link.href}
+                prefetch={link.href === "/" ? false : undefined}
                 aria-current={active ? "page" : undefined}
                 className={`block rounded-xl px-4 py-3 text-ink ${
                   active ? "bg-white font-extrabold" : "font-medium"

@@ -46,15 +46,53 @@ body {
   border-radius: 4px;
 }
 
+/* Home wordmark fills its column at every board width */
+@media (min-width: 1024px) {
+  .wordmark-home {
+    font-size: min(11rem, calc(((100vw - 160px) * 0.69 - 32px) / 5.2), calc((100vw - 532px) / 5.2)) !important;
+  }
+}
+
+/* Split tiles clip outside rings, so their focus ring sits inside */
+.focus-inset:focus-visible,
+.focus-inset-light:focus-visible {
+  outline-width: 3px;
+  outline-offset: -6px;
+  box-shadow: none;
+}
+
+.focus-inset-light:focus-visible {
+  outline-color: #fff;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
-  *,
-  *::before,
-  *::after {
-    animation: none !important;
-    transition-duration: 0.01ms !important;
+  /* The loader stays visible and static; its text says what is happening. */
+  .animate-pulse {
+    animation: none;
+  }
+
+  /* Hover lifts and scales are dropped; color and brightness feedback stays. */
+  .transition-transform {
+    transition: none;
+  }
+
+  .transition-transform:hover,
+  .group:hover .transition-transform {
+    transform: none !important;
   }
 }

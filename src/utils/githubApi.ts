@@ -68,17 +68,6 @@ export async function fetchEvents(): Promise<any[]> {
   return data;
 }
 
-export async function fetchRepoLanguages(repoName: string): Promise<Record<string, number>> {
-  const key = `langs_${repoName}`;
-  const cached = getCached<Record<string, number>>(key);
-  if (cached) return cached;
-  const data = await fetchJSON<Record<string, number>>(
-    `${API_BASE}/repos/${USERNAME}/${repoName}/languages`
-  );
-  setCache(key, data);
-  return data;
-}
-
 export interface ContributionDay {
   date: string;
   level: number;

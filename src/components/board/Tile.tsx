@@ -1,10 +1,13 @@
 import React from "react";
 
+// Titles are white on the two mid-tone tiles, as in the reference; reading text stays black.
+const WHITE_TITLES = "[&_h1]:text-white [&_h2]:text-white [&_h3]:text-white";
+
 const TONES = {
-  periwinkle: "bg-periwinkle text-ink",
+  periwinkle: `bg-periwinkle text-ink ${WHITE_TITLES}`,
   pink: "bg-pink text-ink",
   mint: "bg-mint text-ink",
-  violet: "bg-violet text-ink",
+  violet: `bg-violet text-ink ${WHITE_TITLES}`,
   amber: "bg-amber text-ink",
   graphite: "bg-graphite text-white",
   black: "bg-ink text-white",
@@ -22,7 +25,7 @@ interface TileProps extends React.HTMLAttributes<HTMLElement> {
   [key: string]: unknown;
 }
 
-export const Corner = () => (
+const Corner = () => (
   <span
     aria-hidden="true"
     className="pointer-events-none absolute right-4 top-4 z-10 h-3 w-3 border-r-2 border-t-2 border-current"

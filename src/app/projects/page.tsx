@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Tile, { TileTone } from "@/components/board/Tile";
@@ -6,6 +8,8 @@ import { TechIcon } from "@/components/ui/TechIcon";
 import { projectsData } from "@/data/ProjectData";
 
 const TONES: TileTone[] = ["mint", "amber", "pink", "periwinkle", "violet"];
+
+export const metadata: Metadata = { title: "Projects" };
 
 export default function ProjectsPage() {
   return (
@@ -22,11 +26,13 @@ export default function ProjectsPage() {
             className={`group flex flex-col ${i < 2 ? "lg:col-span-3" : "lg:col-span-2"} ${i === 4 ? "md:col-span-2 lg:col-span-2" : ""}`}
           >
             <div className="relative aspect-[16/10] w-full bg-ink">
-              <img
+              <Image
                 src={project.thumbnail}
                 alt={`${project.title} preview`}
-                loading={i < 2 ? "eager" : "lazy"}
-                className="h-full w-full object-cover object-left-top"
+                fill
+                priority={i < 2}
+                sizes="(min-width: 1024px) 45vw, (min-width: 768px) 50vw, 100vw"
+                className="object-cover object-left-top"
               />
               <span className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white text-ink transition-transform duration-300 group-hover:translate-x-1">
                 <ArrowRight className="h-5 w-5" aria-hidden="true" />

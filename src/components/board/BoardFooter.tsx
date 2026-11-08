@@ -11,7 +11,7 @@ export default function BoardFooter() {
   return (
     <footer className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 pb-4 text-sm text-graphite sm:px-6 lg:px-0">
       <p>&copy; {new Date().getFullYear()} Nitish Durga Bytaru</p>
-      <div className="flex items-center gap-1">
+      <div className="flex flex-wrap items-center gap-1">
         <a
           href={RESUME_URL}
           target="_blank"

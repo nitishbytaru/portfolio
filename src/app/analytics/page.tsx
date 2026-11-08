@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Github, Star, GitFork, ExternalLink, FolderGit2, Rocket, Globe, Compass, Code2, Zap, Eye, Award,
   LucideIcon,
@@ -19,9 +19,9 @@ const TileTitle = ({ children }: { children: React.ReactNode }) => (
 );
 
 const Stat = ({ value, label, tone }: { value: number; label: string; tone: TileTone }) => (
-  <Tile tone={tone} corner className="flex min-h-32 flex-col justify-center p-5">
+  <Tile tone={tone} corner className={`flex min-h-32 flex-col justify-center p-5 ${tone === "violet" ? "!text-white" : ""}`}>
     <span className="wide block text-4xl font-extrabold">{value}</span>
-    <span className="mt-1 block">{label}</span>
+    <span className="wide mt-1 block">{label}</span>
   </Tile>
 );
 
@@ -101,9 +101,17 @@ const TimelineChart = ({ timeline }: { timeline: TimelineItem[] }) => {
   );
 };
 
-const LEVEL_COLORS = ["#E1E1E1", "#A7D8D6", "#7D82D0", "#8D6FBD", "#000000"];
+// Light to dark, on a white tile, so each level reads as one step darker.
+const LEVEL_COLORS = ["#E1E1E1", "#A7D8D6", "#7D82D0", "#595959", "#000000"];
 
 const ContributionCalendar = ({ contributions }: { contributions: ContributionData | null }) => {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+
+  // On narrow screens, open on the most recent weeks.
+  useEffect(() => {
+    if (scrollerRef.current) scrollerRef.current.scrollLeft = scrollerRef.current.scrollWidth;
+  }, [contributions]);
+
   if (!contributions) return null;
   return (
     <div>
@@ -115,7 +123,7 @@ const ContributionCalendar = ({ contributions }: { contributions: ContributionDa
           More
         </span>
       </div>
-      <div className="overflow-x-auto pb-2">
+      <div ref={scrollerRef} className="overflow-x-auto pb-2">
         <div className="flex min-w-[720px] gap-[3px]">
           {contributions.weeks.slice(-52).map((week, wi) => (
             <div key={wi} className="flex flex-col gap-[3px]">
@@ -189,6 +197,7 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <Shell>
+        <p className="mb-4 text-graphite">Loading GitHub stats</p>
         <div className="grid animate-pulse grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5" aria-label="Loading GitHub stats" role="status">
           {["bg-mint", "bg-violet", "bg-amber", "bg-pink"].map((c) => <div key={c} className={`h-32 rounded-[20px] ${c}`} />)}
           <div className="col-span-2 h-56 rounded-[20px] bg-page lg:col-span-4" />
@@ -234,9 +243,9 @@ export default function AnalyticsPage() {
           </div>
           {profile.bio && <p className="mt-3 max-w-[60ch]">{profile.bio}</p>}
           <dl className="mt-6 grid grid-cols-3 gap-4 border-t border-ink/30 pt-4">
-            <div><dd className="wide text-2xl font-extrabold">{profile.followers}</dd><dt className="text-sm">Followers</dt></div>
-            <div><dd className="wide text-2xl font-extrabold">{profile.following}</dd><dt className="text-sm">Following</dt></div>
-            <div><dd className="wide text-2xl font-extrabold">{profile.accountAgeYears}y</dd><dt className="text-sm">On GitHub</dt></div>
+            <div><dd className="wide text-2xl font-extrabold text-white">{profile.followers}</dd><dt className="text-sm">Followers</dt></div>
+            <div><dd className="wide text-2xl font-extrabold text-white">{profile.following}</dd><dt className="text-sm">Following</dt></div>
+            <div><dd className="wide text-2xl font-extrabold text-white">{profile.accountAgeYears}y</dd><dt className="text-sm">On GitHub</dt></div>
           </dl>
           <p className="mt-4 text-sm">Member since {profile.joinedDate}</p>
         </Tile>
@@ -246,7 +255,7 @@ export default function AnalyticsPage() {
         <Stat value={stats.deployedCount} label="Deployed" tone="violet" />
         <Stat value={languages.length} label="Languages" tone="pink" />
 
-        <Tile tone="plain" className="col-span-2 p-6 lg:col-span-3">
+        <Tile tone="white" className="col-span-2 p-6 lg:col-span-3">
           <TileTitle>Language Distribution</TileTitle>
           <LanguageDonut languages={languages} />
         </Tile>
@@ -287,7 +296,7 @@ export default function AnalyticsPage() {
         </Tile>
 
         {contributions?.weeks?.length ? (
-          <Tile tone="plain" className="col-span-2 p-6 lg:col-span-4">
+          <Tile tone="white" className="col-span-2 p-6 lg:col-span-4">
             <TileTitle>Contribution Calendar</TileTitle>
             <ContributionCalendar contributions={contributions} />
           </Tile>

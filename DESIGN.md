@@ -311,7 +311,7 @@ Charts sit directly on tiles, in Ink or palette colors, with an expanded title a
 - **Do** use real screenshots and real counts inside tiles.
 - **Do** vary tile spans and rotate tones so a page reads as a composed board.
 - **Do** keep tap targets at 44px minimum and retain the global focus ring.
-- **Do** respect reduced motion; the global rule removes animation and shortens transitions.
+- **Do** respect reduced motion; motion is removed effect by effect: the badge stops, the loader goes static with its text, and hover lifts are dropped while color feedback stays.
 
 ### Don't:
 - **Don't** add a dark theme or theme switch; the world is one fixed light theme.

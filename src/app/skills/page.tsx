@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import React from "react";
 import Tile, { TileTone } from "@/components/board/Tile";
 import Wordmark from "@/components/board/Wordmark";
@@ -71,6 +72,8 @@ const landscapeSkills: LandscapeSkill[] = [
 ];
 
 const TONES: TileTone[] = ["periwinkle", "amber", "mint", "pink", "violet", "periwinkle"];
+
+export const metadata: Metadata = { title: "Skills" };
 
 export default function SkillsPage() {
   return (

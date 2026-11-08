@@ -2,25 +2,6 @@
   "detector": {
     "ignoreRules": [],
     "ignoreFiles": [],
-    "ignoreValues": [
-      {
-        "rule": "gradient-text",
-        "value": "*",
-        "files": [
-          "src/app/globals.css"
-        ],
-        "createdAt": "2026-11-08T14:35:42.523Z",
-        "reason": "user confirmed: chose 'Keep it, refine it' when asked about the look including the gradient name"
-      },
-      {
-        "rule": "side-tab",
-        "value": "*",
-        "files": [
-          "src/app/globals.css"
-        ],
-        "createdAt": "2026-11-08T14:38:05.334Z",
-        "reason": "false positive: border-right is the .typewriter blinking caret, not a card accent (verified in critique and at globals.css:158)"
-      }
-    ]
+    "ignoreValues": []
   }
 }

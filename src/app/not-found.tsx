@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Tile from "@/components/board/Tile";
 import Wordmark from "@/components/board/Wordmark";
 import { projectsData } from "@/data/ProjectData";
+
+export const metadata: Metadata = { title: "Page not found" };
 
 export default function NotFound() {
   return (

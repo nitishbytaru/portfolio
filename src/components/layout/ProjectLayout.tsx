@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Github, LayoutGrid } from "lucide-react";
 import { projectsData, Project } from "../../data/ProjectData";
@@ -31,11 +32,13 @@ const SpecList = ({ entries }: { entries: Record<string, string> }) => (
 const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick }) => {
   const images = project.images ?? [];
   const [activeImage, setActiveImage] = useState(images[0] ?? project.thumbnail);
+  const [showAll, setShowAll] = useState(false);
   const viewerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     setActiveImage(project.images?.[0] ?? project.thumbnail);
+    setShowAll(false);
   }, [project]);
 
   const currentIndex = projectsData.findIndex((item) => item.slug === project.slug);
@@ -44,6 +47,8 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
   const isLinkedIn = project.liveLink?.includes("linkedin.com");
   const architecture = project.technologiesUsed ?? {};
   const deployment = project.deployment ?? {};
+  const activeNumber = images.indexOf(activeImage) + 1;
+  const visibleImages = showAll ? images : images.slice(0, 6);
 
   return (
     <div>
@@ -53,12 +58,21 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
       <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
         <div ref={viewerRef} className="scroll-mt-6 lg:col-span-8">
           <Tile tone="black" className="aspect-[16/10]">
-            <img
+            <Image
+              key={activeImage}
               src={activeImage}
-              alt={`${project.title} screenshot`}
-              className="h-full w-full object-contain"
+              alt={`${project.title} screenshot ${Math.max(activeNumber, 1)}`}
+              fill
+              priority
+              sizes="(min-width: 1024px) 60vw, 100vw"
+              className="object-contain"
             />
           </Tile>
+          {images.length > 1 && activeNumber > 0 && (
+            <p aria-live="polite" className="mt-2 text-sm text-graphite">
+              Screenshot {activeNumber} of {images.length}
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col gap-4 lg:col-span-4 lg:gap-5">
@@ -112,7 +126,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
 
         <Tile tone="periwinkle" className="p-6 lg:col-span-7">
           <SectionTitle>About Project</SectionTitle>
-          <div className="max-w-[68ch] space-y-3 text-lg leading-relaxed">
+          <div className="max-w-[56ch] space-y-3 text-lg leading-relaxed">
             {project.detailedDescription?.intro?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             {project.detailedDescription?.note && <p className="text-base">{project.detailedDescription.note}</p>}
           </div>
@@ -142,8 +156,8 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
         {images.length > 1 && (
           <Tile tone="plain" className="p-6 lg:col-span-12">
             <SectionTitle>Project Gallery</SectionTitle>
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-              {images.map((src, idx) => (
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+              {visibleImages.map((src, idx) => (
                 <button
                   key={src}
                   type="button"
@@ -153,20 +167,29 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
                     setActiveImage(src);
                     viewerRef.current?.scrollIntoView();
                   }}
-                  className={`overflow-hidden rounded-xl border-2 bg-ink ${
-                    activeImage === src ? "border-ink" : "border-transparent"
+                  className={`relative block aspect-[16/10] overflow-hidden rounded-xl bg-ink ${
+                    activeImage === src ? "ring-[3px] ring-ink ring-offset-[3px] ring-offset-page" : ""
                   }`}
                 >
-                  <img src={src} alt="" loading="lazy" className="aspect-[16/10] w-full object-cover object-top" />
+                  <Image src={src} alt="" fill sizes="(min-width: 768px) 30vw, 50vw" className="object-cover object-top" />
                 </button>
               ))}
             </div>
+            {images.length > 6 && !showAll && (
+              <button
+                type="button"
+                onClick={() => setShowAll(true)}
+                className="mt-5 min-h-11 rounded-full bg-ink px-6 font-semibold text-white"
+              >
+                Show all {images.length} screenshots
+              </button>
+            )}
           </Tile>
         )}
 
         <nav aria-label="Other projects" className="grid grid-cols-[1fr_auto_1fr] gap-4 lg:col-span-12 lg:gap-5">
           {previousProject ? (
-            <Tile as={Link} href={`/projects/${previousProject.slug}`} tone="white" interactive className="flex min-h-11 items-center gap-3 p-4 font-semibold">
+            <Tile as={Link} href={`/projects/${previousProject.slug}`} tone="white" interactive className="wide flex min-h-11 items-center gap-3 p-4 font-semibold">
               <ArrowLeft className="h-5 w-5 shrink-0" aria-hidden="true" />
               {previousProject.title}
             </Tile>
@@ -175,7 +198,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
             <LayoutGrid className="h-5 w-5" aria-hidden="true" />
           </Tile>
           {nextProject ? (
-            <Tile as={Link} href={`/projects/${nextProject.slug}`} tone="white" interactive className="flex min-h-11 items-center justify-end gap-3 p-4 text-right font-semibold">
+            <Tile as={Link} href={`/projects/${nextProject.slug}`} tone="white" interactive className="wide flex min-h-11 items-center justify-end gap-3 p-4 text-right font-semibold">
               {nextProject.title}
               <ArrowRight className="h-5 w-5 shrink-0" aria-hidden="true" />
             </Tile>

@@ -12,12 +12,12 @@ const archivo = Archivo({
 });
 
 export const metadata: Metadata = {
-  title: "Nitish Durga Bytaru - Portfolio",
+  title: {
+    default: "Nitish Durga Bytaru - Portfolio",
+    template: "%s - Nitish Durga Bytaru",
+  },
   description:
     "Portfolio of Nitish Durga Bytaru, a full stack web developer building with React, Node.js, Flask and MongoDB.",
-  icons: {
-    icon: "/NitishPIC.jpg",
-  },
 };
 
 export default function RootLayout({

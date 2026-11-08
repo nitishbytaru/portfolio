@@ -294,7 +294,6 @@ export const projectsData: Project[] = [
       "/insta/5.png",
       "/insta/6.png",
       "/insta/7.png",
-      "/insta/8.png",
     ],
   },
 ];
