@@ -120,7 +120,7 @@ export const TechIcon: React.FC<TechIconProps> = ({
     <img
       src={iconData.url}
       alt={name}
-      className={`${sizeClassName} object-contain ${
+      className={`${sizeClassName} object-contain grayscale brightness-[1.8] ${
         iconData.darkInvert ? "invert" : ""
       } ${className}`}
     />

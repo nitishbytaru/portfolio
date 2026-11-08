@@ -143,26 +143,8 @@ export interface TimelineItem {
   count: number;
 }
 
-const LANGUAGE_COLORS: Record<string, string> = {
-  JavaScript: "#f1e05a",
-  TypeScript: "#3178c6",
-  Python: "#3572A5",
-  HTML: "#e34c26",
-  CSS: "#563d7c",
-  Java: "#b07219",
-  PHP: "#4F5D95",
-  EJS: "#a91e50",
-  Blade: "#f7523f",
-  Shell: "#89e051",
-  "C#": "#178600",
-  "C++": "#f34b7d",
-  Ruby: "#701516",
-  Go: "#00ADD8",
-  Rust: "#dea584",
-  Dart: "#00B4AB",
-  Kotlin: "#A97BFF",
-  Swift: "#F05138",
-};
+// Accent and gray from the site palette, plus a 60% step of each toward the base color.
+const LANGUAGE_COLORS = ["#06B6D4", "#A1A1AA", "#0D778A", "#6A6A71"];
 
 export function computeAnalytics(profile: any, repos: any[]) {
   const now = new Date();
@@ -206,9 +188,12 @@ export function computeAnalytics(profile: any, repos: any[]) {
       name,
       count,
       percentage: ((count / repos.length) * 100).toFixed(1),
-      color: LANGUAGE_COLORS[name] || "#6e7681",
     }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => b.count - a.count)
+    .map((language, i) => ({
+      ...language,
+      color: LANGUAGE_COLORS[i % LANGUAGE_COLORS.length],
+    }));
 
   const reposByYear: Record<string, number> = {};
   repos.forEach((r) => {

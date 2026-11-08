@@ -39,7 +39,7 @@ const SocialLinks: React.FC = () => {
   return (
     <div className="p-6 rounded-2xl border border-border bg-surface backdrop-blur-sm transition-colors duration-300">
       <h2 className="text-lg font-semibold text-text mb-4">
-        Connect <span className="text-text-secondary/60">with</span> me
+        Connect <span className="text-text-secondary">with</span> me
       </h2>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {links.map(({ id, icon, href, name }) => (

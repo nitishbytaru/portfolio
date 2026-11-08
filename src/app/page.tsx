@@ -164,7 +164,7 @@ export default function Home() {
               <Reveal delay={0.1}>
                 <h1 className="mb-6 text-5xl font-black tracking-tight text-text md:text-7xl">
                   <span className="gradient-text">Nitish Durga</span>{" "}
-                  <span className="text-text/45">Bytaru</span>
+                  <span className="text-text">Bytaru</span>
                 </h1>
               </Reveal>
 

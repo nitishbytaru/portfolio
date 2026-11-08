@@ -85,7 +85,7 @@ const ProjectCardBody: React.FC<ProjectCardProps> = ({ project }) => (
     </ul>
 
     <div className="mt-auto flex flex-col border-t border-border pt-5">
-      <div className="text-xs font-bold uppercase tracking-wider text-text-secondary/70 mb-3 flex items-center gap-1.5">
+      <div className="text-xs font-bold uppercase tracking-wider text-text-secondary mb-3 flex items-center gap-1.5">
         <Code2 className="w-3.5 h-3.5 text-primary" />
         Tech Stack
       </div>

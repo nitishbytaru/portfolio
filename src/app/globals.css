@@ -28,16 +28,17 @@
 /* Single fixed theme */
 :root {
   color-scheme: dark;
-  --bg: #04161D;
-  --surface: #08252E;
-  --surface-elevated: #0C313D;
-  --border: #164E63;
-  --secondary: #67E8F9;
+  /* 60% base, 30% gray, 10% accent. Surfaces and borders are tints of these only. */
+  --bg: #18181B;
+  --surface: color-mix(in srgb, #A1A1AA 10%, #18181B);
+  --surface-elevated: color-mix(in srgb, #A1A1AA 16%, #18181B);
+  --border: color-mix(in srgb, #A1A1AA 30%, #18181B);
+  --secondary: #A1A1AA;
   --primary: #06B6D4;
-  --primary-hover: #0891B2;
-  --text: #ECFEFF;
-  --text-secondary: #A5F3FC;
-  --muted-text: #67E8F9;
+  --primary-hover: color-mix(in srgb, #06B6D4 85%, #18181B);
+  --text: #A1A1AA;
+  --text-secondary: #A1A1AA;
+  --muted-text: #A1A1AA;
   --radius: 0.625rem;
 }
 
@@ -185,7 +186,7 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(168, 85, 247, 0.1) 50%,
+    color-mix(in srgb, var(--primary) 10%, transparent) 50%,
     transparent 100%
   );
   background-size: 200% 100%;
@@ -277,7 +278,7 @@
   inset: 0;
   background: radial-gradient(
     circle at var(--ripple-x, 50%) var(--ripple-y, 50%),
-    rgba(255, 255, 255, 0.15) 0%,
+    color-mix(in srgb, var(--secondary) 15%, transparent) 0%,
     transparent 60%
   );
   opacity: 0;
@@ -441,7 +442,7 @@
 }
 
 :focus-visible {
-  outline: 2px solid var(--secondary);
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 

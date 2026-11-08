@@ -75,7 +75,7 @@ const Navbar = () => {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
             </span>
 
-            <span className="text-text/60">Bytaru</span>
+            <span className="text-text">Bytaru</span>
           </Link>
 
           <div className="hidden md:flex items-center space-x-4 relative z-10">
@@ -90,7 +90,7 @@ const Navbar = () => {
                   className={`px-3 py-2 rounded-xl font-medium transition-all duration-300 relative group ${
                     active
                       ? "text-primary bg-primary/10"
-                      : "text-text/80 hover:text-primary hover:bg-surface-elevated/70"
+                      : "text-text hover:text-primary hover:bg-surface-elevated/70"
                   }`}
                 >
                   {link.name}
@@ -101,7 +101,7 @@ const Navbar = () => {
 
           <button
             type="button"
-            className="md:hidden relative z-10 flex h-11 w-11 items-center justify-center text-text/80 bg-surface/70 border border-border hover:text-primary hover:bg-surface-elevated transition-colors rounded-xl"
+            className="md:hidden relative z-10 flex h-11 w-11 items-center justify-center text-text bg-surface/70 border border-border hover:text-primary hover:bg-surface-elevated transition-colors rounded-xl"
             onClick={() => setIsOpen(!isOpen)}
             aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
@@ -131,7 +131,7 @@ const Navbar = () => {
                   className={`px-4 py-3 rounded-xl font-medium transition-colors ${
                     active
                       ? "text-primary bg-primary/10"
-                      : "text-text/80 hover:text-primary hover:bg-background/70"
+                      : "text-text hover:text-primary hover:bg-background/70"
                   }`}
                 >
                   {link.name}

@@ -262,7 +262,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
                           </div>
 
                           <div className="min-w-0">
-                            <h3 className="text-xs font-bold text-text-secondary/60 uppercase tracking-wider mb-1">
+                            <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">
                               {key.replace(/_/g, " ")}
                             </h3>
 
@@ -314,7 +314,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
                         </div>
 
                         <div className="min-w-0">
-                          <h3 className="text-xs font-bold text-text-secondary/60 uppercase tracking-wider mb-1">
+                          <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-1">
                             {key.replace(/_/g, " ")}
                           </h3>
 

@@ -266,10 +266,10 @@ const AvailabilityCard: React.FC<AvailabilityCardProps> = ({ profile, languages,
     >
       <div className="flex flex-col h-full justify-between space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
             <span>Available for Opportunities</span>
           </div>
@@ -321,7 +321,7 @@ const AchievementsCard: React.FC<AchievementsCardProps> = ({ stats, languages, e
         id: "star_collector",
         title: "Star Collector",
         desc: `${stats.totalStars} stars earned`,
-        color: "from-amber-400 to-orange-500",
+        color: "from-primary to-primary-hover",
         icon: "⭐",
       });
     } else {
@@ -329,7 +329,7 @@ const AchievementsCard: React.FC<AchievementsCardProps> = ({ stats, languages, e
         id: "explorer",
         title: "Explorer",
         desc: "Beginning the journey",
-        color: "from-blue-400 to-indigo-500",
+        color: "from-primary to-primary-hover",
         icon: "🧭",
       });
     }
@@ -339,7 +339,7 @@ const AchievementsCard: React.FC<AchievementsCardProps> = ({ stats, languages, e
         id: "deployer",
         title: "Live Deployer",
         desc: `${stats.deployedCount} active links`,
-        color: "from-emerald-400 to-teal-500",
+        color: "from-primary to-primary-hover",
         icon: "🚀",
       });
     }
@@ -349,7 +349,7 @@ const AchievementsCard: React.FC<AchievementsCardProps> = ({ stats, languages, e
         id: "polyglot",
         title: "Polyglot",
         desc: `${languages.length} languages used`,
-        color: "from-purple-400 to-pink-500",
+        color: "from-primary to-primary-hover",
         icon: "💻",
       });
     }
@@ -360,7 +360,7 @@ const AchievementsCard: React.FC<AchievementsCardProps> = ({ stats, languages, e
         id: "pr_creator",
         title: "Active Pusher",
         desc: `${commitEventsCount} push events recently`,
-        color: "from-cyan-400 to-blue-500",
+        color: "from-primary to-primary-hover",
         icon: "⚡",
       });
     } else {
@@ -368,7 +368,7 @@ const AchievementsCard: React.FC<AchievementsCardProps> = ({ stats, languages, e
         id: "observer",
         title: "Watchtower",
         desc: "Monitoring events",
-        color: "from-gray-400 to-slate-500",
+        color: "from-primary to-primary-hover",
         icon: "👁️",
       });
     }
@@ -405,7 +405,7 @@ const AchievementsCard: React.FC<AchievementsCardProps> = ({ stats, languages, e
               <div
                 className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${ach.color} text-lg shadow-md group-hover/badge:scale-110 group-hover/badge:rotate-6 transition-transform duration-300`}
               >
-                {ach.icon}
+                <span className="grayscale">{ach.icon}</span>
               </div>
               <div className="min-w-0">
                 <div className="text-xs font-bold text-text truncate">{ach.title}</div>
@@ -508,10 +508,7 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, index, isVisible }) => (
       {repo.language && (
         <span className="flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-full" style={{
-            backgroundColor: (({
-              JavaScript: "#f1e05a", TypeScript: "#3178c6", Python: "#3572A5",
-              HTML: "#e34c26", PHP: "#4F5D95", EJS: "#a91e50", Blade: "#f7523f",
-            } as Record<string, string>)[repo.language]) || "#6e7681"
+            backgroundColor: "var(--primary)"
           }} />
           {repo.language}
         </span>

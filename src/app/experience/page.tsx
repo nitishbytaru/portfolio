@@ -221,7 +221,7 @@ export default function ExperiencePage() {
                             className="group/point flex items-start p-3.5 rounded-2xl border border-transparent hover:border-border/40 hover:bg-surface-elevated/50 hover:translate-x-2 hover:shadow-sm transition-all duration-300"
                           >
                             <div className="shrink-0 mt-1 mr-4">
-                              <CheckCircle2 className="w-4.5 h-4.5 text-text-secondary/60 group-hover/point:text-primary transition-colors duration-300" />
+                              <CheckCircle2 className="w-4.5 h-4.5 text-text-secondary group-hover/point:text-primary transition-colors duration-300" />
                             </div>
                             <p className="text-[15px] text-text-secondary leading-relaxed group-hover/point:text-text transition-colors duration-300">
                               {highlightKeywords(point)}
@@ -243,7 +243,7 @@ export default function ExperiencePage() {
                                 <div className="p-1.5 rounded-lg bg-primary/10 text-primary transition-all duration-300 group-hover/metric:bg-primary group-hover/metric:text-primary-foreground">
                                   <Icon className="w-3.5 h-3.5" />
                                 </div>
-                                <span className="text-xs font-bold uppercase tracking-wider text-text-secondary/70">
+                                <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">
                                   {metric.label}
                                 </span>
                               </div>
@@ -289,7 +289,7 @@ export default function ExperiencePage() {
                             </div>
                           </div>
                         ) : (
-                          <div className="flex-grow flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/60 bg-surface/30 p-6 text-text-secondary/50 min-h-[160px]">
+                          <div className="flex-grow flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/60 bg-surface/30 p-6 text-text-secondary min-h-[160px]">
                             <ExternalLink className="w-8 h-8 mb-2 opacity-50" />
                             <span className="text-sm font-medium">Document Unavailable</span>
                           </div>
@@ -297,7 +297,7 @@ export default function ExperiencePage() {
 
                         {/* Skill chips (Moved from left column to fill vertical space) */}
                         <div className="pt-5 border-t border-border/60">
-                          <div className="text-xs font-bold uppercase tracking-wider text-text-secondary/70 mb-3 flex items-center gap-1.5">
+                          <div className="text-xs font-bold uppercase tracking-wider text-text-secondary mb-3 flex items-center gap-1.5">
                             <Code2 className="w-3.5 h-3.5 text-primary" />
                             Skills Applied
                           </div>
@@ -328,7 +328,7 @@ export default function ExperiencePage() {
                             <ExternalLink className="w-4 h-4 ml-2 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-200" />
                           </a>
                         ) : (
-                          <span className="w-full inline-flex items-center justify-center px-4 py-3 bg-border text-text-secondary/40 rounded-xl border border-border text-sm font-semibold cursor-not-allowed">
+                          <span className="w-full inline-flex items-center justify-center px-4 py-3 bg-border text-text-secondary rounded-xl border border-border text-sm font-semibold cursor-not-allowed">
                             Certificate Pending
                           </span>
                         )}
