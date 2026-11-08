@@ -48,7 +48,7 @@ const Pill: React.FC<PillProps> = ({
       ].join(" ")}
     >
       {dot && (
-        <span className="inline-flex h-2 w-2 rounded-full bg-primary motion-safe:animate-pulse" />
+        <span className="inline-flex h-2 w-2 rounded-full bg-primary" />
       )}
       {Icon && <Icon className="h-4 w-4 text-primary" />}
       {iconElement}

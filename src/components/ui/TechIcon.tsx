@@ -121,7 +121,7 @@ export const TechIcon: React.FC<TechIconProps> = ({
       src={iconData.url}
       alt={name}
       className={`${sizeClassName} object-contain ${
-        iconData.darkInvert ? "dark:invert" : ""
+        iconData.darkInvert ? "invert" : ""
       } ${className}`}
     />
   );

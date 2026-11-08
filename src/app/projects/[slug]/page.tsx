@@ -1,5 +1,5 @@
 import { projectsData } from "@/data/ProjectData";
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import ProjectDetailsClient from "./ProjectDetailsClient";
 
 export async function generateStaticParams() {
@@ -17,7 +17,7 @@ export default async function ProjectPage({
   const project = projectsData.find((p) => p.slug === slug);
 
   if (!project) {
-    redirect("/#projects");
+    notFound();
   }
 
   return <ProjectDetailsClient project={project} />;

@@ -1,5 +1,4 @@
 /** @type {import('tailwindcss').Config} */ export default {
-  darkMode: ["class", "[data-mode=\"dark\"]"],
   content: [
     "./pages/**/*.{js,jsx,ts,tsx}",
     "./components/**/*.{js,jsx,ts,tsx}",
@@ -17,35 +16,35 @@
     },
     extend: {
       colors: {
-        border: "var(--border)",
-        input: "var(--border)",
-        ring: "var(--primary)",
-        background: "var(--bg)",
-        foreground: "var(--text)",
+        border: "color-mix(in srgb, var(--border) calc(<alpha-value> * 100%), transparent)",
+        input: "color-mix(in srgb, var(--border) calc(<alpha-value> * 100%), transparent)",
+        ring: "color-mix(in srgb, var(--primary) calc(<alpha-value> * 100%), transparent)",
+        background: "color-mix(in srgb, var(--bg) calc(<alpha-value> * 100%), transparent)",
+        foreground: "color-mix(in srgb, var(--text) calc(<alpha-value> * 100%), transparent)",
         primary: {
-          DEFAULT: "var(--primary)",
-          hover: "var(--primary-hover)",
-          foreground: "var(--bg)",
+          DEFAULT: "color-mix(in srgb, var(--primary) calc(<alpha-value> * 100%), transparent)",
+          hover: "color-mix(in srgb, var(--primary-hover) calc(<alpha-value> * 100%), transparent)",
+          foreground: "color-mix(in srgb, var(--bg) calc(<alpha-value> * 100%), transparent)",
         },
         secondary: {
-          DEFAULT: "var(--secondary)",
-          foreground: "var(--text)",
+          DEFAULT: "color-mix(in srgb, var(--secondary) calc(<alpha-value> * 100%), transparent)",
+          foreground: "color-mix(in srgb, var(--text) calc(<alpha-value> * 100%), transparent)",
         },
         surface: {
-          DEFAULT: "var(--surface)",
-          elevated: "var(--surface-elevated)",
+          DEFAULT: "color-mix(in srgb, var(--surface) calc(<alpha-value> * 100%), transparent)",
+          elevated: "color-mix(in srgb, var(--surface-elevated) calc(<alpha-value> * 100%), transparent)",
         },
         text: {
-          DEFAULT: "var(--text)",
-          secondary: "var(--text-secondary)",
-          muted: "var(--muted-text)",
+          DEFAULT: "color-mix(in srgb, var(--text) calc(<alpha-value> * 100%), transparent)",
+          secondary: "color-mix(in srgb, var(--text-secondary) calc(<alpha-value> * 100%), transparent)",
+          muted: "color-mix(in srgb, var(--muted-text) calc(<alpha-value> * 100%), transparent)",
         },
         portfolio: {
-          primary: "var(--primary)",
-          secondary: "var(--secondary)",
-          accent: "var(--primary)",
-          light: "var(--secondary)",
-          dark: "var(--bg)",
+          primary: "color-mix(in srgb, var(--primary) calc(<alpha-value> * 100%), transparent)",
+          secondary: "color-mix(in srgb, var(--secondary) calc(<alpha-value> * 100%), transparent)",
+          accent: "color-mix(in srgb, var(--primary) calc(<alpha-value> * 100%), transparent)",
+          light: "color-mix(in srgb, var(--secondary) calc(<alpha-value> * 100%), transparent)",
+          dark: "color-mix(in srgb, var(--bg) calc(<alpha-value> * 100%), transparent)",
         },
       },
       borderRadius: {

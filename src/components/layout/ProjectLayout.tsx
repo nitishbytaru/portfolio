@@ -7,7 +7,6 @@ import { projectsData, Project } from "../../data/ProjectData";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
   Pagination,
-  Autoplay,
   EffectFade,
 } from "swiper/modules";
 import {
@@ -88,7 +87,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
 
   return (
     <div className="pt-28 pb-20 px-4 sm:px-6 lg:px-8 bg-background min-h-screen relative overflow-hidden transition-colors duration-300">
-      <div className="absolute inset-0 pointer-events-none opacity-[0.05] dark:opacity-[0.08] bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:48px_48px]" />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.08] bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:48px_48px]" />
 
       <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-primary/10 rounded-full blur-[160px] opacity-50 pointer-events-none" />
       <div className="absolute bottom-[20%] right-[-5%] w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[150px] opacity-40 pointer-events-none" />
@@ -110,7 +109,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
 
         <div className="flex flex-col lg:flex-row gap-6">
           <div ref={contentReveal.ref} className="flex flex-col gap-6 lg:w-[70%]">
-            <div
+            {project.images?.length > 0 && <div
               className={`scroll-reveal ${contentReveal.isVisible ? "revealed" : ""
                 } relative group rounded-3xl overflow-hidden border border-border shadow-2xl shadow-primary/10 bg-surface/70 backdrop-blur-2xl p-2`}
             >
@@ -122,9 +121,8 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
                 slidesPerView={1}
                 effect="fade"
                 loop
-                modules={[Pagination, Autoplay, EffectFade]}
+                modules={[Pagination, EffectFade]}
                 pagination={{ clickable: true, dynamicBullets: true }}
-                autoplay={{ delay: 5000, disableOnInteraction: false }}
                 className="rounded-2xl overflow-hidden relative h-full min-h-[300px] md:min-h-[400px] lg:min-h-[500px]"
               >
                 {project.images?.map((src, i) => (
@@ -132,12 +130,13 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
                     <img
                       src={src}
                       alt={`${project.title} Screenshot ${i + 1}`}
+                      loading={i === 0 ? "eager" : "lazy"}
                       className="w-full h-full object-contain transform transition-transform duration-1000 group-hover:scale-[1.01]"
                     />
                   </SwiperSlide>
                 ))}
               </Swiper>
-            </div>
+            </div>}
 
             <BentoCard
               title="About Project"
@@ -156,7 +155,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
                 ))}
 
                 {project.detailedDescription?.note && (
-                  <div className="bg-background/70 backdrop-blur-xl border border-border p-4 sm:p-5 rounded-2xl border-l-4 border-l-primary mt-4 transition-all duration-300 hover:bg-surface/70 flex items-start gap-4">
+                  <div className="bg-background/70 backdrop-blur-xl border border-border p-4 sm:p-5 rounded-2xl mt-4 transition-all duration-300 hover:bg-surface/70 flex items-start gap-4">
                     <div className="bg-surface/80 p-2 rounded-xl shrink-0 mt-0.5 border border-border">
                       <Info className="w-4 h-4 text-primary" />
                     </div>
@@ -196,7 +195,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
               <div className="flex flex-col gap-4">
                 <button
                   onClick={onLiveLinkClick}
-                  className="w-full group relative px-6 py-4 bg-primary text-white rounded-2xl hover:bg-primary-hover transition-all duration-300 font-bold shadow-lg overflow-hidden flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary hover:scale-[1.02] hover:shadow-glow-primary"
+                  className="w-full group relative px-6 py-4 bg-primary text-primary-foreground rounded-2xl hover:bg-primary-hover transition-all duration-300 font-bold shadow-lg overflow-hidden flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary hover:scale-[1.02] hover:shadow-glow-primary"
                 >
                   <span className="relative z-10 flex items-center text-sm sm:text-base">
                     {project.liveLink && project.liveLink.includes("linkedin.com") ? "View LinkedIn Post" : "View Live Demo"}
@@ -258,7 +257,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
                           key={key}
                           className="group flex items-center bg-background/70 backdrop-blur-xl p-4 rounded-2xl border border-border hover:bg-surface/80 hover:border-primary/40 transition-all duration-300"
                         >
-                          <div className="p-3 bg-surface/80 rounded-xl mr-4 group-hover:bg-primary group-hover:text-white transition-all duration-300 shrink-0 border border-border text-primary">
+                          <div className="p-3 bg-surface/80 rounded-xl mr-4 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shrink-0 border border-border text-primary">
                             <Icon className="w-5 h-5" />
                           </div>
 
@@ -267,7 +266,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
                               {key.replace(/_/g, " ")}
                             </h3>
 
-                            <p className="text-sm font-medium text-text truncate">
+                            <p className="text-sm font-medium text-text break-words">
                               {value}
                             </p>
 
@@ -310,7 +309,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
                         key={key}
                         className="group flex items-center bg-background/70 backdrop-blur-xl p-4 rounded-2xl border border-border hover:bg-surface/80 hover:border-primary/40 transition-all duration-300"
                       >
-                        <div className="p-3 bg-surface/80 rounded-xl mr-4 group-hover:bg-primary group-hover:text-white transition-all duration-300 shrink-0 border border-border text-primary">
+                        <div className="p-3 bg-surface/80 rounded-xl mr-4 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shrink-0 border border-border text-primary">
                           <Icon className="w-5 h-5" />
                         </div>
 
@@ -319,7 +318,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
                             {key.replace(/_/g, " ")}
                           </h3>
 
-                          <p className="text-sm font-medium text-text truncate">
+                          <p className="text-sm font-medium text-text break-words">
                             {value}
                           </p>
 
@@ -360,6 +359,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
                     <img
                       src={src}
                       alt={`${project.title} gallery image ${idx + 1}`}
+                      loading="lazy"
                       className="w-full h-auto block transform transition-transform duration-700 group-hover:scale-110"
                     />
                   </div>
@@ -381,7 +381,8 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
           ) : <div className="hidden sm:block sm:w-[200px]"></div>}
 
           <Link
-            href="/#projects"
+            href="/projects"
+            aria-label="Back to all projects"
             className="group flex items-center justify-center p-4 text-text-secondary hover:text-primary transition-colors duration-300 bg-surface/30 hover:bg-surface/70 rounded-full"
             title="Back to all projects"
           >
@@ -391,7 +392,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, onLiveLinkClick 
           {nextProject ? (
             <Link
               href={`/projects/${nextProject.slug}`}
-              className="group flex items-center justify-center px-6 py-4 bg-primary text-white border border-transparent rounded-2xl hover:bg-primary/90 transition-all duration-300 font-bold shadow-md hover:shadow-xl sm:w-auto w-full"
+              className="group flex items-center justify-center px-6 py-4 bg-primary text-primary-foreground border border-transparent rounded-2xl hover:bg-primary/90 transition-all duration-300 font-bold shadow-md hover:shadow-xl sm:w-auto w-full"
             >
               <span>{nextProject.title}</span>
               <ArrowRight className="w-5 h-5 ml-3 transform transition-transform group-hover:translate-x-1" />

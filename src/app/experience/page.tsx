@@ -240,10 +240,10 @@ export default function ExperiencePage() {
                               className="group/metric flex flex-col p-3 rounded-2xl bg-surface-elevated/40 border border-border/50 transition-all duration-300 hover:border-primary/30 hover:bg-surface-elevated hover:-translate-y-1 hover:shadow-md"
                             >
                               <div className="flex items-center gap-2 mb-1.5">
-                                <div className="p-1.5 rounded-lg bg-primary/10 text-primary transition-all duration-300 group-hover/metric:bg-primary group-hover/metric:text-white">
+                                <div className="p-1.5 rounded-lg bg-primary/10 text-primary transition-all duration-300 group-hover/metric:bg-primary group-hover/metric:text-primary-foreground">
                                   <Icon className="w-3.5 h-3.5" />
                                 </div>
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary/70">
+                                <span className="text-xs font-bold uppercase tracking-wider text-text-secondary/70">
                                   {metric.label}
                                 </span>
                               </div>
@@ -322,7 +322,7 @@ export default function ExperiencePage() {
                             href={exp.certificate}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="btn-ripple w-full inline-flex items-center justify-center px-4 py-3 bg-primary hover:bg-primary-hover text-white rounded-xl border border-primary transition-all duration-300 text-sm font-semibold hover:shadow-glow-primary group/btn"
+                            className="btn-ripple w-full inline-flex items-center justify-center px-4 py-3 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl border border-primary transition-all duration-300 text-sm font-semibold hover:shadow-glow-primary group/btn"
                           >
                             <span>View Full Certificate</span>
                             <ExternalLink className="w-4 h-4 ml-2 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-200" />

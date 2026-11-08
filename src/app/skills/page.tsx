@@ -84,7 +84,7 @@ export default function SkillsPage() {
   return (
     <div className="bg-background pt-16">
       <section id="skills" className="py-24 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden transition-colors duration-300 scroll-mt-20">
-        <div className="absolute inset-0 pointer-events-none opacity-[0.05] dark:opacity-[0.08] bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:48px_48px]" />
+        <div className="absolute inset-0 pointer-events-none opacity-[0.08] bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:48px_48px]" />
 
         <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-[150px] opacity-50 pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-[150px] opacity-40 pointer-events-none" />
@@ -151,7 +151,7 @@ export default function SkillsPage() {
               <div className="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-32 bg-gradient-to-l from-background to-transparent z-10" />
 
               {/* Row 1 - Moves left */}
-              <div className="flex w-[200%] md:w-max">
+              <div className="marquee-track flex w-[200%] md:w-max">
                 <div className="flex w-1/2 md:w-max justify-around gap-4 px-4 animate-marquee">
                   {[...row1, ...row1].map((skill, index) => (
                     <div
@@ -166,7 +166,7 @@ export default function SkillsPage() {
               </div>
 
               {/* Row 2 - Moves right */}
-              <div className="flex w-[200%] md:w-max">
+              <div className="marquee-track flex w-[200%] md:w-max">
                 <div className="flex w-1/2 md:w-max justify-around gap-4 px-4 animate-marquee-reverse">
                   {[...row2, ...row2].map((skill, index) => (
                     <div

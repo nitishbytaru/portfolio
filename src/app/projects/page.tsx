@@ -38,7 +38,7 @@ const ProjectCardMedia: React.FC<ProjectCardProps> = ({ project }) => (
     </div>
 
     {/* Image scrim */}
-    <div className="absolute inset-0 z-10 bg-gradient-to-t from-background/95 via-background/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-60" />
+    <div className="absolute inset-0 z-10 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-60" />
 
     <img
       src={project.thumbnail}
@@ -159,7 +159,7 @@ export default function ProjectsPage() {
     <div className="bg-background pt-16">
       <SectionShell id="projects">
         <SectionHeader
-          title="Featured Projects"
+          title="Projects"
           aside={
             <Pill icon={Layers} tone="solid">
               {projectsData.length} Projects

@@ -622,7 +622,7 @@ export default function AnalyticsPage() {
             <h3 className="text-xl font-bold text-text mb-2">Data Unavailable</h3>
             <p className="text-text-secondary mb-6 text-sm">{error}</p>
             <button onClick={() => window.location.reload()}
-              className="px-6 py-2.5 rounded-xl bg-primary text-white font-semibold hover:bg-primary-hover transition-colors">
+              className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary-hover transition-colors">
               Retry
             </button>
           </GlassCard>
