@@ -16,6 +16,8 @@ export default {
         indigo: "#2E2A5C",
         iris: "#5459AE",
         apricot: "#FFB54D",
+        ghgreen: "#238636",
+        ghblack: "#0D1117",
         "indigo-soft": "#4A4690",
       },
       fontFamily: {

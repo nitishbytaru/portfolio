@@ -158,8 +158,9 @@ export interface TimelineItem {
   count: number;
 }
 
-// Tile colors from the site palette, assigned by language rank.
-const LANGUAGE_COLORS = ["#7D82D0", "#FEC067", "#A7D8D6", "#8D6FBD", "#F0ADFF", "#595959"];
+// Validated for color-vision separation. Assigned by rank, never cycled.
+const LANGUAGE_COLORS = ["#5459AE", "#E8921A", "#0E9F97", "#C25BD6", "#4238B8", "#B3701A", "#E0669A"];
+const OTHER_LANGUAGE_COLOR = "#8A8A93";
 
 export function computeAnalytics(profile: any, repos: any[]) {
   const now = new Date();
@@ -207,7 +208,7 @@ export function computeAnalytics(profile: any, repos: any[]) {
     .sort((a, b) => b.count - a.count)
     .map((language, i) => ({
       ...language,
-      color: LANGUAGE_COLORS[i % LANGUAGE_COLORS.length],
+      color: LANGUAGE_COLORS[i] ?? OTHER_LANGUAGE_COLOR,
     }));
 
   const reposByYear: Record<string, number> = {};
