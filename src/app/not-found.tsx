@@ -10,7 +10,7 @@ export default function NotFound() {
   return (
     <div>
       <Wordmark className="mb-6">Not found</Wordmark>
-      <div className="grid gap-4 lg:grid-cols-3 lg:gap-5">
+      <div className="enter-lost stagger grid gap-4 lg:grid-cols-3 lg:gap-5">
         <Tile tone="amber" className="flex flex-col justify-between gap-8 p-6">
           <p className="wide text-2xl font-extrabold leading-tight">This page doesn&apos;t exist. The link may be old or mistyped.</p>
           <Link href="/" className="inline-flex min-h-11 items-center self-start rounded-full bg-ink px-6 font-semibold text-white">

@@ -829,6 +829,184 @@ h3 {
   }
 }
 
+/* Page opening animations: CSS only, so content is never left hidden */
+main {
+  overflow-x: clip;
+  overflow-clip-margin: 32px;
+}
+
+.stagger > :nth-child(1) {
+  --i: 0;
+}
+.stagger > :nth-child(2) {
+  --i: 1;
+}
+.stagger > :nth-child(3) {
+  --i: 2;
+}
+.stagger > :nth-child(4) {
+  --i: 3;
+}
+.stagger > :nth-child(5) {
+  --i: 4;
+}
+.stagger > :nth-child(6) {
+  --i: 5;
+}
+.stagger > :nth-child(7) {
+  --i: 6;
+}
+.stagger > :nth-child(8) {
+  --i: 7;
+}
+.stagger > :nth-child(9) {
+  --i: 8;
+}
+.stagger > :nth-child(10) {
+  --i: 9;
+}
+.stagger > :nth-child(11) {
+  --i: 10;
+}
+.stagger > :nth-child(12) {
+  --i: 11;
+}
+.stagger > :nth-child(13) {
+  --i: 12;
+}
+.stagger > :nth-child(14) {
+  --i: 13;
+}
+.stagger > :nth-child(15) {
+  --i: 14;
+}
+.stagger > :nth-child(16) {
+  --i: 15;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .enter-word {
+    animation: enter-word 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  @keyframes enter-word {
+    from {
+      clip-path: inset(0 0 100% 0);
+      translate: 0 0.35em;
+    }
+    to {
+      clip-path: inset(-20% -5% -20% -5%);
+    }
+  }
+
+  /* Home: the About card slides in and the board tiles pop into place */
+  .enter-home > section {
+    animation: enter-home-about 0.85s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  @keyframes enter-home-about {
+    from {
+      opacity: 0;
+      translate: -48px 0;
+    }
+  }
+
+  .enter-tiles > * {
+    animation: enter-tile 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(220ms + var(--i) * 95ms);
+  }
+
+  @keyframes enter-tile {
+    from {
+      opacity: 0;
+      scale: 0.82;
+    }
+  }
+
+  /* Projects: the color strips rise up one after another */
+  .enter-strips > * {
+    animation: enter-strip 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(120ms + var(--i) * 110ms);
+  }
+
+  @keyframes enter-strip {
+    from {
+      clip-path: inset(100% 0 0 0 round 20px);
+      translate: 0 44px;
+    }
+    to {
+      clip-path: inset(0 0 0 0 round 20px);
+    }
+  }
+
+  /* Project page: the slideshow tips up from depth, actions glide in beside it */
+  .enter-detail > #screens {
+    animation: enter-deck 0.95s cubic-bezier(0.16, 1, 0.3, 1) 80ms backwards;
+    transform-origin: 50% 100%;
+  }
+
+  @keyframes enter-deck {
+    from {
+      opacity: 0;
+      transform: perspective(1200px) rotateX(26deg) scale(0.9);
+    }
+  }
+
+  .enter-launch > * {
+    animation: enter-launch 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(260ms + var(--i) * 130ms);
+  }
+
+  @keyframes enter-launch {
+    from {
+      opacity: 0;
+      translate: 56px 0;
+    }
+  }
+
+  /* Experience: the time ruler unrolls from the left */
+  .enter-ruler {
+    animation: enter-ruler 1s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  @keyframes enter-ruler {
+    from {
+      clip-path: inset(0 100% 0 0 round 20px);
+    }
+    to {
+      clip-path: inset(-40px -40px -40px 0 round 20px);
+    }
+  }
+
+  /* GitHub Stats: tiles drop into the grid like blocks */
+  .enter-drop > * {
+    animation: enter-drop 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(var(--i) * 75ms);
+  }
+
+  @keyframes enter-drop {
+    from {
+      opacity: 0;
+      translate: 0 -46px;
+      rotate: -1.5deg;
+    }
+  }
+
+  /* Not found: the tiles swing in slightly lost */
+  .enter-lost > * {
+    animation: enter-lost 0.75s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(150ms + var(--i) * 150ms);
+  }
+
+  @keyframes enter-lost {
+    from {
+      opacity: 0;
+      rotate: -7deg;
+      translate: 0 34px;
+    }
+  }
+}
+
 /* One-shot motion: Experience wipe and pops, GitHub Stats bars and calendar */
 @media (prefers-reduced-motion: no-preference) {
   .wipe-in {

@@ -43,7 +43,7 @@ export default function ProjectsBoard() {
   };
 
   return (
-    <ul className="flex flex-col gap-3 xl:h-[calc(100vh-18.5rem)] xl:min-h-[540px] xl:flex-row">
+    <ul className="enter-strips stagger flex flex-col gap-3 xl:h-[calc(100vh-18.5rem)] xl:min-h-[540px] xl:flex-row">
       {projectsData.map((project, index) => {
         const isActive = active === index;
         const extraScreen = project.images?.find((src) => src !== project.thumbnail);

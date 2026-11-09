@@ -148,7 +148,7 @@ export default function ProjectLaunchpad({ project, images, featureIcons, heroTo
   ];
 
   return (
-    <div className="flex flex-col gap-4 md:grid md:grid-cols-2 lg:col-span-4 lg:flex lg:gap-5">
+    <div className="enter-launch stagger flex flex-col gap-4 md:grid md:grid-cols-2 lg:col-span-4 lg:flex lg:gap-5">
       <a
         href={project.liveLink}
         target="_blank"

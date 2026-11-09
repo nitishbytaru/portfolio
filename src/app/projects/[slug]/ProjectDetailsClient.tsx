@@ -9,5 +9,5 @@ interface ProjectDetailsClientProps {
 }
 
 export default function ProjectDetailsClient({ project }: ProjectDetailsClientProps) {
-  return <ProjectLayout project={project} />;
+  return <ProjectLayout key={project.slug} project={project} />;
 }

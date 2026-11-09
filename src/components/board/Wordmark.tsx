@@ -9,7 +9,7 @@ interface WordmarkProps {
 export default function Wordmark({ children, as: Tag = "h1", className = "" }: WordmarkProps) {
   return (
     <Tag
-      className={`wide relative inline-block pr-[0.1em] text-[clamp(40px,9.4vw,7.75rem)] font-bold leading-[0.95] tracking-normal text-ink ${className}`}
+      className={`enter-word wide relative inline-block pr-[0.1em] text-[clamp(40px,9.4vw,7.75rem)] font-bold leading-[0.95] tracking-normal text-ink ${className}`}
     >
       {children}
       <span

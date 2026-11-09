@@ -43,7 +43,7 @@ const Count = ({ value, label, white }: { value: number; label: string; white?: 
 
 export default function Home() {
   return (
-    <div className="grid gap-4 lg:min-h-[max(620px,calc(100vh-10.5rem))] lg:grid-cols-[minmax(340px,31%)_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-8 lg:gap-y-5">
+    <div className="enter-home grid gap-4 lg:min-h-[max(620px,calc(100vh-10.5rem))] lg:grid-cols-[minmax(340px,31%)_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-8 lg:gap-y-5">
       <Wordmark as="p" className="lg:col-start-2 lg:row-start-1 lg:justify-self-start wordmark-home">
         Portfolio
       </Wordmark>
@@ -51,7 +51,7 @@ export default function Home() {
       <AboutCard />
 
       {/* Work tiles */}
-      <div className="grid grid-cols-2 gap-4 lg:col-start-2 lg:row-start-2 lg:grid-cols-12 lg:grid-rows-[minmax(300px,1.6fr)_minmax(180px,1fr)] lg:gap-5">
+      <div className="enter-tiles stagger grid grid-cols-2 gap-4 lg:col-start-2 lg:row-start-2 lg:grid-cols-12 lg:grid-rows-[minmax(300px,1.6fr)_minmax(180px,1fr)] lg:gap-5">
         {/* Featured project */}
         <Tile
           as={Link}

@@ -356,7 +356,7 @@ export default function ExperienceBoard() {
   return (
     <div className="flex flex-col gap-4">
       {/* Time ruler */}
-      <Tile tone="indigo" className="!overflow-visible z-20 shrink-0 px-5 pb-4 pt-3">
+      <Tile tone="indigo" className="!overflow-visible enter-ruler z-20 shrink-0 px-5 pb-4 pt-3">
         <div ref={rulerRef} onPointerMove={handleMove} onPointerLeave={handleLeave} className="relative">
           <div aria-hidden="true" className="flex h-16 items-end justify-between">
             {Array.from({ length: TICKS }, (_, index) => (

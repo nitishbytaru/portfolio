@@ -60,7 +60,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
       <Wordmark className="mb-6 !text-[clamp(2.25rem,6.6vw,5.75rem)]">{project.title}</Wordmark>
       
 
-      <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
+      <div className="enter-detail grid gap-4 lg:grid-cols-12 lg:gap-5">
         {/* Screens */}
         <Tile as="section" id="screens" aria-label={`${project.title} screenshots`} tone={heroTone} className="p-3 sm:p-4 lg:col-span-8">
           <ScreenDeck title={project.title} images={images} />

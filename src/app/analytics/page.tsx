@@ -570,7 +570,7 @@ export default function AnalyticsPage() {
 
   return (
     <Shell>
-      <div className="stats-grid grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5">
+      <div className="enter-drop stagger stats-grid grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5">
         <ContributionSkyline contributions={contributions}>
           <div className="min-w-0">
             <div className="flex items-center gap-5">
