@@ -80,7 +80,7 @@ h3 {
 .flow-mark {
   background: linear-gradient(#f6f6f6, #f6f6f6) no-repeat left center / 100% 100%;
   border-radius: 4px;
-  color: #000;
+  color: #2e2a5c;
   font-weight: 700;
   padding: 0 0.2em;
 }
@@ -347,6 +347,59 @@ h3 {
     from {
       opacity: 0;
       transform: rotateY(-540deg) scale(0.5);
+    }
+  }
+}
+
+/* Experience: passport stamps and the swinging ID badge */
+.stamp {
+  rotate: var(--tilt);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stamp {
+    transition: rotate 0.3s ease-out, background-color 0.3s ease-out;
+  }
+
+  .stamp:hover {
+    rotate: 0deg;
+    background-color: rgb(255 255 255 / 0.45);
+  }
+
+  .stamps[data-state="waiting"] .stamp {
+    opacity: 0;
+  }
+
+  .stamps[data-state="in"] .stamp {
+    animation: stamp-in 0.34s cubic-bezier(0.3, 0, 0.3, 1) backwards;
+  }
+
+  @keyframes stamp-in {
+    from {
+      opacity: 0;
+      transform: scale(1.8);
+    }
+  }
+
+  .badge-swing {
+    animation: badge-swing 1.5s ease-in-out;
+  }
+
+  @keyframes badge-swing {
+    0% {
+      transform: rotate(-11deg);
+    }
+    25% {
+      transform: rotate(7deg);
+    }
+    50% {
+      transform: rotate(-4deg);
+    }
+    75% {
+      transform: rotate(2deg);
+    }
+    100% {
+      transform: rotate(0deg);
     }
   }
 }

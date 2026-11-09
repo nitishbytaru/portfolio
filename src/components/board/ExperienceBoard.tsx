@@ -15,6 +15,7 @@ import {
   LucideIcon,
 } from "lucide-react";
 import Tile, { TileTone } from "@/components/board/Tile";
+import Image from "next/image";
 import { TechIcon, hasTechIcon } from "@/components/ui/TechIcon";
 
 interface Metric {
@@ -207,6 +208,106 @@ const CertificateCard = ({ url, company, roleName, date }: { url: string; compan
   );
 };
 
+const Barcode = ({ seed }: { seed: string }) => (
+  <span aria-hidden="true" className="flex h-8 items-stretch justify-center gap-[2px]">
+    {Array.from({ length: 34 }, (_, index) => (
+      <span key={index} className="block bg-indigo" style={{ width: `${(seed.charCodeAt(index % seed.length) % 3) + 1}px` }} />
+    ))}
+  </span>
+);
+
+const IdBadge = ({ item, accent }: { item: ExperienceItem; accent: string }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const lean = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!cardRef.current || !window.matchMedia("(hover: hover) and (prefers-reduced-motion: no-preference)").matches) return;
+    const box = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - box.left) / box.width - 0.5;
+    cardRef.current.style.transform = `rotateZ(${x * -9}deg) rotateY(${x * 16}deg)`;
+  };
+
+  const settle = () => {
+    if (cardRef.current) cardRef.current.style.transform = "";
+  };
+
+  return (
+    <div className="-mt-6 lg:-mt-10" onPointerMove={lean} onPointerLeave={settle}>
+      <div className="badge-swing mx-auto w-[260px] origin-top [perspective:900px]">
+        <div ref={cardRef} className="origin-top motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out">
+          <div aria-hidden="true" className="mx-auto flex h-24 w-8 items-center justify-center overflow-hidden bg-indigo lg:h-28">
+            <span className="wide whitespace-nowrap text-[11px] font-bold tracking-wide text-white [writing-mode:vertical-rl]">{item.company}</span>
+          </div>
+          <div aria-hidden="true" className="mx-auto h-5 w-10 rounded-b-md bg-graphite" />
+          <div className="-mt-1 overflow-hidden rounded-2xl bg-white text-center text-indigo shadow-[0_22px_36px_-14px_rgb(46_42_92/0.55)]">
+            <div className="flex h-14 items-start justify-center bg-indigo pt-3">
+              <span aria-hidden="true" className="block h-2.5 w-14 rounded-full bg-white" />
+            </div>
+            <div className={`relative mx-auto -mt-6 h-28 w-28 overflow-hidden rounded-full border-4 border-white ${accent}`}>
+              <Image src="/NitishCutout.png" alt="" fill sizes="112px" className="object-cover object-top" />
+            </div>
+            <div className="px-5 pb-5 pt-3">
+              <p className="wide text-base font-extrabold leading-tight">Nitish Durga Bytaru</p>
+              <p className="mt-1 text-sm font-semibold">{item.role}</p>
+              <p className="mt-3 inline-flex items-center gap-1.5 text-sm"><MapPin className="h-4 w-4" aria-hidden="true" />{item.location}</p>
+              <p className="flex items-center justify-center gap-1.5 text-sm"><Calendar className="h-4 w-4" aria-hidden="true" />{item.date}</p>
+              <div className="mt-4"><Barcode seed={item.company + item.role} /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const STAMP_TILT = ["-4deg", "3deg", "2.5deg", "-3deg"];
+
+const Stamps = ({ metrics }: { metrics: Metric[] }) => {
+  const ref = useRef<HTMLDListElement>(null);
+  const [state, setState] = useState("idle");
+
+  useLayoutEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: no-preference)").matches) setState("waiting");
+  }, []);
+
+  useEffect(() => {
+    if (state !== "waiting" || !ref.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setState("in");
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.25 }
+    );
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [state]);
+
+  return (
+    <dl ref={ref} data-state={state} className="stamps grid grid-cols-1 gap-5 sm:grid-cols-2">
+      {metrics.map((metric, index) => {
+        const Icon = metric.icon;
+        return (
+          <div
+            key={metric.label}
+            className="stamp flex cursor-default items-center gap-3 rounded-xl border-[3px] border-double border-indigo p-3 text-indigo"
+            style={{ "--tilt": STAMP_TILT[index % STAMP_TILT.length], animationDelay: `${index * 170}ms` } as React.CSSProperties}
+          >
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-dashed border-indigo">
+              <Icon className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <span className="flex min-w-0 flex-col-reverse">
+              <dt className="text-sm">{metric.label}</dt>
+              <dd className="font-bold leading-tight">{metric.value}</dd>
+            </span>
+          </div>
+        );
+      })}
+    </dl>
+  );
+};
+
 export default function ExperienceBoard() {
   const [active, setActive] = useState(0);
   const [previous, setPrevious] = useState(0);
@@ -255,7 +356,7 @@ export default function ExperienceBoard() {
   return (
     <div className="flex flex-col gap-4">
       {/* Time ruler */}
-      <Tile tone="indigo" className="!overflow-visible z-20 shrink-0 px-5 pb-4 pt-3 lg:sticky lg:top-3">
+      <Tile tone="indigo" className="!overflow-visible z-20 shrink-0 px-5 pb-4 pt-3">
         <div ref={rulerRef} onPointerMove={handleMove} onPointerLeave={handleLeave} className="relative">
           <div aria-hidden="true" className="flex h-16 items-end justify-between">
             {Array.from({ length: TICKS }, (_, index) => (
@@ -305,66 +406,48 @@ export default function ExperienceBoard() {
           key={role.company}
           as="article"
           tone={span.tone}
-          className="wipe-in p-6 lg:p-10"
+          className="wipe-in !text-indigo p-6 lg:p-10"
           style={{ "--wipe-x": `${origin}%` } as React.CSSProperties}
         >
-          <header className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-12">
+            <IdBadge item={role} accent={span.bg} />
+
             <div className="min-w-0">
               <h2 className="wide text-[clamp(2.25rem,5.4vw,5rem)] font-extrabold leading-none">{role.company}</h2>
               <p className="mt-3 text-xl font-bold">{role.role}</p>
-              <p className="mt-2 flex flex-wrap gap-x-5 gap-y-1 font-medium">
-                <span className="inline-flex items-center gap-1.5"><MapPin className="h-4 w-4" aria-hidden="true" />{role.location}</span>
-                <span className="inline-flex items-center gap-1.5"><Calendar className="h-4 w-4" aria-hidden="true" />{role.date}</span>
-                <span>{role.type}, {role.summaryLabel}</span>
-              </p>
-            </div>
-            <ul aria-label="Skills applied" className="flex max-w-md flex-wrap gap-2 lg:justify-end">
-              {role.skills.map((skill, index) => (
-                <li
-                  key={skill}
-                  className={`pop-in inline-flex h-10 items-center gap-2 rounded-full bg-frame text-sm font-semibold text-ink transition-transform duration-200 hover:-translate-y-1 ${
-                    hasTechIcon(skill) ? "pl-2 pr-3.5" : "px-3.5"
-                  }`}
-                  style={{ animationDelay: `${180 + index * 45}ms` }}
-                >
-                  {hasTechIcon(skill) && <TechIcon name={skill} sizeClassName="w-6 h-6" />}
-                  {skill}
-                </li>
-              ))}
-            </ul>
-          </header>
+              <p className="mt-2 font-medium">{role.type}, {role.summaryLabel}</p>
 
-          <div className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-center">
-            <ol>
-              {role.points.map((point, index) => (
-                <FlowStep key={point} last={index === role.points.length - 1}>
-                  {highlightKeywords(point)}
-                </FlowStep>
-              ))}
-            </ol>
+              <ul aria-label="Skills applied" className="mt-5 flex flex-wrap gap-2">
+                {role.skills.map((skill, index) => (
+                  <li
+                    key={skill}
+                    className={`pop-in inline-flex h-10 items-center gap-2 rounded-full bg-frame text-sm font-semibold text-indigo transition-transform duration-200 hover:-translate-y-1 ${
+                      hasTechIcon(skill) ? "pl-2 pr-3.5" : "px-3.5"
+                    }`}
+                    style={{ animationDelay: `${180 + index * 45}ms` }}
+                  >
+                    {hasTechIcon(skill) && <TechIcon name={skill} sizeClassName="w-6 h-6" />}
+                    {skill}
+                  </li>
+                ))}
+              </ul>
+
+              <ol className="mt-8">
+                {role.points.map((point, index) => (
+                  <FlowStep key={point} last={index === role.points.length - 1}>
+                    {highlightKeywords(point)}
+                  </FlowStep>
+                ))}
+              </ol>
+            </div>
+          </div>
+
+          <div className="mt-10 grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)]">
             {role.certificate !== "#" && (
               <CertificateCard url={role.certificate} company={role.company} roleName={role.role} date={role.date} />
             )}
+            <Stamps metrics={role.metrics} />
           </div>
-
-          <dl className="mt-10 grid grid-cols-2 gap-3 lg:grid-cols-4">
-            {role.metrics.map((metric, index) => {
-              const Icon = metric.icon;
-              return (
-                <div
-                  key={metric.label}
-                  className="pop-in group/metric rounded-2xl bg-frame p-4 text-ink transition-transform duration-300 hover:-translate-y-1"
-                  style={{ animationDelay: `${260 + index * 70}ms` }}
-                >
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ink text-white transition-transform duration-300 group-hover/metric:rotate-12 group-hover/metric:scale-110">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <dt className="mt-3 text-sm">{metric.label}</dt>
-                  <dd className="font-bold leading-tight">{metric.value}</dd>
-                </div>
-              );
-            })}
-          </dl>
         </Tile>
       </div>
     </div>
