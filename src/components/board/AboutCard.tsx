@@ -52,7 +52,7 @@ export default function AboutCard() {
       onPointerEnter={() => setWanted(true)}
       onPointerMove={handleMove}
       onPointerLeave={handleLeave}
-      className="flex flex-col !rounded-tl-none p-6 lg:col-start-1 lg:row-span-2 lg:row-start-1"
+      className="flex flex-col !rounded-tl-none p-6 md:flex-row md:items-center md:gap-8 lg:flex-col lg:items-stretch lg:gap-0 lg:col-start-1 lg:row-span-2 lg:row-start-1"
     >
       <button
             type="button"
@@ -72,7 +72,7 @@ export default function AboutCard() {
         About Me
       </div>
 
-      <div className="group/portrait relative mx-auto mt-8 aspect-[1/1.16] w-[min(74%,270px)] shrink-0 lg:my-auto lg:w-[min(88%,36vh)]">
+      <div className="group/portrait relative mx-auto mt-8 aspect-[1/1.16] w-[min(74%,270px)] shrink-0 md:mx-0 md:ml-4 md:w-[230px] lg:mx-auto lg:ml-auto lg:my-auto lg:w-[min(88%,36vh)]">
         <div data-depth="-8" className={`absolute bottom-0 left-0 aspect-square w-full ${PARALLAX}`}>
           <div className="absolute -inset-2.5 rounded-full border-[5px] border-white transition-transform duration-500 ease-out group-hover/portrait:scale-105" />
           <div className="absolute inset-0 rounded-full bg-pink" />
@@ -123,7 +123,7 @@ export default function AboutCard() {
         </a>
       </div>
 
-      <div className="pt-5">
+      <div className="pt-5 md:min-w-0 md:flex-1 lg:flex-none">
         <p className="wide text-3xl font-light leading-none text-white">I&apos;m,</p>
         <h1 id="about-name" className="wide mt-1 text-[2rem] font-semibold leading-[1.04] text-white">
           Nitish Durga Bytaru

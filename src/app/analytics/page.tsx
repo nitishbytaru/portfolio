@@ -195,10 +195,10 @@ const ContributionSkyline = ({ contributions, children }: { contributions: Contr
 
   return (
     <Tile tone="indigo" className="col-span-2 p-6 lg:col-span-4 lg:p-8">
-      <div className="grid gap-8 lg:grid-cols-[340px_minmax(0,1fr)]">
+      <div className="grid gap-8 md:grid-cols-[270px_minmax(0,1fr)] lg:grid-cols-[340px_minmax(0,1fr)]">
         {children}
         {weeks.length > 0 && (
-          <div className="relative h-72 lg:h-auto lg:min-h-[280px]">
+          <div className="relative h-72 md:h-auto md:min-h-[260px] lg:min-h-[280px]">
             <p className="pointer-events-none absolute left-0 top-0 z-10">
               <span className="wide block text-6xl font-extrabold leading-none tabular-nums md:text-7xl">
                 {shown ? shown.total : <CountUp value={contributions?.totalContributions ?? 0} />}
@@ -245,7 +245,7 @@ const TimelineChart = ({ timeline }: { timeline: TimelineItem[] }) => {
       {timeline.map((item, column) => (
         <div key={item.year} className="group/col min-w-0 flex-1 text-center">
           <p className="wide mb-2 text-2xl font-extrabold motion-safe:transition-transform motion-safe:duration-300 group-hover/col:scale-125">{item.count}</p>
-          <div className="flex h-48 flex-col-reverse gap-1">
+          <div className="flex h-48 flex-col-reverse gap-1 md:h-80 lg:h-48">
             {Array.from({ length: item.count }, (_, brick) => (
               <span
                 key={brick}
@@ -636,7 +636,7 @@ export default function AnalyticsPage() {
 
         <Tile tone="mint" className="col-span-2 !text-indigo p-6 lg:col-span-1">
           <h2 className="wide mb-4 text-xl font-extrabold lg:text-base xl:text-xl">Achievements</h2>
-          <ul className="grid grid-cols-2 gap-x-3 gap-y-5">
+          <ul className="grid grid-cols-2 gap-x-3 gap-y-5 md:grid-cols-4 lg:grid-cols-2">
             {achievements.map(({ title, desc, stat, Icon }, index) => (
               <li key={title} className="group/ach text-center">
                 <span className="relative mx-auto block h-[72px] w-[72px] [perspective:500px]">
@@ -658,9 +658,9 @@ export default function AnalyticsPage() {
           </ul>
         </Tile>
 
-        <Tile tone="apricot" className="col-span-2 flex flex-col !text-indigo p-6">
+        <Tile tone="apricot" className="col-span-2 flex flex-col !text-indigo p-6 md:col-span-1 lg:col-span-2">
           <TileTitle>Repository Insights</TileTitle>
-          <div className="grid flex-1 items-center gap-6 sm:grid-cols-[150px_minmax(0,1fr)]">
+          <div className="grid flex-1 items-center gap-6 sm:grid-cols-[150px_minmax(0,1fr)] md:grid-cols-1 lg:grid-cols-[150px_minmax(0,1fr)]">
             <LiveGauge live={stats.deployedCount} total={stats.totalRepos} />
             <ul className="space-y-2">
               {[
@@ -692,7 +692,7 @@ export default function AnalyticsPage() {
           </div>
         </Tile>
 
-        <Tile tone="pink" className="col-span-2 !text-indigo p-6">
+        <Tile tone="pink" className="col-span-2 !text-indigo p-6 md:col-span-1 lg:col-span-2">
           <TileTitle>Coding Timeline</TileTitle>
           <TimelineChart timeline={timeline} />
         </Tile>
@@ -724,11 +724,11 @@ export default function AnalyticsPage() {
               View Full Profile on GitHub
             </a>
           </div>
-          <ul className="grid flex-1 auto-rows-fr gap-x-4 gap-y-6 sm:grid-cols-2 xl:grid-cols-3">
+          <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:flex-1 sm:auto-rows-fr sm:grid-cols-2 sm:gap-x-4 sm:gap-y-6 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
             {topRepos.slice(0, 6).map((repo: any, index: number) => {
               const folder = FOLDERS[index % FOLDERS.length];
               return (
-                <li key={repo.id}>
+                <li key={repo.id} className="w-[78%] shrink-0 snap-start sm:w-auto">
                   <a href={repo.html_url} target="_blank" rel="noopener noreferrer" className="group/folder relative block h-full pt-12 [perspective:900px]">
                     <span aria-hidden="true" className="absolute left-0 top-0 h-8 w-2/5 rounded-t-xl" style={{ backgroundColor: folder.back }} />
                     <span aria-hidden="true" className="absolute inset-x-0 bottom-0 top-4 rounded-2xl rounded-tl-none" style={{ backgroundColor: folder.back }} />

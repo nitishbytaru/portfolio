@@ -231,7 +231,7 @@ const IdBadge = ({ item, accent }: { item: ExperienceItem; accent: string }) => 
   };
 
   return (
-    <div className="-mt-6 lg:-mt-10" onPointerMove={lean} onPointerLeave={settle}>
+    <div className="-mt-6 md:-ml-3 lg:-mt-10 lg:ml-0" onPointerMove={lean} onPointerLeave={settle}>
       <div className="badge-swing mx-auto w-[260px] origin-top [perspective:900px]">
         <div ref={cardRef} className="origin-top motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out">
           <div aria-hidden="true" className="mx-auto flex h-24 w-8 items-center justify-center overflow-hidden bg-indigo lg:h-28">
@@ -285,7 +285,7 @@ const Stamps = ({ metrics }: { metrics: Metric[] }) => {
   }, [state]);
 
   return (
-    <dl ref={ref} data-state={state} className="stamps grid grid-cols-1 gap-5 sm:grid-cols-2">
+    <dl ref={ref} data-state={state} className="stamps grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
       {metrics.map((metric, index) => {
         const Icon = metric.icon;
         return (
@@ -363,7 +363,7 @@ export default function ExperienceBoard() {
               <span
                 key={index}
                 ref={(node) => { ticks.current[index] = node; }}
-                className={`block w-0.5 origin-bottom rounded-full motion-safe:transition-transform motion-safe:duration-150 ${
+                className={`block w-0.5 origin-bottom max-sm:[&:nth-child(even)]:hidden rounded-full motion-safe:transition-transform motion-safe:duration-150 ${
                   index % 6 === 0 ? "h-5 bg-white" : "h-3 bg-white/45"
                 }`}
               />
@@ -409,7 +409,7 @@ export default function ExperienceBoard() {
           className="wipe-in !text-indigo p-6 lg:p-10"
           style={{ "--wipe-x": `${origin}%` } as React.CSSProperties}
         >
-          <div className="grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-12">
+          <div className="grid gap-8 md:grid-cols-[260px_minmax(0,1fr)] lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-12">
             <IdBadge item={role} accent={span.bg} />
 
             <div className="min-w-0">
@@ -442,7 +442,7 @@ export default function ExperienceBoard() {
             </div>
           </div>
 
-          <div className="mt-10 grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)]">
+          <div className="mt-10 grid items-center gap-10 md:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)]">
             {role.certificate !== "#" && (
               <CertificateCard url={role.certificate} company={role.company} roleName={role.role} date={role.date} />
             )}

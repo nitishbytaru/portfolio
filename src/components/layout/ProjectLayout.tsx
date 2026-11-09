@@ -126,12 +126,12 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
         </Tile>
 
         {/* Actions */}
-        <div className="flex flex-col gap-4 lg:col-span-4 lg:gap-5">
+        <div className="flex flex-col gap-4 md:grid md:grid-cols-2 lg:col-span-4 lg:flex lg:gap-5">
           <a
             href={project.liveLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative flex min-h-56 flex-[1.5] flex-col justify-between overflow-hidden rounded-[20px] bg-amber p-6 text-ink"
+            className="group relative flex min-h-40 flex-[1.5] flex-col lg:min-h-56 justify-between overflow-hidden rounded-[20px] bg-amber p-6 text-ink"
           >
             <span aria-hidden="true" className="absolute right-6 top-6 h-14 w-14 rounded-full bg-ink transition-transform duration-500 ease-out motion-safe:group-hover:scale-[16]" />
             <span className="relative z-10 flex items-start justify-between">
@@ -149,14 +149,14 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
             href={project.githubLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative flex min-h-36 flex-1 flex-col justify-between overflow-hidden rounded-[20px] bg-graphite p-6 text-white"
+            className="group relative flex min-h-32 flex-1 flex-col lg:min-h-36 justify-between overflow-hidden rounded-[20px] bg-graphite p-6 text-white"
           >
             <Github aria-hidden="true" className="absolute -bottom-8 -right-6 h-44 w-44 text-white/15 transition-transform duration-500 ease-out group-hover:-rotate-12 group-hover:scale-110" />
             <span className="relative z-10 break-all text-sm font-semibold">{repoPathOf(project.githubLink)}</span>
             <span className="wide relative z-10 mt-6 block text-3xl font-extrabold leading-[1.05]">Source Code</span>
           </a>
 
-          <dl className="grid grid-cols-3 divide-x divide-ink/10 rounded-[20px] bg-white">
+          <dl className="grid grid-cols-3 divide-x divide-ink/10 rounded-[20px] bg-white md:col-span-2">
             {facts.map((fact) => (
               <div key={fact.label} className="flex flex-col-reverse p-4">
                 <dt className="wide text-xs font-semibold">{fact.label}</dt>
@@ -201,24 +201,24 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
         {layers.length > 0 && (
           <Tile tone="amber" className="p-6 lg:col-span-12">
             <SectionTitle>How It&apos;s Built</SectionTitle>
-            <ol className="flex flex-col items-stretch gap-2 lg:flex-row lg:items-center">
+            <ol className="flex flex-col items-stretch gap-1.5 md:flex-row md:items-center md:gap-2">
               {layers.map(([key, value], index) => {
                 const Icon = layerIcon(key);
                 return (
                   <React.Fragment key={key}>
                     {index > 0 && (
                       <li aria-hidden="true" className="flex justify-center">
-                        <ArrowRight className="h-6 w-6 rotate-90 lg:rotate-0" />
+                        <ArrowRight className="h-5 w-5 rotate-90 md:rotate-0" />
                       </li>
                     )}
-                    <li className="min-w-0 flex-1 rounded-2xl bg-frame p-4">
-                      <div className="mb-3 flex items-center gap-2">
+                    <li className="flex min-w-0 flex-1 items-center justify-between gap-3 rounded-2xl bg-frame p-3 md:block md:p-4">
+                      <div className="flex items-center gap-2 md:mb-3">
                         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink text-white">
                           <Icon className="h-4 w-4" aria-hidden="true" />
                         </span>
-                        <span className="wide text-sm font-bold">{key.replace(/_/g, " ")}</span>
+                        <span className="wide text-sm font-bold md:text-xs lg:text-sm">{key.replace(/_/g, " ")}</span>
                       </div>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap justify-end gap-2 md:justify-start">
                         {splitSpec(value).map((item) => <TechMark key={item} item={item} />)}
                       </div>
                     </li>
@@ -255,14 +255,14 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
         </Tile>
 
         {/* Close */}
-        <nav aria-label="Other projects" className="grid gap-4 sm:grid-cols-[1fr_auto_2fr] lg:col-span-12 lg:gap-5">
+        <nav aria-label="Other projects" className="grid grid-cols-[auto_minmax(0,1fr)] gap-4 sm:grid-cols-[1fr_auto_2fr] lg:col-span-12 lg:gap-5">
           {previousProject ? (
-            <Tile as={Link} href={`/projects/${previousProject.slug}`} tone="white" interactive className="wide flex min-h-11 items-center gap-3 p-5 font-semibold">
+            <Tile as={Link} href={`/projects/${previousProject.slug}`} tone="white" interactive className="wide col-span-2 flex min-h-11 items-center gap-3 p-5 font-semibold sm:col-span-1">
               <ArrowLeft className="h-5 w-5 shrink-0" aria-hidden="true" />
               {previousProject.title}
             </Tile>
           ) : <span className="hidden sm:block" />}
-          <Tile as={Link} href="/projects" tone="black" interactive aria-label="Back to all projects" className="flex min-h-14 items-center justify-center sm:w-16">
+          <Tile as={Link} href="/projects" tone="black" interactive aria-label="Back to all projects" className="flex min-h-14 w-14 items-center justify-center sm:w-16">
             <LayoutGrid className="h-5 w-5" aria-hidden="true" />
           </Tile>
           {nextProject ? (

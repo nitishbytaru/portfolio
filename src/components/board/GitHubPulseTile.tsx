@@ -51,7 +51,7 @@ export default function GitHubPulseTile() {
       interactive
       corner
       aria-label={label}
-      className="group col-span-2 flex min-h-40 flex-col justify-between gap-2 p-4 lg:col-span-4 lg:min-h-0"
+      className="group col-span-2 flex min-h-40 md:col-span-1 flex-col justify-between gap-2 p-4 lg:col-span-4 lg:min-h-0"
     >
       <span aria-hidden="true" className="flex items-center gap-2">
         <Github className="h-5 w-5 transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110" />

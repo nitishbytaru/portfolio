@@ -1,33 +1,20 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Briefcase, Code2, FolderOpen, Github, House } from "lucide-react";
 
 const NAV_LINKS = [
-  { name: "Home", href: "/" },
-  { name: "Experience", href: "/experience" },
-  { name: "Projects", href: "/projects" },
-  { name: "Skills", href: "/skills" },
-  { name: "GitHub Stats", href: "/analytics" },
+  { name: "Home", short: "Home", href: "/", Icon: House },
+  { name: "Experience", short: "Work", href: "/experience", Icon: Briefcase },
+  { name: "Projects", short: "Projects", href: "/projects", Icon: FolderOpen },
+  { name: "Skills", short: "Skills", href: "/skills", Icon: Code2 },
+  { name: "GitHub Stats", short: "GitHub", href: "/analytics", Icon: Github },
 ];
 
 export default function SideNav() {
-  const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsOpen(false);
-    };
-    window.addEventListener("keydown", handleEsc);
-    return () => window.removeEventListener("keydown", handleEsc);
-  }, []);
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -66,44 +53,38 @@ export default function SideNav() {
         })}
       </nav>
 
-      {/* Mobile: top bar with menu */}
-      <nav aria-label="Main" className="relative z-40 flex items-center justify-between px-4 py-3 lg:hidden">
-        <Link href="/" prefetch={false} className="wide text-lg font-extrabold text-ink">
+      {/* Phones and tablets: name on top, tabs within thumb reach */}
+      <div className="px-4 pt-3 sm:px-6 lg:hidden">
+        <Link href="/" prefetch={false} className="wide inline-flex min-h-11 items-center text-lg font-extrabold text-ink">
           Nitish Durga Bytaru
         </Link>
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label={isOpen ? "Close menu" : "Open menu"}
-          aria-expanded={isOpen}
-          aria-controls="mobile-menu"
-          className="flex h-11 w-11 items-center justify-center rounded-xl bg-ink text-white"
-        >
-          {isOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
-        <div
-          id="mobile-menu"
-          className={`absolute left-4 right-4 top-full rounded-[20px] bg-amber p-3 shadow-xl ${
-            isOpen ? "" : "invisible"
-          }`}
-        >
+      </div>
+      <nav
+        aria-label="Main"
+        className="fixed inset-x-3 z-50 mx-auto max-w-xl rounded-[22px] bg-indigo p-1.5 shadow-[0_14px_30px_-10px_rgb(46_42_92/0.6)] lg:hidden"
+        style={{ bottom: "max(12px, env(safe-area-inset-bottom))" }}
+      >
+        <ul className="grid grid-cols-5 gap-1">
           {NAV_LINKS.map((link) => {
             const active = isActive(link.href);
+            const Icon = link.Icon;
             return (
-              <Link
-                key={link.href}
-                href={link.href}
-                prefetch={link.href === "/" ? false : undefined}
-                aria-current={active ? "page" : undefined}
-                className={`block rounded-xl px-4 py-3 text-ink ${
-                  active ? "bg-white font-extrabold" : "font-medium"
-                }`}
-              >
-                {link.name}
-              </Link>
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  prefetch={link.href === "/" ? false : undefined}
+                  aria-current={active ? "page" : undefined}
+                  className={`flex h-14 flex-col items-center justify-center gap-0.5 rounded-2xl text-xs font-semibold motion-safe:transition-colors motion-safe:duration-200 ${
+                    active ? "bg-apricot text-indigo" : "text-white"
+                  }`}
+                >
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                  {link.short}
+                </Link>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </nav>
     </>
   );

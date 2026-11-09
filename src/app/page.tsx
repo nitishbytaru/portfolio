@@ -59,9 +59,9 @@ export default function Home() {
           interactive
           corner
           tone="pink"
-          className="group col-span-2 p-6 lg:col-span-8 xl:col-span-9"
+          className="group col-span-2 p-6 md:flex md:items-center md:gap-5 lg:col-span-8 lg:block xl:col-span-9"
         >
-          <span className="relative z-10 flex flex-col lg:h-full xl:w-[46%]">
+          <span className="relative z-10 flex flex-col md:w-1/2 lg:h-full lg:w-auto xl:w-[46%]">
             <span className="wide block text-4xl font-extrabold leading-none">{echoRealm.title}</span>
             <span className="mt-3 block text-base leading-snug">{echoRealm.shortDescription}</span>
             <span className="mt-4 flex flex-wrap gap-2">
@@ -77,7 +77,7 @@ export default function Home() {
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
             </span>
           </span>
-          <span className="relative mt-5 block aspect-[16/10] overflow-hidden rounded-xl bg-ink shadow-[0_20px_34px_-12px_rgb(0_0_0/0.5)] motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out lg:hidden xl:absolute xl:-bottom-4 xl:-right-5 xl:mt-0 xl:block xl:w-[56%] xl:-rotate-3 xl:group-hover:rotate-0 xl:group-hover:scale-[1.03]">
+          <span className="relative mt-5 block aspect-[16/10] overflow-hidden rounded-xl bg-ink shadow-[0_20px_34px_-12px_rgb(0_0_0/0.5)] motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out md:mt-0 md:w-1/2 md:shrink-0 lg:hidden xl:absolute xl:-bottom-4 xl:-right-5 xl:mt-0 xl:block xl:w-[56%] xl:-rotate-3 xl:group-hover:rotate-0 xl:group-hover:scale-[1.03]">
             <Image
               src={echoRealm.thumbnail}
               alt={`${echoRealm.title} app screen`}

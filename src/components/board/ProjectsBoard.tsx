@@ -86,7 +86,7 @@ export default function ProjectsBoard() {
                   href={`/projects/${project.slug}`}
                   onPointerMove={handleMove}
                   onPointerLeave={(event) => applyTilt(event.currentTarget, 0, 0)}
-                  className="group relative flex h-full flex-col overflow-hidden p-6 xl:p-8 focus-inset"
+                  className="group relative flex h-full flex-col overflow-hidden p-6 focus-inset md:grid md:grid-cols-2 md:items-center md:gap-6 xl:flex xl:p-8"
                 >
                   <div className="relative z-10 flex flex-col xl:h-full xl:w-[40%]">
                     <h2 className={`wide text-4xl font-extrabold leading-[1.05] ${reveal(0).className}`} style={reveal(0).style}>
@@ -120,7 +120,7 @@ export default function ProjectsBoard() {
                   </div>
 
                   {/* Stacked screens that lean toward the cursor */}
-                  <div className={`relative mt-6 aspect-[16/10] xl:absolute xl:-bottom-[5%] xl:-right-[4%] xl:mt-0 xl:w-[64%] ${reveal(3).className}`} style={reveal(3).style}>
+                  <div className={`relative mt-6 aspect-[16/10] md:mt-0 xl:absolute xl:-bottom-[5%] xl:-right-[4%] xl:mt-0 xl:w-[64%] ${reveal(3).className}`} style={reveal(3).style}>
                     {extraScreen && (
                       <div
                         data-depth="26"

@@ -128,7 +128,7 @@ export default function SkillsBoard() {
             key={group.title}
             onPointerMove={leanToward}
             onPointerLeave={standStraight}
-            className={`deal-in h-72 xl:h-auto ${group.span}`}
+            className={`deal-in h-64 sm:h-72 xl:h-auto ${group.span}`}
             style={{ animationDelay: `${groupIndex * 90}ms` }}
           >
             <button
@@ -167,7 +167,7 @@ export default function SkillsBoard() {
                   </span>
                   <span className="relative z-10">
                     <h2 className="wide text-3xl font-extrabold leading-tight">{group.title}</h2>
-                    <span className="wide mt-1 block text-sm font-semibold">{group.skills.length} skills</span>
+                    <span className="wide mt-1 block text-sm font-semibold">{group.skills.length} skills<span className="hidden [@media(hover:none)]:inline">, tap to flip</span></span>
                   </span>
                 </Tile>
 

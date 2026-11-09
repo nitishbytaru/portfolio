@@ -24,7 +24,7 @@ export default function SkillKeysTile() {
       tone="indigo"
       aria-label={`Skills: see all ${allSkills.length}`}
       onPointerLeave={() => setHovered(null)}
-      className="skill-flow group col-span-2 flex flex-col justify-between gap-2 py-4 lg:col-span-3 xl:col-span-4"
+      className="skill-flow group col-span-2 flex md:col-span-1 flex-col justify-between gap-2 py-4 lg:col-span-3 xl:col-span-4"
     >
       <span className="flex items-center justify-between gap-2 px-4">
         <span className="wide min-w-0 truncate text-4xl font-extrabold leading-none lg:text-xl xl:text-4xl">{hovered ?? "Skills"}</span>

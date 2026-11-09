@@ -62,7 +62,7 @@ export default function ScreenDeck({ title, images }: ScreenDeckProps) {
               key={src}
               aria-hidden={offset !== 0}
               onClick={() => offset !== 0 && setActive(index)}
-              className={`absolute left-1/2 top-1/2 aspect-[16/10] w-[74%] overflow-hidden rounded-xl bg-ink shadow-[0_24px_40px_-16px_rgb(0_0_0/0.55)] motion-safe:transition-[transform,opacity,filter] motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              className={`absolute left-1/2 top-1/2 aspect-[16/10] w-[86%] overflow-hidden sm:w-[74%] rounded-xl bg-ink shadow-[0_24px_40px_-16px_rgb(0_0_0/0.55)] motion-safe:transition-[transform,opacity,filter] motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] ${
                 offset === 0 ? "" : "cursor-pointer"
               }`}
               style={{
@@ -91,7 +91,10 @@ export default function ScreenDeck({ title, images }: ScreenDeckProps) {
           <p aria-live="polite" className="wide w-16 shrink-0 text-sm font-bold">
             {active + 1} / {total}
           </p>
-          <div className="flex min-w-0 flex-1 gap-1">
+          <span aria-hidden="true" className="block h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-ink/20 sm:hidden">
+            <span className="block h-full rounded-full bg-indigo motion-safe:transition-[width] motion-safe:duration-500" style={{ width: `${((active + 1) / total) * 100}%` }} />
+          </span>
+          <div className="hidden min-w-0 flex-1 gap-1 sm:flex">
             {images.map((src, index) => (
               <button
                 key={src}
