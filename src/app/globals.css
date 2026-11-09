@@ -289,7 +289,7 @@ h3 {
   rotate: 135deg;
 }
 
-@media (min-width: 768px) {
+@media all {
   .mile-track {
     left: 0;
     right: 0;
@@ -530,14 +530,14 @@ h3 {
 }
 
 .feature-dial {
-  --dial-r: 112px;
+  --dial-r: 60px;
 }
 
 @media (max-width: 359px) {
   .feature-dial {
-    --dial-r: 90px;
-    width: 236px !important;
-    height: 236px !important;
+    --dial-r: 46px;
+    width: 124px !important;
+    height: 124px !important;
   }
 }
 
@@ -1004,6 +1004,23 @@ main {
       rotate: -7deg;
       translate: 0 34px;
     }
+  }
+}
+
+/* GitHub Stats activity spotlight steps one row at a time */
+:root {
+  --feed-row: 52px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --feed-row: 68px;
+  }
+}
+
+@media (max-width: 767px) {
+  .stats-grid > .p-6 {
+    padding: 12px;
   }
 }
 

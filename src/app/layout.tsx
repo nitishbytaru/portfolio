@@ -40,7 +40,7 @@ export default function RootLayout({
           <div className="mx-auto flex min-h-screen max-w-[1560px] flex-col bg-frame shadow-[0_24px_60px_-24px_rgb(0_0_0/0.3)] lg:min-h-[calc(100vh-3rem)] lg:flex-row lg:rounded-[28px]">
             <SideNav />
             <div className="flex min-w-0 flex-1 flex-col pb-24 lg:pb-0 lg:pr-8">
-              <main id="main" tabIndex={-1} className="flex-grow px-4 pb-6 outline-none sm:px-6 lg:px-0 lg:pb-3 lg:pt-8">
+              <main id="main" tabIndex={-1} className="flex-grow px-3 pb-4 outline-none max-sm:pt-3 sm:px-6 sm:pb-6 lg:px-0 lg:pb-3 lg:pt-8">
                 {children}
               </main>
               <BoardFooter />

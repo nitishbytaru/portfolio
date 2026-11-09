@@ -24,10 +24,10 @@ export default function SkillKeysTile() {
       tone="indigo"
       aria-label={`Skills: see all ${allSkills.length}`}
       onPointerLeave={() => setHovered(null)}
-      className="skill-flow group col-span-2 flex md:col-span-1 flex-col justify-between gap-2 py-4 lg:col-span-3 xl:col-span-4"
+      className="skill-flow group col-span-1 flex flex-col justify-between gap-2 py-4 max-md:py-3 lg:col-span-3 xl:col-span-4"
     >
-      <span className="flex items-center justify-between gap-2 px-4">
-        <span className="wide min-w-0 truncate text-4xl font-extrabold leading-none lg:text-xl xl:text-4xl">{hovered ?? "Skills"}</span>
+      <span className="flex items-center justify-between gap-2 px-4 max-md:px-3">
+        <span className="wide min-w-0 truncate text-4xl font-extrabold leading-none max-md:text-2xl lg:text-xl xl:text-4xl">{hovered ?? "Skills"}</span>
         <ArrowRight className="h-6 w-6 shrink-0 transition-transform duration-300 group-hover:translate-x-1 lg:hidden xl:block" aria-hidden="true" />
       </span>
 
@@ -41,11 +41,11 @@ export default function SkillKeysTile() {
                   onPointerEnter={(event) => {
                     if (event.pointerType === "mouse") setHovered(skill.name);
                   }}
-                  className="mr-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-frame transition-transform duration-200 hover:scale-110"
+                  className="mr-2 flex h-12 w-12 shrink-0 max-md:mr-1.5 max-md:h-9 max-md:w-9 items-center justify-center rounded-full bg-frame transition-transform duration-200 hover:scale-110"
                 >
                   <TechIcon
                     name={skill.icon ?? skill.name}
-                    sizeClassName={`h-7 w-7 ${skill.name.startsWith("React") ? "brightness-75 saturate-200" : ""}`}
+                    sizeClassName={`h-5 w-5 md:h-7 md:w-7 ${skill.name.startsWith("React") ? "brightness-75 saturate-200" : ""}`}
                   />
                 </span>
               ))}

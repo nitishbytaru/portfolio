@@ -157,12 +157,12 @@ const FlowStep = ({ children, last }: { children: React.ReactNode; last: boolean
   }, [armed]);
 
   return (
-    <li ref={ref} className={`flow-step group/step relative pb-8 pl-14 last:pb-0 ${armed ? "is-armed" : ""} ${seen ? "is-in" : ""}`}>
-      {!last && <span aria-hidden="true" className="flow-line absolute bottom-0 left-[19px] top-10 w-0.5 origin-top bg-indigo" />}
-      <span aria-hidden="true" className="flow-node absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-indigo text-white transition-transform duration-300 group-hover/step:scale-110">
+    <li ref={ref} className={`flow-step group/step relative pb-8 pl-14 last:pb-0 max-md:pb-3 max-md:pl-9 ${armed ? "is-armed" : ""} ${seen ? "is-in" : ""}`}>
+      {!last && <span aria-hidden="true" className="flow-line absolute bottom-0 left-[19px] top-10 w-0.5 max-md:left-[13px] max-md:top-7 origin-top bg-indigo" />}
+      <span aria-hidden="true" className="flow-node absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-indigo max-md:h-7 max-md:w-7 text-white transition-transform duration-300 group-hover/step:scale-110">
         <Check className="h-5 w-5" />
       </span>
-      <p className="flow-text pt-1 text-lg leading-relaxed transition-transform duration-300 group-hover/step:translate-x-1">{children}</p>
+      <p className="flow-text pt-1 text-lg leading-relaxed max-md:pt-0 max-md:text-sm max-md:leading-snug transition-transform duration-300 group-hover/step:translate-x-1">{children}</p>
     </li>
   );
 };
@@ -231,8 +231,8 @@ const IdBadge = ({ item, accent }: { item: ExperienceItem; accent: string }) => 
   };
 
   return (
-    <div className="-mt-6 md:-ml-3 lg:-mt-10 lg:ml-0" onPointerMove={lean} onPointerLeave={settle}>
-      <div className="badge-swing mx-auto w-[260px] origin-top [perspective:900px]">
+    <div className="-mt-3 md:-ml-3 md:-mt-6 lg:-mt-10 lg:ml-0" onPointerMove={lean} onPointerLeave={settle}>
+      <div className="badge-swing mx-auto w-[260px] origin-top max-md:[zoom:0.57] [perspective:900px]">
         <div ref={cardRef} className="origin-top motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out">
           <div aria-hidden="true" className="mx-auto flex h-24 w-8 items-center justify-center overflow-hidden bg-indigo lg:h-28">
             <span className="wide whitespace-nowrap text-[11px] font-bold tracking-wide text-white [writing-mode:vertical-rl]">{item.company}</span>
@@ -285,20 +285,20 @@ const Stamps = ({ metrics }: { metrics: Metric[] }) => {
   }, [state]);
 
   return (
-    <dl ref={ref} data-state={state} className="stamps grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
+    <dl ref={ref} data-state={state} className="stamps grid grid-cols-1 gap-5 max-md:gap-1.5 lg:grid-cols-2">
       {metrics.map((metric, index) => {
         const Icon = metric.icon;
         return (
           <div
             key={metric.label}
-            className="stamp flex cursor-default items-center gap-3 rounded-xl border-[3px] border-double border-indigo p-3 text-indigo"
+            className="stamp flex cursor-default items-center gap-3 rounded-xl border-[3px] border-double border-indigo p-3 text-indigo max-md:gap-1.5 max-md:p-1.5 max-md:text-xs"
             style={{ "--tilt": STAMP_TILT[index % STAMP_TILT.length], animationDelay: `${index * 170}ms` } as React.CSSProperties}
           >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-dashed border-indigo">
-              <Icon className="h-5 w-5" aria-hidden="true" />
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-dashed border-indigo max-md:h-7 max-md:w-7">
+              <Icon className="h-5 w-5 max-md:h-3.5 max-md:w-3.5" aria-hidden="true" />
             </span>
             <span className="flex min-w-0 flex-col-reverse">
-              <dt className="text-sm">{metric.label}</dt>
+              <dt className="text-sm max-md:text-xs">{metric.label}</dt>
               <dd className="font-bold leading-tight">{metric.value}</dd>
             </span>
           </div>
@@ -356,9 +356,9 @@ export default function ExperienceBoard() {
   return (
     <div className="flex flex-col gap-4">
       {/* Time ruler */}
-      <Tile tone="indigo" className="!overflow-visible enter-ruler z-20 shrink-0 px-5 pb-4 pt-3">
+      <Tile tone="indigo" className="!overflow-visible enter-ruler z-20 shrink-0 px-5 pb-4 pt-3 max-md:px-3 max-md:pb-2 max-md:pt-1">
         <div ref={rulerRef} onPointerMove={handleMove} onPointerLeave={handleLeave} className="relative">
-          <div aria-hidden="true" className="flex h-16 items-end justify-between">
+          <div aria-hidden="true" className="flex h-16 items-end justify-between max-md:h-8">
             {Array.from({ length: TICKS }, (_, index) => (
               <span
                 key={index}
@@ -370,7 +370,7 @@ export default function ExperienceBoard() {
             ))}
           </div>
 
-          <div ref={needleRef} aria-hidden="true" className="pointer-events-none absolute top-0 h-16 w-0.5 bg-amber opacity-0 motion-safe:transition-opacity">
+          <div ref={needleRef} aria-hidden="true" className="pointer-events-none absolute top-0 h-16 w-0.5 max-md:h-8 bg-amber opacity-0 motion-safe:transition-opacity">
             <span ref={bubbleRef} className="absolute left-2 top-0 whitespace-nowrap rounded-full bg-amber px-2.5 py-0.5 text-xs font-bold text-ink" />
           </div>
 
@@ -406,33 +406,36 @@ export default function ExperienceBoard() {
           key={role.company}
           as="article"
           tone={span.tone}
-          className="wipe-in !text-indigo p-6 lg:p-10"
+          className="wipe-in !text-indigo p-6 max-md:p-3 lg:p-10"
           style={{ "--wipe-x": `${origin}%` } as React.CSSProperties}
         >
-          <div className="grid gap-8 md:grid-cols-[260px_minmax(0,1fr)] lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-12">
+          <div className="grid gap-8 max-md:grid-cols-[150px_minmax(0,1fr)] max-md:gap-x-3 max-md:gap-y-3 md:grid-cols-[260px_minmax(0,1fr)] lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-12">
             <IdBadge item={role} accent={span.bg} />
 
-            <div className="min-w-0">
-              <h2 className="wide text-[clamp(2.25rem,5.4vw,5rem)] font-extrabold leading-none">{role.company}</h2>
-              <p className="mt-3 text-xl font-bold">{role.role}</p>
-              <p className="mt-2 font-medium">{role.type}, {role.summaryLabel}</p>
+            <div className="min-w-0 max-md:contents">
+              <div className="min-w-0 self-center">
+              <h2 className="wide text-[clamp(2.25rem,5.4vw,5rem)] font-extrabold leading-none max-md:text-xl">{role.company}</h2>
+              <p className="mt-3 text-xl font-bold max-md:mt-1 max-md:text-sm">{role.role}</p>
+              <p className="mt-2 font-medium max-md:mt-1 max-md:text-xs">{role.type}, {role.summaryLabel}</p>
+              <p className="mt-1 text-xs font-medium md:hidden">{role.location}, {role.date}</p>
+              </div>
 
-              <ul aria-label="Skills applied" className="mt-5 flex flex-wrap gap-2">
+              <ul aria-label="Skills applied" className="mt-5 flex flex-wrap gap-2 max-md:col-span-2 max-md:mt-0 max-md:gap-1">
                 {role.skills.map((skill, index) => (
                   <li
                     key={skill}
-                    className={`pop-in inline-flex h-10 items-center gap-2 rounded-full bg-frame text-sm font-semibold text-indigo transition-transform duration-200 hover:-translate-y-1 ${
+                    className={`pop-in inline-flex h-10 items-center gap-2 rounded-full bg-frame text-sm max-md:h-7 max-md:gap-1 max-md:text-xs font-semibold text-indigo transition-transform duration-200 hover:-translate-y-1 ${
                       hasTechIcon(skill) ? "pl-2 pr-3.5" : "px-3.5"
                     }`}
                     style={{ animationDelay: `${180 + index * 45}ms` }}
                   >
-                    {hasTechIcon(skill) && <TechIcon name={skill} sizeClassName="w-6 h-6" />}
+                    {hasTechIcon(skill) && <TechIcon name={skill} sizeClassName="w-4 h-4 md:w-6 md:h-6" />}
                     {skill}
                   </li>
                 ))}
               </ul>
 
-              <ol className="mt-8">
+              <ol className="mt-8 max-md:col-span-2 max-md:mt-0">
                 {role.points.map((point, index) => (
                   <FlowStep key={point} last={index === role.points.length - 1}>
                     {highlightKeywords(point)}
@@ -442,7 +445,7 @@ export default function ExperienceBoard() {
             </div>
           </div>
 
-          <div className="mt-10 grid items-center gap-10 md:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)]">
+          <div className="mt-10 grid grid-cols-2 items-center gap-10 max-md:mt-2 max-md:gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)]">
             {role.certificate !== "#" && (
               <CertificateCard url={role.certificate} company={role.company} roleName={role.role} date={role.date} />
             )}

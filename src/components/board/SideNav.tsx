@@ -54,7 +54,7 @@ export default function SideNav() {
       </nav>
 
       {/* Phones and tablets: name on top, tabs within thumb reach */}
-      <div className="px-4 pt-3 sm:px-6 lg:hidden">
+      <div className="px-4 pt-3 max-sm:hidden sm:px-6 lg:hidden">
         <Link href="/" prefetch={false} className="wide inline-flex min-h-11 items-center text-lg font-extrabold text-ink">
           Nitish Durga Bytaru
         </Link>

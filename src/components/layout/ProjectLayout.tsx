@@ -60,9 +60,9 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
       <Wordmark className="mb-6 !text-[clamp(2.25rem,6.6vw,5.75rem)]">{project.title}</Wordmark>
       
 
-      <div className="enter-detail grid gap-4 lg:grid-cols-12 lg:gap-5">
+      <div className="enter-detail grid gap-4 max-md:grid-cols-2 max-md:gap-2 lg:grid-cols-12 lg:gap-5">
         {/* Screens */}
-        <Tile as="section" id="screens" aria-label={`${project.title} screenshots`} tone={heroTone} className="p-3 sm:p-4 lg:col-span-8">
+        <Tile as="section" id="screens" aria-label={`${project.title} screenshots`} tone={heroTone} className="p-3 max-md:col-span-2 sm:p-4 lg:col-span-8">
           <ScreenDeck title={project.title} images={images} />
         </Tile>
 
@@ -82,9 +82,9 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
         <FeaturesTile features={project.features} iconFor={featureIcon} />
 
         {/* Close */}
-        <nav aria-label="Other projects" className="grid grid-cols-[auto_minmax(0,1fr)] gap-4 sm:grid-cols-[1fr_auto_2fr] lg:col-span-12 lg:gap-5">
+        <nav aria-label="Other projects" className="max-md:col-span-2 grid grid-cols-[auto_minmax(0,1fr)] gap-4 sm:grid-cols-[1fr_auto_2fr] lg:col-span-12 lg:gap-5">
           {previousProject ? (
-            <Tile as={Link} href={`/projects/${previousProject.slug}`} tone="white" interactive className="wide col-span-2 flex min-h-11 items-center gap-3 p-5 font-semibold sm:col-span-1">
+            <Tile as={Link} href={`/projects/${previousProject.slug}`} tone="white" interactive className="wide col-span-2 flex min-h-11 items-center gap-3 p-5 font-semibold max-md:p-3 max-md:text-sm sm:col-span-1">
               <ArrowLeft className="h-5 w-5 shrink-0" aria-hidden="true" />
               {previousProject.title}
             </Tile>
@@ -93,8 +93,8 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
             <LayoutGrid className="h-5 w-5" aria-hidden="true" />
           </Tile>
           {nextProject ? (
-            <Tile as={Link} href={`/projects/${nextProject.slug}`} tone="black" interactive className="group flex min-h-28 items-stretch justify-between">
-              <span className="wide flex items-center gap-4 p-5 text-2xl font-extrabold leading-tight sm:p-6">
+            <Tile as={Link} href={`/projects/${nextProject.slug}`} tone="black" interactive className="group flex min-h-14 items-stretch justify-between sm:min-h-28">
+              <span className="wide flex items-center gap-4 p-5 text-2xl font-extrabold leading-tight max-md:p-3 max-md:text-base sm:p-6">
                 Next: {nextProject.title}
                 <ArrowRight className="h-6 w-6 shrink-0 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
               </span>

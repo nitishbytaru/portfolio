@@ -72,7 +72,7 @@ export const GROUPS: SkillGroup[] = [
     title: "Mobile & Tools",
     tone: "violet",
     leadIcon: "React Native",
-    span: "md:col-span-2 xl:col-span-6",
+    span: "col-span-2 xl:col-span-6",
     skills: [
       { name: "React Native", aliases: ["react native"] },
       { name: "Git & GitHub", aliases: ["git"] },
@@ -119,7 +119,7 @@ export default function SkillsBoard() {
   const lastPointer = useRef<string | null>(null);
 
   return (
-    <ul className="grid gap-5 md:grid-cols-2 xl:h-[calc(100vh-18.5rem)] xl:min-h-[520px] xl:grid-cols-12 xl:grid-rows-2">
+    <ul className="grid grid-cols-2 gap-5 max-md:gap-2 md:grid-cols-2 xl:h-[calc(100vh-18.5rem)] xl:min-h-[520px] xl:grid-cols-12 xl:grid-rows-2">
       {GROUPS.map((group, groupIndex) => {
         const isFlipped = flipped === group.title;
         const used = projectCount(group);
@@ -128,7 +128,7 @@ export default function SkillsBoard() {
             key={group.title}
             onPointerMove={leanToward}
             onPointerLeave={standStraight}
-            className={`deal-in h-64 sm:h-72 xl:h-auto ${group.span}`}
+            className={`deal-in h-44 sm:h-72 xl:h-auto ${group.span}`}
             style={{ animationDelay: `${groupIndex * 90}ms` }}
           >
             <button
@@ -150,48 +150,48 @@ export default function SkillsBoard() {
                   isFlipped ? "is-open [transform:rotateY(180deg)]" : "is-closed"
                 }`}
               >
-                <Tile as="span" tone={group.tone} corner className={`${FACE} flex flex-col justify-between p-7`}>
+                <Tile as="span" tone={group.tone} corner className={`${FACE} flex flex-col justify-between p-7 max-md:p-3`}>
                   <span aria-hidden="true" className={`pointer-events-none absolute -bottom-10 -right-8 rotate-[-12deg] ${GHOST_STYLE[group.title]?.wrap ?? "opacity-25"}`}>
-                    <TechIcon name={group.leadIcon} sizeClassName={`h-56 w-56 xl:h-64 xl:w-64 ${GHOST_STYLE[group.title]?.logo ?? ""}`} />
+                    <TechIcon name={group.leadIcon} sizeClassName={`h-56 w-56 max-md:h-28 max-md:w-28 xl:h-64 xl:w-64 ${GHOST_STYLE[group.title]?.logo ?? ""}`} />
                   </span>
                   <span className="relative z-10 flex">
                     {group.skills.map((skill, index) => (
                       <span
                         key={skill.name}
-                        className="-ml-4 flex h-[72px] w-[72px] items-center justify-center rounded-full bg-frame shadow-[0_6px_14px_-4px_rgb(0_0_0/0.35)] first:ml-0"
+                        className="-ml-4 flex h-[72px] w-[72px] max-md:-ml-3 max-md:h-9 max-md:w-9 max-md:first:ml-0 items-center justify-center rounded-full bg-frame shadow-[0_6px_14px_-4px_rgb(0_0_0/0.35)] first:ml-0"
                         style={{ zIndex: group.skills.length - index }}
                       >
-                        <TechIcon name={skill.icon ?? skill.name} sizeClassName={`w-9 h-9 ${deepen(skill.name)}`} />
+                        <TechIcon name={skill.icon ?? skill.name} sizeClassName={`w-5 h-5 md:w-9 md:h-9 ${deepen(skill.name)}`} />
                       </span>
                     ))}
                   </span>
                   <span className="relative z-10">
-                    <h2 className="wide text-3xl font-extrabold leading-tight">{group.title}</h2>
-                    <span className="wide mt-1 block text-sm font-semibold">{group.skills.length} skills<span className="hidden [@media(hover:none)]:inline">, tap to flip</span></span>
+                    <h2 className="wide text-3xl font-extrabold leading-tight max-md:text-lg">{group.title}</h2>
+                    <span className="wide mt-1 block text-sm font-semibold max-md:mt-0 max-md:text-xs">{group.skills.length} skills<span className="hidden [@media(hover:none)]:inline">, tap to flip</span></span>
                   </span>
                 </Tile>
 
-                <Tile as="span" tone={group.tone} className={`${FACE} flex flex-col justify-between p-7 [transform:rotateY(180deg)]`}>
-                  <span className="grid grid-cols-2 gap-x-4 gap-y-3">
+                <Tile as="span" tone={group.tone} className={`${FACE} flex flex-col justify-between p-7 max-md:p-2.5 [transform:rotateY(180deg)]`}>
+                  <span className="grid grid-cols-2 gap-x-4 gap-y-3 max-md:grid-cols-1 max-md:gap-1">
                     {group.skills.map((skill, index) => (
                       <span
                         key={skill.name}
-                        className="unpack-item flex items-center gap-3 text-base font-semibold leading-tight"
+                        className="unpack-item flex items-center gap-3 text-base font-semibold leading-tight max-md:gap-1.5 max-md:text-xs"
                         style={{
                           "--i": index,
                           "--ux": `calc(${-(index % 2)} * (100% + 16px))`,
                           "--uy": `calc(${-Math.floor(index / 2)} * (100% + 12px))`,
                         } as React.CSSProperties}
                       >
-                        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-frame">
-                          <TechIcon name={skill.icon ?? skill.name} sizeClassName={`w-7 h-7 ${deepen(skill.name)}`} />
+                        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-frame max-md:h-6 max-md:w-6">
+                          <TechIcon name={skill.icon ?? skill.name} sizeClassName={`w-4 h-4 md:w-7 md:h-7 ${deepen(skill.name)}`} />
                         </span>
                         {skill.name}
                       </span>
                     ))}
                   </span>
                   {used > 0 && (
-                    <span className="unpack-item wide text-sm font-bold" style={{ "--i": group.skills.length, "--ux": "0px", "--uy": "12px" } as React.CSSProperties}>
+                    <span className="unpack-item wide text-sm font-bold max-md:text-xs" style={{ "--i": group.skills.length, "--ux": "0px", "--uy": "12px" } as React.CSSProperties}>
                       Used in {used} {used === 1 ? "project" : "projects"}
                     </span>
                   )}

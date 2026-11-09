@@ -18,7 +18,7 @@ import {
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 const TileTitle = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="wide mb-4 text-xl font-extrabold">{children}</h2>
+  <h2 className="wide mb-4 text-xl font-extrabold max-md:mb-2 max-md:text-base">{children}</h2>
 );
 
 const CountUp = ({ value }: { value: number }) => {
@@ -69,10 +69,10 @@ const useInView = () => {
 };
 
 const Stat = ({ value, label, tone, visual }: { value: number; label: string; tone: TileTone; visual: React.ReactNode }) => (
-  <Tile tone={tone} corner className={`${tone === "iris" ? "" : "!text-indigo"} group flex min-h-40 grow basis-0 items-end justify-between gap-3 !rounded-none p-5 motion-safe:transition-[flex-grow] motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] lg:hover:grow-[1.5]`}>
+  <Tile tone={tone} corner className={`${tone === "iris" ? "" : "!text-indigo"} group flex min-h-40 grow basis-0 items-end justify-between gap-3 !rounded-none p-5 max-md:min-h-[72px] max-md:p-3 motion-safe:transition-[flex-grow] motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] lg:hover:grow-[1.5]`}>
     <span>
-      <span className="wide block text-5xl font-extrabold leading-none"><Odometer value={value} /></span>
-      <span className="wide mt-2 block text-sm font-semibold">{label}</span>
+      <span className="wide block text-5xl font-extrabold leading-none max-md:text-2xl"><Odometer value={value} /></span>
+      <span className="wide mt-2 block text-sm font-semibold max-md:mt-0.5 max-md:text-xs">{label}</span>
     </span>
     <span aria-hidden="true" className="mb-1 mr-1 hidden shrink-0 sm:block">{visual}</span>
   </Tile>
@@ -126,12 +126,12 @@ const LanguageRibbon = ({ languages }: { languages: LanguageMetric[] }) => {
     <div onPointerLeave={() => setHovered(null)}>
       {active && (
         <p className="mb-4 flex flex-wrap items-baseline gap-x-3">
-          <span className="wide text-5xl font-extrabold">{active.percentage}%</span>
+          <span className="wide text-5xl font-extrabold max-md:text-2xl">{active.percentage}%</span>
           <span className="text-lg font-bold">{active.name}</span>
           <span className="text-sm">{plural(active.count, "repo")}</span>
         </p>
       )}
-      <div className="ribbon-in flex h-24 origin-left gap-1" aria-hidden="true">
+      <div className="ribbon-in flex h-24 origin-left gap-1 max-md:h-10" aria-hidden="true">
         {slices.map((slice, i) => (
           <span
             key={slice.name}
@@ -141,7 +141,7 @@ const LanguageRibbon = ({ languages }: { languages: LanguageMetric[] }) => {
           />
         ))}
       </div>
-      <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+      <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 max-md:mt-2 max-md:gap-x-3 max-md:gap-y-0.5">
         {slices.map((slice, i) => (
           <li
             key={slice.name}
@@ -172,15 +172,15 @@ const ContributionSkyline = ({ contributions, children }: { contributions: Contr
 
   return (
     <Tile tone="indigo" className="col-span-2 p-6 lg:col-span-4 lg:p-8">
-      <div className="grid gap-8 md:grid-cols-[270px_minmax(0,1fr)] lg:grid-cols-[340px_minmax(0,1fr)]">
+      <div className="grid gap-8 max-md:gap-3 md:grid-cols-[270px_minmax(0,1fr)] lg:grid-cols-[340px_minmax(0,1fr)]">
         {children}
         {weeks.length > 0 && (
-          <div className="relative h-72 md:h-auto md:min-h-[260px] lg:min-h-[280px]">
+          <div className="relative h-32 md:h-auto md:min-h-[260px] lg:min-h-[280px]">
             <p className="pointer-events-none absolute left-0 top-0 z-10">
-              <span className="wide block text-6xl font-extrabold leading-none tabular-nums md:text-7xl">
+              <span className="wide block text-6xl font-extrabold leading-none tabular-nums max-md:text-3xl md:text-7xl">
                 {shown ? shown.total : <CountUp value={contributions?.totalContributions ?? 0} />}
               </span>
-              <span className="mt-2 block font-semibold">
+              <span className="mt-2 block font-semibold max-md:mt-0 max-md:text-xs">
                 {shown ? `${shown.total === 1 ? "contribution" : "contributions"}, week of ${shown.start}` : "contributions in the last year"}
               </span>
             </p>
@@ -221,8 +221,8 @@ const TimelineChart = ({ timeline }: { timeline: TimelineItem[] }) => {
     >
       {timeline.map((item, column) => (
         <div key={item.year} className="group/col min-w-0 flex-1 text-center">
-          <p className="wide mb-2 text-2xl font-extrabold motion-safe:transition-transform motion-safe:duration-300 group-hover/col:scale-125">{item.count}</p>
-          <div className="flex h-48 flex-col-reverse gap-1 md:h-80 lg:h-48">
+          <p className="wide mb-2 text-2xl font-extrabold max-md:mb-1 max-md:text-base motion-safe:transition-transform motion-safe:duration-300 group-hover/col:scale-125">{item.count}</p>
+          <div className="flex h-20 flex-col-reverse gap-0.5 md:h-80 md:gap-1 lg:h-48">
             {Array.from({ length: item.count }, (_, brick) => (
               <span
                 key={brick}
@@ -398,8 +398,8 @@ const LiveGauge = ({ live, total }: { live: number; total: number }) => {
   const share = total > 0 ? live / total : 0;
 
   return (
-    <div ref={ref} className="mx-auto w-[150px] text-center">
-      <div className="relative h-[150px] w-[150px]">
+    <div ref={ref} className="mx-auto w-[150px] text-center max-md:w-[92px]">
+      <div className="relative h-[150px] w-[150px] max-md:h-[92px] max-md:w-[92px]">
         <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90" aria-hidden="true">
           <circle cx="60" cy="60" r={radius} fill="none" stroke="#ffffff" strokeOpacity="0.55" strokeWidth="13" />
           <circle
@@ -408,9 +408,9 @@ const LiveGauge = ({ live, total }: { live: number; total: number }) => {
             className="motion-safe:transition-[stroke-dasharray] motion-safe:duration-[1400ms] motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)]"
           />
         </svg>
-        <span className="wide absolute inset-0 flex items-center justify-center text-3xl font-extrabold">{Math.round(share * 100)}%</span>
+        <span className="wide absolute inset-0 flex items-center justify-center text-3xl font-extrabold max-md:text-lg">{Math.round(share * 100)}%</span>
       </div>
-      <p className="mt-1 text-sm font-bold">{live} of {total} repos live</p>
+      <p className="mt-1 text-sm font-bold max-md:text-xs">{live} of {total} repos live</p>
     </div>
   );
 };
@@ -429,16 +429,16 @@ const MilestoneFlight = ({ milestones }: { milestones: Milestone[] }) => {
       <span aria-hidden="true" className="mile-rocket">
         <Rocket className="h-4 w-4" />
       </span>
-      <ol className={`grid gap-y-6 ${count === 4 ? "md:grid-cols-4" : "md:grid-cols-3"}`}>
+      <ol className={`grid gap-y-6 ${count === 4 ? "grid-cols-4" : "grid-cols-3"}`}>
         {milestones.map((item, index) => (
           <li
             key={item.title}
             onPointerEnter={() => setHovered(index)}
-            className={`cursor-default pl-12 md:pl-0 md:pr-6 md:pt-12 motion-safe:transition-opacity motion-safe:duration-500 ${index <= target ? "opacity-100" : "opacity-60"}`}
+            className={`cursor-default pr-1 pt-10 md:pr-6 md:pt-12 motion-safe:transition-opacity motion-safe:duration-500 ${index <= target ? "opacity-100" : "opacity-60"}`}
           >
-            <p className="wide text-4xl font-extrabold">{item.when}</p>
-            <p className="mt-2 font-bold">{item.title}</p>
-            <p className="break-words text-sm">{item.detail}</p>
+            <p className="wide text-4xl font-extrabold max-md:text-base">{item.when}</p>
+            <p className="mt-2 font-bold max-md:mt-0.5 max-md:text-xs">{item.title}</p>
+            <p className="break-words text-sm max-md:text-xs">{item.detail}</p>
           </li>
         ))}
       </ol>
@@ -446,7 +446,6 @@ const MilestoneFlight = ({ milestones }: { milestones: Milestone[] }) => {
   );
 };
 
-const ROW_STEP = 68;
 
 const ActivityFeed = ({ activity }: { activity: ActivityGroup[] }) => {
   const [active, setActive] = useState(0);
@@ -462,8 +461,8 @@ const ActivityFeed = ({ activity }: { activity: ActivityGroup[] }) => {
     <ol className="relative" onPointerEnter={() => setHeld(true)} onPointerLeave={() => setHeld(false)}>
       <span
         aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-16 rounded-xl bg-apricot motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)]"
-        style={{ transform: `translateY(${active * ROW_STEP}px)` }}
+        className="absolute inset-x-0 top-0 h-12 rounded-xl bg-apricot md:h-16 motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)]"
+        style={{ transform: `translateY(calc(${active} * var(--feed-row)))` }}
       />
       {activity.map((item, index) => {
         const Icon = item.type === "PushEvent" ? GitCommitHorizontal : item.type === "CreateEvent" ? Plus : Zap;
@@ -472,7 +471,7 @@ const ActivityFeed = ({ activity }: { activity: ActivityGroup[] }) => {
           <li
             key={`${item.repo}-${index}`}
             onPointerEnter={() => setActive(index)}
-            className={`relative mb-1 flex h-16 items-center gap-3 px-3 motion-safe:transition-colors motion-safe:duration-300 ${isActive ? "text-indigo" : "text-white"}`}
+            className={`relative mb-1 flex h-12 items-center gap-3 px-3 md:h-16 motion-safe:transition-colors motion-safe:duration-300 ${isActive ? "text-indigo" : "text-white"}`}
           >
             <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full motion-safe:transition-all motion-safe:duration-300 ${isActive ? "scale-110 bg-indigo text-white" : "bg-iris text-white"}`}>
               <Icon className="h-4 w-4" aria-hidden="true" />
@@ -570,32 +569,32 @@ export default function AnalyticsPage() {
 
   return (
     <Shell>
-      <div className="enter-drop stagger stats-grid grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5">
+      <div className="enter-drop stagger stats-grid grid grid-cols-2 gap-4 max-md:gap-2 lg:grid-cols-4 lg:gap-5">
         <ContributionSkyline contributions={contributions}>
           <div className="min-w-0">
-            <div className="flex items-center gap-5">
-              <img src={profile.avatar_url} alt={profile.name} className="h-24 w-24 rounded-full object-cover transition-transform duration-300 hover:rotate-3 hover:scale-110" />
+            <div className="flex items-center gap-5 max-md:gap-3">
+              <img src={profile.avatar_url} alt={profile.name} className="h-24 w-24 rounded-full object-cover max-md:h-12 max-md:w-12 transition-transform duration-300 hover:rotate-3 hover:scale-110" />
               <div className="min-w-0">
-                <h2 className="wide text-2xl font-extrabold leading-tight">{profile.name}</h2>
+                <h2 className="wide text-2xl font-extrabold leading-tight max-md:text-base">{profile.name}</h2>
                 <a href={profile.html_url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1 font-semibold underline underline-offset-4">
                   @{profile.login} <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               </div>
             </div>
-            {profile.bio && <p className="mt-3">{profile.bio}</p>}
-            <dl className="mt-5 grid grid-cols-3 gap-2">
+            {profile.bio && <p className="mt-3 max-md:mt-1 max-md:text-xs">{profile.bio}</p>}
+            <dl className="mt-5 grid grid-cols-3 gap-2 max-md:mt-2 max-md:gap-1.5">
               {[
                 { value: profile.followers, label: "Followers" },
                 { value: profile.following, label: "Following" },
                 { value: `${profile.accountAgeYears}y`, label: "On GitHub" },
               ].map((item) => (
-                <div key={item.label} className="flex flex-col-reverse rounded-xl bg-indigo-soft p-3 transition-transform duration-300 hover:-translate-y-1">
+                <div key={item.label} className="flex flex-col-reverse rounded-xl bg-indigo-soft p-3 max-md:p-1.5 transition-transform duration-300 hover:-translate-y-1">
                   <dt className="text-xs font-semibold">{item.label}</dt>
-                  <dd className="wide text-2xl font-extrabold">{item.value}</dd>
+                  <dd className="wide text-2xl font-extrabold max-md:text-base">{item.value}</dd>
                 </div>
               ))}
             </dl>
-            <p className="mt-3 text-sm">Member since {profile.joinedDate}</p>
+            <p className="mt-3 text-sm max-md:mt-1 max-md:text-xs">Member since {profile.joinedDate}</p>
           </div>
         </ContributionSkyline>
 
@@ -612,23 +611,23 @@ export default function AnalyticsPage() {
         </Tile>
 
         <Tile tone="mint" className="col-span-2 !text-indigo p-6 lg:col-span-1">
-          <h2 className="wide mb-4 text-xl font-extrabold lg:text-base xl:text-xl">Achievements</h2>
-          <ul className="grid grid-cols-2 gap-x-3 gap-y-5 md:grid-cols-4 lg:grid-cols-2">
+          <h2 className="wide mb-4 text-xl font-extrabold max-md:mb-2 max-md:text-base lg:text-base xl:text-xl">Achievements</h2>
+          <ul className="grid grid-cols-2 gap-x-3 gap-y-5 max-md:grid-cols-4 max-md:gap-x-1 md:grid-cols-4 lg:grid-cols-2">
             {achievements.map(({ title, desc, stat, Icon }, index) => (
               <li key={title} className="group/ach text-center">
-                <span className="relative mx-auto block h-[72px] w-[72px] [perspective:500px]">
+                <span className="relative mx-auto block h-[72px] w-[72px] max-md:h-12 max-md:w-12 [perspective:500px]">
                   <span aria-hidden="true" className="coin block h-full w-full [transform-style:preserve-3d]" style={{ animationDelay: `${index * 160}ms` }}>
                     <span className="block h-full w-full [transform-style:preserve-3d] motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.34,1.3,0.64,1)] group-hover/ach:[transform:rotateY(180deg)]">
                       <span className={`absolute inset-0 flex items-center justify-center rounded-full border-4 border-white/40 bg-apricot text-indigo [backface-visibility:hidden]`}>
-                        <Icon className="h-7 w-7" />
+                        <Icon className="h-7 w-7 max-md:h-5 max-md:w-5" />
                       </span>
-                      <span className="wide absolute inset-0 flex items-center justify-center rounded-full border-4 border-apricot bg-white text-2xl font-extrabold text-indigo [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                      <span className="wide absolute inset-0 flex items-center justify-center rounded-full border-4 border-apricot bg-white text-2xl font-extrabold max-md:text-base text-indigo [backface-visibility:hidden] [transform:rotateY(180deg)]">
                         {stat}
                       </span>
                     </span>
                   </span>
                 </span>
-                <span className="mt-2 block text-sm font-bold leading-tight">{title}</span>
+                <span className="mt-2 block text-sm font-bold leading-tight max-md:mt-1 max-md:text-xs">{title}</span>
                 <span className="block text-xs leading-tight">{desc}</span>
               </li>
             ))}
@@ -637,9 +636,9 @@ export default function AnalyticsPage() {
 
         <Tile tone="apricot" className="col-span-2 flex flex-col !text-indigo p-6 md:col-span-1 lg:col-span-2">
           <TileTitle>Repository Insights</TileTitle>
-          <div className="grid flex-1 items-center gap-6 sm:grid-cols-[150px_minmax(0,1fr)] md:grid-cols-1 lg:grid-cols-[150px_minmax(0,1fr)]">
+          <div className="grid flex-1 grid-cols-[92px_minmax(0,1fr)] items-center gap-6 max-md:gap-2 md:grid-cols-1 lg:grid-cols-[150px_minmax(0,1fr)]">
             <LiveGauge live={stats.deployedCount} total={stats.totalRepos} />
-            <ul className="space-y-2">
+            <ul className="space-y-2 max-md:space-y-1">
               {[
                 ...(highlights.mostStarred?.stargazers_count > 0
                   ? [{ Icon: Star, repo: highlights.mostStarred, label: "Most starred", value: plural(highlights.mostStarred.stargazers_count, "star") }]
@@ -652,16 +651,16 @@ export default function AnalyticsPage() {
                     href={repo.html_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group/insight flex min-h-16 items-center gap-3 rounded-xl bg-white px-3 py-2 text-indigo motion-safe:transition-transform motion-safe:duration-300 hover:translate-x-1"
+                    className="group/insight flex min-h-16 items-center gap-3 rounded-xl bg-white px-3 py-2 max-md:min-h-11 max-md:gap-2 max-md:px-2 max-md:py-1 text-indigo motion-safe:transition-transform motion-safe:duration-300 hover:translate-x-1"
                   >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo text-white motion-safe:transition-transform motion-safe:duration-300 group-hover/insight:rotate-12 group-hover/insight:scale-110">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo text-white max-md:h-7 max-md:w-7 motion-safe:transition-transform motion-safe:duration-300 group-hover/insight:rotate-12 group-hover/insight:scale-110">
                       <Icon className="h-4 w-4" aria-hidden="true" />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-xs font-semibold">{label}</span>
                       <span className="block truncate font-bold">{repo.name}</span>
                     </span>
-                    <span className="shrink-0 text-sm font-bold">{value}</span>
+                    <span className="shrink-0 text-sm font-bold max-md:text-xs">{value}</span>
                   </a>
                 </li>
               ))}
@@ -682,7 +681,7 @@ export default function AnalyticsPage() {
         ) : null}
 
         <Tile as="section" tone="apricot" aria-labelledby="milestones-heading" className="col-span-2 !text-indigo p-6 lg:col-span-4 lg:p-8">
-          <h2 id="milestones-heading" className="wide mb-6 text-xl font-extrabold">Milestones</h2>
+          <h2 id="milestones-heading" className="wide mb-6 text-xl font-extrabold max-md:mb-2 max-md:text-base">Milestones</h2>
           <MilestoneFlight milestones={milestones} />
         </Tile>
 
@@ -701,7 +700,7 @@ export default function AnalyticsPage() {
               View Full Profile on GitHub
             </a>
           </div>
-          <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:flex-1 sm:auto-rows-fr sm:grid-cols-2 sm:gap-x-4 sm:gap-y-6 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+          <ul className="-mx-3 flex snap-x snap-mandatory scroll-pl-3 gap-3 overflow-x-auto px-3 pb-2 sm:mx-0 sm:grid sm:flex-1 sm:auto-rows-fr sm:grid-cols-2 sm:gap-x-4 sm:gap-y-6 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
             {topRepos.slice(0, 6).map((repo: any, index: number) => {
               const folder = FOLDERS[index % FOLDERS.length];
               return (
@@ -738,7 +737,7 @@ export default function AnalyticsPage() {
         </section>
 
         <Tile as="section" tone="indigo" aria-labelledby="activity-heading" className="col-span-2 p-6 lg:col-span-1">
-          <h2 id="activity-heading" className="wide mb-3 text-xl font-extrabold">Recent Activity</h2>
+          <h2 id="activity-heading" className="wide mb-3 text-xl font-extrabold max-md:mb-1 max-md:text-base">Recent Activity</h2>
           {activity.length > 0 ? <ActivityFeed activity={activity} /> : <p>No public activity in the last few weeks.</p>}
         </Tile>
       </div>

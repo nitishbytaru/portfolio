@@ -53,7 +53,7 @@ const useTyped = (text: string) => {
 
 const AddressBar = ({ icon, typed, done, sweep, className }: { icon: React.ReactNode; typed: string; done: boolean; sweep: string; className: string }) => (
   <span aria-hidden="true" className={`relative z-10 block shrink-0 overflow-hidden rounded-full bg-white text-indigo ${className}`}>
-    <span className="flex h-11 items-center gap-2 px-3 text-sm font-semibold">
+    <span className="flex h-11 items-center gap-2 px-3 text-sm font-semibold max-md:h-9 max-md:gap-1 max-md:px-2 max-md:text-xs">
       {icon}
       <span className="min-w-0 truncate">{typed}</span>
       {!done && <span className="caret -ml-1 h-4 w-0.5 shrink-0 bg-indigo" />}
@@ -148,7 +148,7 @@ export default function ProjectLaunchpad({ project, images, featureIcons, heroTo
   ];
 
   return (
-    <div className="enter-launch stagger flex flex-col gap-4 md:grid md:grid-cols-2 lg:col-span-4 lg:flex lg:gap-5">
+    <div className="enter-launch stagger grid grid-cols-2 gap-4 max-md:col-span-2 max-md:gap-2 lg:col-span-4 lg:flex lg:flex-col lg:gap-5">
       <a
         href={project.liveLink}
         target="_blank"
@@ -158,20 +158,20 @@ export default function ProjectLaunchpad({ project, images, featureIcons, heroTo
           if (event.pointerType === "mouse" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) setPreviewing(true);
         }}
         onPointerLeave={() => setPreviewing(false)}
-        className="group relative flex min-h-40 flex-[1.5] flex-col justify-between gap-6 overflow-hidden rounded-[20px] bg-amber p-6 text-ink lg:min-h-48"
+        className="group relative flex min-h-40 flex-[1.5] flex-col justify-between gap-6 overflow-hidden rounded-[20px] bg-amber p-6 max-md:min-h-32 max-md:gap-2 max-md:p-3 text-ink lg:min-h-48"
       >
-        <span aria-hidden="true" className="absolute right-6 top-6 h-14 w-14 rounded-full bg-ink transition-transform duration-500 ease-out motion-safe:group-hover:scale-[16]" />
-        <span aria-hidden="true" className="absolute right-6 top-6 z-10 flex h-14 w-14 items-center justify-center text-white">
-          <ArrowUpRight className="h-7 w-7 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        <span aria-hidden="true" className="absolute right-6 top-6 h-14 w-14 rounded-full bg-ink max-md:right-2 max-md:top-2.5 max-md:h-9 max-md:w-9 transition-transform duration-500 ease-out motion-safe:group-hover:scale-[16]" />
+        <span aria-hidden="true" className="absolute right-6 top-6 z-10 flex h-14 w-14 max-md:right-2 max-md:top-2.5 max-md:h-9 max-md:w-9 items-center justify-center text-white">
+          <ArrowUpRight className="h-7 w-7 max-md:h-5 max-md:w-5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </span>
         <AddressBar
           icon={<Globe className="h-4 w-4 shrink-0" />}
           typed={address.typed}
           done={address.done}
           sweep="bg-iris"
-          className="mr-[72px] mt-1.5"
+          className="mr-[72px] mt-1.5 max-md:mr-9 max-md:mt-0"
         />
-        <span aria-hidden="true" className="absolute bottom-4 right-4 z-10 block w-[30%]">
+        <span aria-hidden="true" className="absolute bottom-4 right-4 z-10 block w-[30%] max-md:hidden">
           <span className="preview-float block">
             <span className="relative block aspect-[16/10] -rotate-6 overflow-hidden rounded-lg border-2 border-white bg-ink shadow-[0_12px_22px_-8px_rgb(0_0_0/0.5)] motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] origin-bottom-right motion-safe:group-hover:rotate-0 motion-safe:group-hover:scale-110">
               {previews.map((src, index) => (
@@ -187,10 +187,10 @@ export default function ProjectLaunchpad({ project, images, featureIcons, heroTo
             </span>
           </span>
         </span>
-        <span className="relative z-10 mr-[32%] block transition-colors delay-100 duration-300 motion-safe:group-hover:text-white">
-          <WaveTitle text={isLinkedIn ? "LinkedIn Post" : "Live Demo"} className="wide block text-4xl font-extrabold leading-[1.05]" />
+        <span className="relative z-10 mr-[32%] block max-md:mr-0 transition-colors delay-100 duration-300 motion-safe:group-hover:text-white">
+          <WaveTitle text={isLinkedIn ? "LinkedIn Post" : "Live Demo"} className="wide block text-4xl font-extrabold leading-[1.05] max-md:text-xl" />
           {(isLinkedIn || host) && (
-            <span className="mt-2 flex items-center gap-1.5 text-sm font-semibold">
+            <span className="mt-2 flex items-center gap-1.5 text-sm font-semibold max-md:mt-1 max-md:text-xs">
               {isLinkedIn ? (
                 <Linkedin className="h-4 w-4 shrink-0" aria-hidden="true" />
               ) : (
@@ -210,7 +210,7 @@ export default function ProjectLaunchpad({ project, images, featureIcons, heroTo
         tone="iris"
         corner
         onPointerEnter={repo.replay}
-        className="group flex min-h-[204px] flex-1 flex-col justify-between gap-5 p-6 motion-safe:transition-colors motion-safe:duration-300 hover:!bg-indigo"
+        className="group flex min-h-[204px] flex-1 flex-col justify-between gap-5 p-6 max-md:min-h-32 max-md:gap-2 max-md:p-3 motion-safe:transition-colors motion-safe:duration-300 hover:!bg-indigo"
       >
         <Github aria-hidden="true" className="absolute -bottom-8 -right-6 h-44 w-44 text-white/20 transition-transform duration-500 ease-out group-hover:-rotate-12 group-hover:scale-110" />
         {FLOATING_ICONS.map((Icon, index) => (
@@ -226,16 +226,16 @@ export default function ProjectLaunchpad({ project, images, featureIcons, heroTo
           typed={repo.typed}
           done={repo.done}
           sweep="bg-amber"
-          className="mr-8"
+          className="mr-8 max-md:mr-4"
         />
         <span className="relative z-10 block">
-          <WaveTitle text="Source Code" className="wide block text-3xl font-extrabold leading-[1.05]" />
+          <WaveTitle text="Source Code" className="wide block text-3xl font-extrabold leading-[1.05] max-md:text-xl" />
           {layers.length > 0 && (
-            <span className="mt-3 flex flex-wrap gap-1.5">
+            <span className="mt-3 flex flex-wrap gap-1.5 max-md:mt-1 max-md:gap-1">
               {layers.map((layer, index) => (
                 <span
                   key={layer}
-                  className="layer-chip rounded-full bg-white px-3 py-1 text-sm font-semibold text-indigo"
+                  className="layer-chip rounded-full bg-white px-3 py-1 text-sm font-semibold max-md:px-1.5 max-md:py-0 max-md:text-xs text-indigo"
                   style={{ "--i": index } as React.CSSProperties}
                 >
                   {layer.replace(/_/g, " ")}
@@ -246,7 +246,7 @@ export default function ProjectLaunchpad({ project, images, featureIcons, heroTo
         </span>
       </Tile>
 
-      <div className="grid grid-cols-3 overflow-hidden rounded-[20px] md:col-span-2">
+      <div className="col-span-2 grid grid-cols-3 overflow-hidden rounded-[20px]">
         {facts.map((fact, index) => (
           <Tile
             key={fact.id}
@@ -258,9 +258,9 @@ export default function ProjectLaunchpad({ project, images, featureIcons, heroTo
             aria-label={`${fact.value} ${fact.label}, go to section`}
             className="group/fact focus-inset !rounded-none p-3 text-left !text-ink transition-[filter] duration-300 hover:brightness-95 sm:p-4"
           >
-            <span aria-hidden="true" className="wide block text-4xl font-extrabold leading-none"><Odometer value={fact.value} /></span>
+            <span aria-hidden="true" className="wide block text-4xl font-extrabold leading-none max-md:text-2xl"><Odometer value={fact.value} /></span>
             <span aria-hidden="true" className="wide mt-1 block text-sm font-semibold">{fact.label}</span>
-            <span aria-hidden="true" className="fact-row mt-3 flex">{fact.visual}</span>
+            <span aria-hidden="true" className="fact-row mt-3 flex max-md:hidden">{fact.visual}</span>
           </Tile>
         ))}
       </div>

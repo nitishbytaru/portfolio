@@ -51,7 +51,7 @@ export default function GitHubPulseTile() {
       interactive
       corner
       aria-label={label}
-      className="group col-span-2 flex min-h-40 md:col-span-1 flex-col justify-between gap-2 p-4 lg:col-span-4 lg:min-h-0"
+      className="group col-span-1 flex min-h-40 flex-col justify-between gap-2 p-4 max-md:min-h-0 max-md:p-3 lg:col-span-4 lg:min-h-0"
     >
       <span aria-hidden="true" className="flex items-center gap-2">
         <Github className="h-5 w-5 transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110" />
@@ -62,7 +62,7 @@ export default function GitHubPulseTile() {
         <span aria-hidden="true" className="block">
           <span className="flex flex-wrap items-end justify-between gap-x-2 gap-y-1">
             <span>
-              <span className="wide block text-4xl font-extrabold leading-none lg:text-3xl xl:text-4xl">{years.current}</span>
+              <span className="wide block text-4xl font-extrabold leading-none max-md:text-2xl lg:text-3xl xl:text-4xl">{years.current}</span>
               <span className="mt-0.5 block text-xs font-semibold">contributions in {years.currentYear} so far</span>
             </span>
             {change !== null && (
@@ -99,7 +99,7 @@ export default function GitHubPulseTile() {
         </span>
       )}
 
-      <span aria-hidden="true" className="flex h-7 items-end gap-[3px]">
+      <span aria-hidden="true" className="flex h-7 items-end gap-[3px] max-md:hidden">
         {(hasWeeks ? weeks : Array.from({ length: WEEKS_SHOWN }, () => 0)).map((total, index) => (
           <span
             key={index}
