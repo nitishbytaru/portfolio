@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ArrowRight, ChevronDown, Cloud, Cpu, Database, Layers, LucideIcon, Monitor, Server, Zap } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown, Cloud, Cpu, Database, Layers, LucideIcon, Monitor, Server, Zap } from "lucide-react";
 import { Project } from "@/data/ProjectData";
 import { TechIcon, hasTechIcon } from "@/components/ui/TechIcon";
 import Tile from "@/components/board/Tile";
@@ -296,6 +296,126 @@ export const BuiltTile = ({ project }: { project: Project }) => {
             })}
           </ul>
         )}
+      </div>
+    </Tile>
+  );
+};
+
+const FEATURE_MS = 3200;
+
+interface FeaturesProps {
+  features: string[];
+  iconFor: (feature: string) => LucideIcon;
+}
+
+export const FeaturesTile = ({ features, iconFor }: FeaturesProps) => {
+  const { ref, state } = useReveal();
+  const [step, setStep] = useState(0);
+  const [held, setHeld] = useState(false);
+  const total = features.length;
+  const active = ((step % total) + total) % total;
+  const angle = 360 / total;
+  const playing = state === "in" && !held && total > 1;
+  const ActiveIcon = iconFor(features[active]);
+
+  useEffect(() => {
+    if (!playing) return;
+    const timer = window.setTimeout(() => setStep((current) => current + 1), FEATURE_MS);
+    return () => window.clearTimeout(timer);
+  }, [playing, step]);
+
+  // Turns the short way round, so the dial never spins backwards across the ring.
+  const select = (index: number) => {
+    let delta = (index - active + total) % total;
+    if (delta > total / 2) delta -= total;
+    setStep((current) => current + delta);
+  };
+
+  return (
+    <Tile
+      id="features"
+      tone="pink"
+      className="p-6 !text-indigo lg:col-span-12 lg:p-8"
+      onPointerEnter={(event: React.PointerEvent) => { if (event.pointerType === "mouse") setHeld(true); }}
+      onPointerLeave={() => setHeld(false)}
+    >
+      <div ref={ref} data-reveal={state}>
+        <h2 className="wide mb-4 text-2xl font-extrabold">Key Features</h2>
+        <ul className="sr-only">
+          {features.map((feature) => <li key={feature}>{feature}</li>)}
+        </ul>
+
+        <div className="grid items-center gap-6 md:grid-cols-[320px_minmax(0,1fr)] md:gap-16 lg:grid-cols-[360px_minmax(0,1fr)]">
+          <div className="feature-dial relative mx-auto h-[280px] w-[280px] md:h-[320px] md:w-[320px] lg:h-[360px] lg:w-[360px]">
+            <svg aria-hidden="true" viewBox="0 0 100 100" className="feature-orbit absolute inset-0 h-full w-full">
+              <circle cx="50" cy="50" r="38.5" fill="none" stroke="#2E2A5C" strokeWidth="0.5" strokeDasharray="1.2 2.4" strokeLinecap="round" />
+            </svg>
+
+            <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-28 w-28 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-indigo text-amber lg:h-36 lg:w-36">
+              <span key={step} className="feature-hub block">
+                <ActiveIcon className="h-12 w-12 lg:h-14 lg:w-14" />
+              </span>
+              {playing && <span key={`ring-${step}`} className="feature-ping absolute inset-0 rounded-full border-2 border-indigo" />}
+            </span>
+
+            <span aria-hidden="true" key={`beam-${step}`} className="feature-beam absolute left-[calc(50%+var(--dial-r)+28px)] top-1/2 hidden h-1 w-14 origin-left -translate-y-1/2 rounded-full bg-indigo md:block" />
+
+            <div
+              className="absolute inset-0 motion-safe:transition-transform motion-safe:duration-[850ms] motion-safe:ease-[cubic-bezier(0.34,1.25,0.64,1)]"
+              style={{ transform: `rotate(${-step * angle}deg)` }}
+            >
+              {features.map((feature, index) => {
+                const Icon = iconFor(feature);
+                const isActive = index === active;
+                const position = index * angle;
+                return (
+                  <button
+                    key={feature}
+                    type="button"
+                    onClick={() => select(index)}
+                    aria-label={`Show feature: ${feature}`}
+                    aria-pressed={isActive}
+                    className="feature-node absolute left-1/2 top-1/2 -ml-7 -mt-7 h-14 w-14 rounded-full"
+                    style={{ transform: `rotate(${position}deg) translateX(var(--dial-r))`, "--i": index } as React.CSSProperties}
+                  >
+                    <span
+                      className={`flex h-full w-full items-center justify-center rounded-full motion-safe:transition-[transform,background-color,color] motion-safe:duration-[850ms] motion-safe:ease-[cubic-bezier(0.34,1.25,0.64,1)] ${isActive ? "bg-indigo text-amber" : "bg-frame text-indigo hover:bg-amber"}`}
+                      style={{ transform: `rotate(${-position + step * angle}deg) scale(${isActive ? 1.2 : 1})` }}
+                    >
+                      <Icon className="h-6 w-6" aria-hidden="true" />
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div aria-hidden="true" className="min-w-0">
+            <p className="wide text-sm font-bold tabular-nums">{active + 1} of {total}</p>
+            <p key={step} className="wide mt-3 min-h-[8.5rem] break-words text-2xl font-extrabold sm:text-3xl leading-[1.12] md:min-h-[11rem] lg:text-5xl lg:leading-[1.08]">
+              {features[active].split(" ").map((word, index) => (
+                <React.Fragment key={index}>
+                  <span className="feature-word inline-block" style={{ "--i": index } as React.CSSProperties}>{word}</span>{" "}
+                </React.Fragment>
+              ))}
+            </p>
+            <div className="mt-4 flex items-center gap-3">
+              <button type="button" tabIndex={-1} onClick={() => setStep((current) => current - 1)} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo text-white">
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <button type="button" tabIndex={-1} onClick={() => setStep((current) => current + 1)} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo text-white">
+                <ArrowRight className="h-5 w-5" />
+              </button>
+              <span className="block h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-white">
+                <span
+                  key={step}
+                  className="feature-timer block h-full origin-left rounded-full bg-indigo"
+                  style={{ animationDuration: `${FEATURE_MS}ms`, animationPlayState: playing ? "running" : "paused" }}
+                />
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </Tile>
   );

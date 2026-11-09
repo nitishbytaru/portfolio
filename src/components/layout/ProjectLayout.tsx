@@ -9,7 +9,7 @@ import Tile, { TileTone } from "../board/Tile";
 import Wordmark from "../board/Wordmark";
 import ScreenDeck from "../board/ScreenDeck";
 import ProjectLaunchpad from "../board/ProjectLaunchpad";
-import { AboutTile, BuiltTile, StackTile } from "../board/ProjectStory";
+import { AboutTile, BuiltTile, FeaturesTile, StackTile } from "../board/ProjectStory";
 
 interface ProjectLayoutProps {
   project: Project;
@@ -79,22 +79,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
         {project.techStack?.length > 0 && <StackTile techStack={project.techStack} />}
         <BuiltTile project={project} />
 
-        <Tile id="features" tone="pink" className="p-6 lg:col-span-12">
-          <SectionTitle>Key Features</SectionTitle>
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {project.features.map((feature) => {
-              const Icon = featureIcon(feature);
-              return (
-                <li key={feature} className="flex items-center gap-3 rounded-2xl bg-frame p-3 text-sm font-medium leading-snug">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink text-white">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  {feature}
-                </li>
-              );
-            })}
-          </ul>
-        </Tile>
+        <FeaturesTile features={project.features} iconFor={featureIcon} />
 
         {/* Close */}
         <nav aria-label="Other projects" className="grid grid-cols-[auto_minmax(0,1fr)] gap-4 sm:grid-cols-[1fr_auto_2fr] lg:col-span-12 lg:gap-5">
