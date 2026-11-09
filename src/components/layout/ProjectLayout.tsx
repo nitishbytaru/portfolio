@@ -3,16 +3,13 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowLeft, ArrowRight, ArrowUpRight, Bell, Camera, ChartColumn, Check, Cloud, Cpu, Database, Github, Globe, Heart,
-  Layers, LayoutGrid, Leaf, Lock, LucideIcon, MessageCircle, Monitor, Search, Server, Shield, Smartphone, Upload, User, Wallet, Zap,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Bell, Camera, ChartColumn, Check, Globe, Heart, LayoutGrid, Leaf, Lock, LucideIcon, MessageCircle, Search, Shield, Smartphone, Upload, User, Wallet, Zap } from "lucide-react";
 import { projectsData, Project } from "../../data/ProjectData";
-import { TechIcon, hasTechIcon } from "../ui/TechIcon";
 import Tile, { TileTone } from "../board/Tile";
 import Wordmark from "../board/Wordmark";
 import ScreenDeck from "../board/ScreenDeck";
 import ProjectLaunchpad from "../board/ProjectLaunchpad";
+import { AboutTile, BuiltTile, StackTile } from "../board/ProjectStory";
 
 interface ProjectLayoutProps {
   project: Project;
@@ -23,36 +20,6 @@ const HERO_TONES: TileTone[] = ["mint", "pink", "periwinkle", "violet", "mint"];
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <h2 className="wide mb-5 text-2xl font-extrabold">{children}</h2>
 );
-
-// Splits "A, B (C, D), E" on commas that are outside parentheses.
-const splitSpec = (value: string) => value.split(/,(?![^(]*\))/).map((item) => item.trim());
-
-const techName = (item: string) => item.replace(/\s*\(.*\)/, "").trim();
-
-// A logo when one exists, otherwise the name; the full text stays available as a tooltip.
-const TechMark = ({ item }: { item: string }) => {
-  const name = techName(item);
-  return hasTechIcon(name) ? (
-    <span title={item} className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
-      <TechIcon name={name} sizeClassName="w-6 h-6" />
-      <span className="sr-only">{item}</span>
-    </span>
-  ) : (
-    <span title={item} className="inline-flex h-10 items-center rounded-full bg-white px-3 text-sm font-semibold">
-      {name}
-    </span>
-  );
-};
-
-const LAYER_ICONS: [RegExp, LucideIcon][] = [
-  [/front|ui|mobile/i, Monitor],
-  [/back|api|server/i, Server],
-  [/data|storage/i, Database],
-  [/machine|ml|model/i, Cpu],
-  [/real|socket/i, Zap],
-];
-
-const layerIcon = (key: string) => LAYER_ICONS.find(([pattern]) => pattern.test(key))?.[1] ?? Layers;
 
 const FEATURE_ICONS: [RegExp, LucideIcon][] = [
   [/messag|chat|discussion|comment/i, MessageCircle],
@@ -84,11 +51,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
   const previousProject = currentIndex > 0 ? projectsData[currentIndex - 1] : null;
   const nextProject = currentIndex < projectsData.length - 1 ? projectsData[currentIndex + 1] : null;
   const isLinkedIn = project.liveLink?.includes("linkedin.com");
-  const architecture = project.technologiesUsed ?? {};
-  const deployment = project.deployment ?? {};
   const heroTone = HERO_TONES[Math.max(currentIndex, 0) % HERO_TONES.length];
-  const layers = Object.entries(architecture);
-  const [lead, ...restIntro] = project.detailedDescription?.intro ?? [];
 
   
 
@@ -112,75 +75,9 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
         />
 
         {/* Story */}
-        <Tile tone="periwinkle" className="p-6 lg:col-span-5">
-          <SectionTitle>About Project</SectionTitle>
-          {lead && <p className="text-lg font-semibold leading-snug">{lead}</p>}
-          {(restIntro.length > 0 || project.detailedDescription?.note) && (
-            <details className="mt-3">
-              <summary className="inline-flex min-h-11 cursor-pointer items-center font-semibold underline underline-offset-4">Read more</summary>
-              <div className="mt-2 space-y-2 leading-relaxed">
-                {restIntro.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-                {project.detailedDescription?.note && <p>{project.detailedDescription.note}</p>}
-              </div>
-            </details>
-          )}
-        </Tile>
-
-        {project.techStack?.length > 0 && (
-          <Tile id="stack" tone="plain" className="p-6 lg:col-span-7">
-            <SectionTitle>Core Stack</SectionTitle>
-            <ul className="flex flex-wrap gap-x-5 gap-y-4">
-              {project.techStack.map((tech) => (
-                <li key={tech} className="flex w-[4.5rem] flex-col items-center gap-2 text-center text-xs font-semibold">
-                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white">
-                    <TechIcon name={tech} sizeClassName="w-7 h-7" />
-                  </span>
-                  {tech}
-                </li>
-              ))}
-            </ul>
-          </Tile>
-        )}
-
-        {/* How it fits together */}
-        {layers.length > 0 && (
-          <Tile tone="amber" className="p-6 lg:col-span-12">
-            <SectionTitle>How It&apos;s Built</SectionTitle>
-            <ol className="flex flex-col items-stretch gap-1.5 md:flex-row md:items-center md:gap-2">
-              {layers.map(([key, value], index) => {
-                const Icon = layerIcon(key);
-                return (
-                  <React.Fragment key={key}>
-                    {index > 0 && (
-                      <li aria-hidden="true" className="flex justify-center">
-                        <ArrowRight className="h-5 w-5 rotate-90 md:rotate-0" />
-                      </li>
-                    )}
-                    <li className="flex min-w-0 flex-1 items-center justify-between gap-3 rounded-2xl bg-frame p-3 md:block md:p-4">
-                      <div className="flex items-center gap-2 md:mb-3">
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink text-white">
-                          <Icon className="h-4 w-4" aria-hidden="true" />
-                        </span>
-                        <span className="wide text-sm font-bold md:text-xs lg:text-sm">{key.replace(/_/g, " ")}</span>
-                      </div>
-                      <div className="flex flex-wrap justify-end gap-2 md:justify-start">
-                        {splitSpec(value).map((item) => <TechMark key={item} item={item} />)}
-                      </div>
-                    </li>
-                  </React.Fragment>
-                );
-              })}
-            </ol>
-            {Object.keys(deployment).length > 0 && (
-              <ul className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-ink/20 pt-4 text-sm font-medium">
-                <li aria-hidden="true"><Cloud className="h-5 w-5" /></li>
-                {Object.entries(deployment).map(([key, value]) => (
-                  <li key={key}><span className="font-bold">{key.replace(/_/g, " ")}:</span> {value}</li>
-                ))}
-              </ul>
-            )}
-          </Tile>
-        )}
+        <AboutTile project={project} />
+        {project.techStack?.length > 0 && <StackTile techStack={project.techStack} />}
+        <BuiltTile project={project} />
 
         <Tile id="features" tone="pink" className="p-6 lg:col-span-12">
           <SectionTitle>Key Features</SectionTitle>
