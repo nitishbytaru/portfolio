@@ -1,23 +1,35 @@
 const USERNAME = "nitishbytaru";
 const API_BASE = "https://api.github.com";
 const CACHE_PREFIX = "gh_analytics_";
-const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+const CACHE_TTL = 15 * 60 * 1000; // 15 minutes
 
 interface CacheItem<T> {
   data: T;
   ts: number;
 }
 
+const isExpired = (ts: number) => Date.now() - ts > CACHE_TTL;
+
+// Deletes every expired or unreadable entry, not only the one being read.
+function removeExpired(): void {
+  for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+    const key = localStorage.key(index);
+    if (!key?.startsWith(CACHE_PREFIX)) continue;
+    try {
+      const { ts } = JSON.parse(localStorage.getItem(key) ?? "") as CacheItem<unknown>;
+      if (isExpired(ts)) localStorage.removeItem(key);
+    } catch {
+      localStorage.removeItem(key);
+    }
+  }
+}
+
 function getCached<T>(key: string): T | null {
   try {
-    const raw = sessionStorage.getItem(CACHE_PREFIX + key);
+    removeExpired();
+    const raw = localStorage.getItem(CACHE_PREFIX + key);
     if (!raw) return null;
-    const { data, ts } = JSON.parse(raw) as CacheItem<T>;
-    if (Date.now() - ts > CACHE_TTL) {
-      sessionStorage.removeItem(CACHE_PREFIX + key);
-      return null;
-    }
-    return data;
+    return (JSON.parse(raw) as CacheItem<T>).data;
   } catch {
     return null;
   }
@@ -25,12 +37,12 @@ function getCached<T>(key: string): T | null {
 
 function setCache<T>(key: string, data: T): void {
   try {
-    sessionStorage.setItem(
+    localStorage.setItem(
       CACHE_PREFIX + key,
       JSON.stringify({ data, ts: Date.now() })
     );
   } catch {
-    // Storage full — silently ignore
+    // Storage full or blocked: the page still works, just uncached.
   }
 }
 
@@ -68,17 +80,6 @@ export async function fetchEvents(): Promise<any[]> {
   return data;
 }
 
-export async function fetchRepoLanguages(repoName: string): Promise<Record<string, number>> {
-  const key = `langs_${repoName}`;
-  const cached = getCached<Record<string, number>>(key);
-  if (cached) return cached;
-  const data = await fetchJSON<Record<string, number>>(
-    `${API_BASE}/repos/${USERNAME}/${repoName}/languages`
-  );
-  setCache(key, data);
-  return data;
-}
-
 export interface ContributionDay {
   date: string;
   level: number;
@@ -96,38 +97,64 @@ export async function fetchContributions(): Promise<ContributionData> {
 
   try {
     const res = await fetch(
-      `https://github-contributions-api.deno.dev/${USERNAME}.json`
+      `https://github-contributions-api.jogruber.de/v4/${USERNAME}?y=last`
     );
     if (!res.ok) throw new Error("Contributions fetch failed");
-    const json = await res.json();
-    
-    const levelMap: Record<string, number> = {
-      NONE: 0,
-      FIRST_QUARTILE: 1,
-      SECOND_QUARTILE: 2,
-      THIRD_QUARTILE: 3,
-      FOURTH_QUARTILE: 4,
-    };
+    const json: {
+      total: { lastYear: number };
+      contributions: ContributionDay[];
+    } = await res.json();
 
-    const weeks = json.contributions.map((week: any) =>
-      week.map((day: any) => ({
-        date: day.date,
-        level: levelMap[day.contributionLevel] ?? 0,
-        count: day.contributionCount,
-      }))
+    // The API returns a flat list of days; the calendar draws Sunday-first weeks.
+    const firstSunday = json.contributions.findIndex(
+      (day) => new Date(`${day.date}T00:00:00Z`).getUTCDay() === 0
     );
-
-    const totalContributions = json.contributions.reduce(
-      (sum: number, week: any) => sum + week.reduce((wSum: number, d: any) => wSum + d.contributionCount, 0),
-      0
-    );
+    const days = json.contributions.slice(Math.max(firstSunday, 0));
+    const weeks: ContributionDay[][] = [];
+    for (let i = 0; i < days.length; i += 7) {
+      weeks.push(days.slice(i, i + 7));
+    }
+    const totalContributions = json.total.lastYear;
 
     const data: ContributionData = { weeks, totalContributions };
     setCache("contributions", data);
     return data;
   } catch (err) {
-    console.error("fetchContributions error:", err);
+    console.warn("Contribution data unavailable:", err);
     return { weeks: [], totalContributions: 0 };
+  }
+}
+
+export interface YearTotals {
+  currentYear: number;
+  current: number;
+  previousYear: number;
+  previous: number;
+}
+
+export async function fetchYearTotals(): Promise<YearTotals | null> {
+  const cached = getCached<YearTotals>("year_totals");
+  if (cached) return cached;
+
+  try {
+    const currentYear = new Date().getFullYear();
+    const previousYear = currentYear - 1;
+    const res = await fetch(
+      `https://github-contributions-api.jogruber.de/v4/${USERNAME}?y=${previousYear}&y=${currentYear}`
+    );
+    if (!res.ok) throw new Error("Year totals fetch failed");
+    const json: { total: Record<string, number> } = await res.json();
+    const data: YearTotals = {
+      currentYear,
+      current: json.total[currentYear] ?? 0,
+      previousYear,
+      previous: json.total[previousYear] ?? 0,
+    };
+    setCache("year_totals", data);
+    return data;
+  } catch (err) {
+    console.warn("Yearly contribution totals unavailable:", err);
+    return null;
   }
 }
 
@@ -143,26 +170,9 @@ export interface TimelineItem {
   count: number;
 }
 
-const LANGUAGE_COLORS: Record<string, string> = {
-  JavaScript: "#f1e05a",
-  TypeScript: "#3178c6",
-  Python: "#3572A5",
-  HTML: "#e34c26",
-  CSS: "#563d7c",
-  Java: "#b07219",
-  PHP: "#4F5D95",
-  EJS: "#a91e50",
-  Blade: "#f7523f",
-  Shell: "#89e051",
-  "C#": "#178600",
-  "C++": "#f34b7d",
-  Ruby: "#701516",
-  Go: "#00ADD8",
-  Rust: "#dea584",
-  Dart: "#00B4AB",
-  Kotlin: "#A97BFF",
-  Swift: "#F05138",
-};
+// Validated for color-vision separation. Assigned by rank, never cycled.
+const LANGUAGE_COLORS = ["#5459AE", "#E8921A", "#0E9F97", "#C25BD6", "#4238B8", "#B3701A", "#E0669A"];
+const OTHER_LANGUAGE_COLOR = "#8A8A93";
 
 export function computeAnalytics(profile: any, repos: any[]) {
   const now = new Date();
@@ -206,9 +216,12 @@ export function computeAnalytics(profile: any, repos: any[]) {
       name,
       count,
       percentage: ((count / repos.length) * 100).toFixed(1),
-      color: LANGUAGE_COLORS[name] || "#6e7681",
     }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => b.count - a.count)
+    .map((language, i) => ({
+      ...language,
+      color: LANGUAGE_COLORS[i] ?? OTHER_LANGUAGE_COLOR,
+    }));
 
   const reposByYear: Record<string, number> = {};
   repos.forEach((r) => {

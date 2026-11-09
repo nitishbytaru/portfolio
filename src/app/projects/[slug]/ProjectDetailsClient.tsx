@@ -9,13 +9,5 @@ interface ProjectDetailsClientProps {
 }
 
 export default function ProjectDetailsClient({ project }: ProjectDetailsClientProps) {
-  const handleLiveLinkClick = () => {
-    if (project.liveLink) {
-      window.open(project.liveLink, "_blank");
-    }
-  };
-
-  return (
-    <ProjectLayout project={project} onLiveLinkClick={handleLiveLinkClick} />
-  );
+  return <ProjectLayout key={project.slug} project={project} />;
 }

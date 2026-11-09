@@ -1,297 +1,154 @@
-"use client";
+import type React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import Tile from "@/components/board/Tile";
+import Wordmark from "@/components/board/Wordmark";
+import AboutCard from "@/components/board/AboutCard";
+import SkillKeysTile from "@/components/board/SkillKeysTile";
+import GitHubPulseTile from "@/components/board/GitHubPulseTile";
+import { TechIcon } from "@/components/ui/TechIcon";
+import { projectsData } from "@/data/ProjectData";
+import { INTERNSHIP_COUNT, INTERNSHIPS } from "@/data/site";
 
-import React from "react";
-import SocialLinks from "@/components/ui/SocialLinks";
-import {
-  ArrowRight,
-  Download,
-  Code2,
-  Database,
-  Layers,
-  Activity,
-  Sparkles,
-  Briefcase,
-  GraduationCap,
-  Cpu,
-  LucideIcon,
-} from "lucide-react";
-import { useScrollReveal, useCountUp } from "@/hooks/useScrollReveal";
+const echoRealm = projectsData.find((p) => p.slug === "echorealm")!;
 
-import Pill from "@/components/ui/Pill";
-import GlassCard from "@/components/ui/GlassCard";
-import MiniInfoCard from "@/components/ui/MiniInfoCard";
-import FloatingBadge from "@/components/ui/FloatingBadge";
+const FEATURED_STACK = 4;
 
-interface StatItem {
-  value?: number;
-  suffix?: string;
-  label: string;
-  description: string;
-  icon: LucideIcon;
-  display?: string;
-}
+const MAX_STACKED = 3;
+const ROLE_COLORS = ["bg-indigo", "bg-iris", "bg-violet"];
+const TIMELINE_COLORS = ["bg-amber", "bg-mint", "bg-pink", "bg-white"];
 
-const STATS: StatItem[] = [
-  {
-    value: 4,
-    suffix: "+",
-    label: "Major Projects",
-    description: "Full-stack, mobile, and ML-based applications",
-    icon: Layers,
-  },
-  {
-    value: 10,
-    suffix: "+",
-    label: "Technologies",
-    description: "React, RN, Node, Flask, .NET, Angular and more",
-    icon: Code2,
-  },
-  {
-    value: 3,
-    suffix: "",
-    label: "Databases",
-    description: "MongoDB, MySQL, and PostgreSQL exposure",
-    icon: Database,
-  },
-  {
-    display: "Full Stack",
-    label: "Specialization",
-    description: "Frontend, backend, APIs, and database workflows",
-    icon: Cpu,
-  },
-];
-
-const TECH_STACK = [
-  "React",
-  "React Native",
-  "Next.js",
-  "Node.js",
-  "Flask",
-  ".NET",
-  "Angular",
-  "MySQL",
-  "MongoDB",
-];
-
-const MINI_CARDS = [
-  { icon: Briefcase, title: "Internship", value: "Infosys + Evaluate Health" },
-  { icon: GraduationCap, title: "Education", value: "B.Tech CSE" },
-  { icon: Activity, title: "Focus", value: "Scalable Apps" },
-];
-
-const FLOATING_TECH = [
-  { label: "React", className: "-left-8 top-10" },
-  { label: "Node.js", className: "-right-8 top-24" },
-  { label: "MongoDB", className: "-left-6 bottom-24" },
-  { label: "TypeScript", className: "right-0 bottom-8" },
-];
-
-const RESUME_URL =
-  "https://drive.google.com/file/d/1z7Y0If8Jc4Zd7apdLeXtFzNK12eQ80gi/view?usp=drive_link";
-
-const Reveal: React.FC<{ delay?: number; children: React.ReactNode; className?: string }> = ({
-  delay = 0,
-  children,
-  className = "",
-}) => (
-  <div
-    className={`motion-safe:animate-fade-in-up ${className}`}
-    style={{ animationFillMode: "both", animationDelay: `${delay}s` }}
-  >
-    {children}
-  </div>
-);
-
-const HeroAvatar: React.FC = () => (
-  <div className="relative motion-safe:animate-float">
-    {/* Orbiting rings */}
-    <div className="absolute -inset-4 rounded-full border border-border motion-safe:animate-spin-slow" />
-    <div
-      className="absolute -inset-8 rounded-full border border-border/50 motion-safe:animate-spin-slow"
-      style={{ animationDirection: "reverse", animationDuration: "15s" }}
-    />
-
-    <div className="glow-border rounded-full">
-      <img
-        src="/NitishPIC.jpg"
-        alt="Nitish Bytaru — Full Stack Developer"
-        loading="lazy"
-        className="relative h-72 w-72 rounded-full border-4 border-surface object-cover shadow-2xl transition-transform duration-500 motion-safe:animate-glow-pulse hover:scale-105 md:h-[430px] md:w-[430px]"
-      />
-    </div>
-  </div>
-);
-
-interface StatCardProps {
-  stat: StatItem;
-  index: number;
-  isVisible: boolean;
-}
-
-const StatCard: React.FC<StatCardProps> = ({ stat, index, isVisible }) => {
-  const Icon = stat.icon;
-  const count = useCountUp(stat.value ?? 0, 1200, isVisible);
-
-  return (
-    <GlassCard
-      padding="p-6"
-      className={`scroll-reveal stagger-${index + 1} ${isVisible ? "revealed" : ""}`}
-    >
-      <div className="relative z-10">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
-            <Icon className="h-6 w-6" />
-          </div>
-        </div>
-
-        <div className="mb-4 font-mono text-5xl font-bold tracking-tight text-text">
-          {stat.value != null ? (
-            <>
-              {count}
-              {stat.suffix}
-            </>
-          ) : (
-            stat.display
-          )}
-        </div>
-
-        <div className="mb-2 text-xl font-semibold text-text">{stat.label}</div>
-        <p className="mb-5 text-sm leading-relaxed text-text-secondary">
-          {stat.description}
-        </p>
-      </div>
-    </GlassCard>
-  );
+const monthLabel = (yearMonth: string) => {
+  const [year, month] = yearMonth.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1)).toLocaleString("en", { month: "short", year: "numeric", timeZone: "UTC" });
 };
 
+const monthsLong = (start: string, end: string) => {
+  const [startYear, startMonth] = start.split("-").map(Number);
+  const [endYear, endMonth] = end.split("-").map(Number);
+  return (endYear - startYear) * 12 + endMonth - startMonth + 1;
+};
+
+const chronological = [...INTERNSHIPS].reverse();
+const stacked = INTERNSHIPS.slice(0, MAX_STACKED);
+const hiddenInternships = INTERNSHIPS.length - stacked.length;
+
+const Count = ({ value, label, white }: { value: number; label: string; white?: boolean }) => (
+  <span className={`block ${white ? "text-white" : ""}`}>
+    <span className="wide block text-4xl font-extrabold leading-none max-md:text-2xl transition-transform duration-300 group-hover:-translate-y-1">{value}</span>
+    <span className="wide mt-1 block text-base max-md:mt-0 max-md:text-sm">{label}</span>
+  </span>
+);
+
 export default function Home() {
-  const statsReveal = useScrollReveal({ threshold: 0.2 });
-
   return (
-    <div className="bg-background">
-      <section className="relative overflow-hidden bg-background pt-32 pb-16 md:pt-40 md:pb-24">
-        {/* Background layers */}
-        <div className="pointer-events-none absolute inset-0 opacity-[0.05] dark:opacity-[0.08] bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:48px_48px]" />
-        <div
-          className="pointer-events-none absolute inset-0 z-0 opacity-40 transition-opacity duration-500 dark:opacity-20"
-          style={{ backgroundImage: "var(--gradient-soft)" }}
-        />
-        <div className="pointer-events-none absolute left-10 top-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl motion-safe:animate-float" />
-        <div className="pointer-events-none absolute bottom-20 right-10 h-80 w-80 rounded-full bg-secondary/10 blur-3xl motion-safe:animate-float-delayed" />
+    <div className="enter-home grid gap-4 max-md:gap-2 lg:min-h-[max(620px,calc(100vh-10.5rem))] lg:grid-cols-[minmax(340px,31%)_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-8 lg:gap-y-5">
+      <Wordmark as="p" className="lg:col-start-2 lg:row-start-1 lg:justify-self-start wordmark-home">
+        Portfolio
+      </Wordmark>
 
-        {/* Optional particles */}
-        {[1, 2, 3, 4, 5, 6].map((n) => (
-          <div key={n} className={`particle particle-${n}`} aria-hidden="true" />
-        ))}
+      <AboutCard />
 
-        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid items-center gap-16 lg:grid-cols-2">
-            {/* Left column */}
-            <div className="order-2 lg:order-1">
-              <Reveal>
-                <Pill dot tone="default" className="mb-6">
-                  Available for Full Stack Opportunities
-                </Pill>
-              </Reveal>
-
-              <Reveal delay={0.1}>
-                <h1 className="mb-6 text-5xl font-black tracking-tight text-text md:text-7xl">
-                  <span className="gradient-text">Nitish Durga</span>{" "}
-                  <span className="text-text/45">Bytaru</span>
-                </h1>
-              </Reveal>
-
-              <Reveal delay={0.2}>
-                <Pill
-                  icon={Sparkles}
-                  tone="solid"
-                  size="lg"
-                  uppercase
-                  className="mb-6"
-                >
-                  Full Stack Web Developer
-                </Pill>
-              </Reveal>
-
-              <Reveal delay={0.4}>
-                <div className="mb-8 grid gap-4 sm:grid-cols-3">
-                  {MINI_CARDS.map((c) => (
-                    <MiniInfoCard key={c.title} {...c} />
-                  ))}
-                </div>
-              </Reveal>
-
-              <Reveal delay={0.5} className="mb-10">
-                <SocialLinks />
-              </Reveal>
-
-              <Reveal delay={0.6}>
-                <div className="flex flex-wrap gap-4">
-                  <a
-                    href="/projects"
-                    className="btn-ripple group flex items-center rounded-xl bg-primary px-8 py-4 font-semibold text-primary-foreground transition-all duration-300 hover:scale-105 hover:bg-primary-hover hover:shadow-glow-primary focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <span>View My Projects</span>
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-                  </a>
-
-                  <a
-                    href={RESUME_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-ripple group flex items-center rounded-xl border border-border bg-surface/90 px-8 py-4 font-semibold text-text shadow-sm backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:bg-surface-elevated focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <span>Download Resume</span>
-                    <Download className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-y-0.5" />
-                  </a>
-                </div>
-              </Reveal>
-            </div>
-
-            {/* Right column */}
-            <div
-              className="order-1 flex justify-center motion-safe:animate-fade-in lg:order-2"
-              style={{ animationFillMode: "both", animationDelay: "0.4s" }}
-            >
-              <div className="relative pb-24 md:pb-16">
-                {FLOATING_TECH.map((b) => (
-                  <FloatingBadge key={b.label} {...b} />
-                ))}
-                <HeroAvatar />
-              </div>
-            </div>
-          </div>
-
-          {/* Tech strip */}
-          <Reveal delay={0.7} className="mt-28 mb-10">
-            <div className="flex flex-wrap justify-center gap-3">
-              {TECH_STACK.map((tech) => (
-                <span
-                  key={tech}
-                  className="rounded-full border border-border bg-surface/80 px-4 py-2 text-sm font-medium text-text-secondary backdrop-blur-xl transition-all duration-300 hover:border-primary/50 hover:bg-surface-elevated hover:text-text"
-                >
-                  {tech}
+      {/* Work tiles */}
+      <div className="enter-tiles stagger grid grid-cols-2 gap-4 max-md:gap-2 lg:col-start-2 lg:row-start-2 lg:grid-cols-12 lg:grid-rows-[minmax(300px,1.6fr)_minmax(180px,1fr)] lg:gap-5">
+        {/* Featured project */}
+        <Tile
+          as={Link}
+          href={`/projects/${echoRealm.slug}`}
+          interactive
+          corner
+          tone="pink"
+          className="group col-span-2 p-6 max-md:grid max-md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] max-md:items-center max-md:gap-2 max-md:p-3 md:flex md:items-center md:gap-5 lg:col-span-8 lg:block xl:col-span-9"
+        >
+          <span className="relative z-10 flex flex-col md:w-1/2 lg:h-full lg:w-auto xl:w-[46%]">
+            <span className="wide block text-4xl font-extrabold leading-none max-md:text-xl">{echoRealm.title}</span>
+            <span className="mt-3 block text-base leading-snug max-md:hidden">{echoRealm.shortDescription}</span>
+            <span className="mt-4 flex flex-wrap gap-2 max-md:mt-1.5 max-md:gap-1">
+              {echoRealm.techStack.slice(0, FEATURED_STACK).map((tech) => (
+                <span key={tech} title={tech} className="flex h-10 w-10 items-center justify-center rounded-full bg-frame max-md:h-7 max-md:w-7">
+                  <TechIcon name={tech} sizeClassName="w-4 h-4 md:w-6 md:h-6" />
+                  <span className="sr-only">{tech}</span>
                 </span>
               ))}
-            </div>
-          </Reveal>
+            </span>
+            <span className="mt-5 inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-ink px-4 text-sm font-semibold text-white max-md:hidden lg:mt-auto">
+              Open project
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
+            </span>
+          </span>
+          <span className="relative mt-5 block aspect-[16/10] max-md:mt-0 overflow-hidden rounded-xl bg-ink shadow-[0_20px_34px_-12px_rgb(0_0_0/0.5)] motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out md:mt-0 md:w-1/2 md:shrink-0 lg:hidden xl:absolute xl:-bottom-4 xl:-right-5 xl:mt-0 xl:block xl:w-[56%] xl:-rotate-3 xl:group-hover:rotate-0 xl:group-hover:scale-[1.03]">
+            <Image
+              src={echoRealm.thumbnail}
+              alt={`${echoRealm.title} app screen`}
+              width={1200}
+              height={750}
+              priority
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              className="absolute -top-[11%] left-0 h-[124%] w-full max-w-none object-cover object-left-top"
+            />
+          </span>
+        </Tile>
 
-          {/* Stats */}
-          <div
-            ref={statsReveal.ref}
-            className="mt-10 grid gap-6 md:grid-cols-4"
-          >
-            {STATS.map((stat, i) => (
-              <StatCard
-                key={stat.label}
-                stat={stat}
-                index={i}
-                isVisible={statsReveal.isVisible}
-              />
-            ))}
-          </div>
+        <div className="col-span-2 grid grid-cols-2 overflow-hidden rounded-[20px] lg:col-span-4 lg:grid-cols-1 lg:grid-rows-2 xl:col-span-3">
+          <Tile as={Link} href="/projects" tone="mint" corner className="group flex flex-col justify-between gap-2 !rounded-none p-5 max-md:p-3 transition-[filter] duration-300 hover:brightness-95 focus-inset">
+            <Count value={projectsData.length} label="Projects" />
+            <span aria-hidden="true" className="flex">
+              {projectsData.map((project) => (
+                <span key={project.slug} className="relative -ml-3 h-10 w-10 overflow-hidden rounded-full border-2 border-mint max-md:h-7 max-md:w-7 bg-ink first:ml-0 motion-safe:transition-[margin] motion-safe:duration-300 group-hover:-ml-1 group-hover:first:ml-0">
+                  <Image src={project.thumbnail} alt="" fill sizes="40px" className="object-cover object-left-top" />
+                </span>
+              ))}
+            </span>
+          </Tile>
+          <Tile as={Link} href="/experience" tone="violet" corner className="group flex flex-col justify-between gap-2 !rounded-none p-5 max-md:p-3 transition-[filter] duration-300 hover:brightness-95 focus-inset">
+            <Count value={INTERNSHIP_COUNT} label="Internships" white />
+            <span aria-hidden="true" className="block">
+              <span className="flex gap-1">
+                {chronological.map((internship, index) => (
+                  <span
+                    key={internship.company}
+                    className={`h-2.5 min-w-1 origin-left rounded-full motion-safe:transition-transform motion-safe:duration-300 group-hover:scale-y-150 ${TIMELINE_COLORS[index % TIMELINE_COLORS.length]}`}
+                    style={{ flexGrow: monthsLong(internship.start, internship.end), flexBasis: 0 }}
+                  />
+                ))}
+              </span>
+              <span className="mt-1 flex justify-between text-xs font-semibold text-ink">
+                <span>{monthLabel(chronological[0].start)}</span>
+                <span>{monthLabel(chronological[chronological.length - 1].end)}</span>
+              </span>
+            </span>
+          </Tile>
         </div>
-      </section>
+
+        <SkillKeysTile />
+
+        <GitHubPulseTile />
+
+        <Tile as={Link} href="/experience" tone="apricot" corner className="role-deck group col-span-2 flex flex-col gap-3 p-4 max-md:gap-2 max-md:p-3 lg:col-span-4 lg:block lg:min-h-0 lg:p-0">
+          <span className={`block max-md:shrink-0 lg:p-4 ${stacked.length >= MAX_STACKED ? "role-label" : ""}`}>
+            <span className="wide block text-xl font-extrabold leading-tight max-md:text-base lg:text-base xl:text-xl">Internships</span>
+            {hiddenInternships > 0 && <span className="mt-1 block text-sm font-semibold">+{hiddenInternships} more</span>}
+          </span>
+          <span className="flex flex-col gap-1 max-md:grid max-md:grid-cols-2 lg:absolute lg:inset-x-2 lg:bottom-2 lg:block lg:h-12 xl:inset-x-3 xl:bottom-3">
+            {stacked.map((internship, index) => (
+              <span
+                key={internship.company}
+                className="role-card flex h-12 min-w-0 items-center gap-2 rounded-xl bg-white px-2 max-md:h-11 max-md:gap-1.5 max-md:px-1.5 shadow-[0_6px_12px_-6px_rgb(0_0_0/0.45)] lg:absolute lg:inset-0"
+                style={{ "--i": index, "--slot": stacked.length - 1 - index, zIndex: stacked.length - index } as React.CSSProperties}
+              >
+                <span aria-hidden="true" className={`wide flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-extrabold text-white max-md:h-6 max-md:w-6 max-md:text-xs lg:hidden xl:flex ${ROLE_COLORS[index % ROLE_COLORS.length]}`}>
+                  {internship.company[0]}
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-bold leading-tight">{internship.company}</span>
+                  <span className="block truncate text-xs leading-tight">{monthLabel(internship.start)} - {monthLabel(internship.end)}</span>
+                </span>
+              </span>
+            ))}
+          </span>
+        </Tile>
+      </div>
     </div>
   );
 }

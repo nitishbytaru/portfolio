@@ -24,3 +24,7 @@ dist-ssr
 # Next.js build output
 .next
 
+/ref
+
+# Impeccable design tool working files
+.impeccable/

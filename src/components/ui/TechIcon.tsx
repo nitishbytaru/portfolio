@@ -1,7 +1,7 @@
 import React from "react";
 import { Code2 } from "lucide-react";
 
-export function getTechIconUrl(tech: string): { url: string; darkInvert?: boolean } | null {
+function getTechIconUrl(tech: string): { url: string } | null {
   const name = tech.toLowerCase().trim();
   
   switch (name) {
@@ -11,13 +11,13 @@ export function getTechIconUrl(tech: string): { url: string; darkInvert?: boolea
       return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" };
     case "next.js":
     case "nextjs":
-      return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", darkInvert: true };
+      return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" };
     case "node.js":
     case "nodejs":
       return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" };
     case "express":
     case "express.js":
-      return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg", darkInvert: true };
+      return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" };
     case "mongodb":
     case "mongo":
       return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" };
@@ -36,7 +36,7 @@ export function getTechIconUrl(tech: string): { url: string; darkInvert?: boolea
     case "python":
       return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" };
     case "flask":
-      return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg", darkInvert: true };
+      return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg" };
     case "tensorflow lite":
     case "tensorflow":
       return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg" };
@@ -83,7 +83,7 @@ export function getTechIconUrl(tech: string): { url: string; darkInvert?: boolea
     case "render":
       return { url: "https://cdn.simpleicons.org/render/46E3B7" };
     case "vercel":
-      return { url: "https://cdn.simpleicons.org/vercel/000000", darkInvert: true };
+      return { url: "https://cdn.simpleicons.org/vercel/000000" };
     case "netlify":
       return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/netlify/netlify-original.svg" };
     case "cloudinary":
@@ -99,6 +99,8 @@ export function getTechIconUrl(tech: string): { url: string; darkInvert?: boolea
   }
 }
 
+export const hasTechIcon = (name: string) => getTechIconUrl(name) !== null;
+
 interface TechIconProps {
   name: string;
   className?: string;
@@ -113,16 +115,15 @@ export const TechIcon: React.FC<TechIconProps> = ({
   const iconData = getTechIconUrl(name);
   if (!iconData) {
     // Render a default Code2 icon if the specific technology icon is not found
-    return <Code2 className={`${sizeClassName} text-primary/70 shrink-0 ${className}`} />;
+    return <Code2 aria-hidden="true" className={`${sizeClassName} shrink-0 ${className}`} />;
   }
 
   return (
     <img
       src={iconData.url}
-      alt={name}
-      className={`${sizeClassName} object-contain ${
-        iconData.darkInvert ? "dark:invert" : ""
-      } ${className}`}
+      alt=""
+      loading="lazy"
+      className={`${sizeClassName} object-contain ${className}`}
     />
   );
 };
