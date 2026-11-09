@@ -19,66 +19,68 @@ const TileTitle = ({ children }: { children: React.ReactNode }) => (
   <h2 className="wide mb-4 text-xl font-extrabold">{children}</h2>
 );
 
+const CountUp = ({ value }: { value: number }) => {
+  const [shown, setShown] = useState(0);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setShown(value);
+      return;
+    }
+    let frame = 0;
+    const startedAt = performance.now();
+    const step = (now: number) => {
+      const progress = Math.min(1, (now - startedAt) / 1100);
+      setShown(Math.round(value * (1 - (1 - progress) ** 3)));
+      if (progress < 1) frame = requestAnimationFrame(step);
+    };
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [value]);
+
+  return <>{shown}</>;
+};
+
 const Stat = ({ value, label, tone }: { value: number; label: string; tone: TileTone }) => (
-  <Tile tone={tone} corner className={`flex min-h-32 flex-col justify-center p-5 ${tone === "violet" ? "!text-white" : ""}`}>
-    <span className="wide block text-4xl font-extrabold">{value}</span>
+  <Tile tone={tone} corner className={`group flex min-h-32 grow basis-0 flex-col justify-center !rounded-none p-5 motion-safe:transition-[flex-grow] motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] lg:hover:grow-[1.5] ${tone === "violet" ? "!text-white" : ""}`}>
+    <span className="wide block text-4xl font-extrabold transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-110 origin-left"><CountUp value={value} /></span>
     <span className="wide mt-1 block">{label}</span>
   </Tile>
 );
 
-const LanguageDonut = ({ languages }: { languages: LanguageMetric[] }) => {
+const LanguageRibbon = ({ languages }: { languages: LanguageMetric[] }) => {
   const [hovered, setHovered] = useState<number | null>(null);
-  const radius = 50;
-  const circumference = 2 * Math.PI * radius;
-  const slices = useMemo(() => {
-    let accumulated = 0;
-    return languages
-      .filter((lang) => parseFloat(lang.percentage) > 0)
-      .map((lang) => {
-        const percent = parseFloat(lang.percentage);
-        const rotation = (accumulated / 100) * 360 - 90;
-        accumulated += percent;
-        return { ...lang, size: (percent / 100) * circumference, rotation };
-      });
-  }, [languages, circumference]);
+  const slices = useMemo(() => languages.filter((lang) => parseFloat(lang.percentage) > 0), [languages]);
   const active = slices[hovered ?? 0];
 
   return (
-    <div className="flex flex-col items-center gap-8 md:flex-row">
-      <div className="relative h-48 w-48 shrink-0">
-        <svg viewBox="0 0 120 120" className="h-full w-full" aria-hidden="true">
-          {slices.map((slice, i) => (
-            <circle
-              key={slice.name}
-              cx="60" cy="60" r={radius} fill="transparent"
-              stroke={slice.color}
-              strokeWidth={hovered === i ? 17 : 14}
-              strokeDasharray={`${slice.size} ${circumference}`}
-              transform={`rotate(${slice.rotation} 60 60)`}
-              className="cursor-pointer transition-[stroke-width] duration-200"
-              onMouseEnter={() => setHovered(i)}
-              onMouseLeave={() => setHovered(null)}
-            />
-          ))}
-        </svg>
-        {active && (
-          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-            <span className="wide text-2xl font-extrabold">{active.percentage}%</span>
-            <span className="max-w-[110px] text-xs font-bold">{active.name}</span>
-            <span className="text-xs">{plural(active.count, "repo")}</span>
-          </div>
-        )}
+    <div onPointerLeave={() => setHovered(null)}>
+      {active && (
+        <p className="mb-4 flex flex-wrap items-baseline gap-x-3">
+          <span className="wide text-5xl font-extrabold">{active.percentage}%</span>
+          <span className="text-lg font-bold">{active.name}</span>
+          <span className="text-sm">{plural(active.count, "repo")}</span>
+        </p>
+      )}
+      <div className="ribbon-in flex h-14 origin-left gap-1" aria-hidden="true">
+        {slices.map((slice, i) => (
+          <span
+            key={slice.name}
+            onPointerEnter={() => setHovered(i)}
+            className="min-w-2.5 cursor-pointer rounded-lg motion-safe:transition-[flex-grow] motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)]"
+            style={{ backgroundColor: slice.color, flexGrow: parseFloat(slice.percentage) * (hovered === i ? 1.8 : 1), flexBasis: 0 }}
+          />
+        ))}
       </div>
-      <ul className="w-full flex-1 space-y-2">
+      <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
         {slices.map((slice, i) => (
           <li
             key={slice.name}
-            className="flex items-center gap-3"
-            onMouseEnter={() => setHovered(i)}
-            onMouseLeave={() => setHovered(null)}
+            onPointerEnter={() => setHovered(i)}
+            className={`flex cursor-default items-center gap-2 text-sm motion-safe:transition-opacity motion-safe:duration-200 ${hovered !== null && hovered !== i ? "opacity-40" : ""}`}
           >
-            <span className="h-3.5 w-3.5 shrink-0 rounded-full" style={{ backgroundColor: slice.color }} />
-            <span className="flex-1 font-semibold">{slice.name}</span>
+            <span className="h-3 w-3 rounded-full" style={{ backgroundColor: slice.color }} />
+            <span className="font-semibold">{slice.name}</span>
             <span className="font-bold tabular-nums">{slice.percentage}%</span>
           </li>
         ))}
@@ -87,14 +89,65 @@ const LanguageDonut = ({ languages }: { languages: LanguageMetric[] }) => {
   );
 };
 
+const ContributionSkyline = ({ contributions, children }: { contributions: ContributionData | null; children: React.ReactNode }) => {
+  const [hovered, setHovered] = useState<number | null>(null);
+  const weeks = useMemo(
+    () => (contributions?.weeks ?? []).slice(-52).map((week) => ({
+      total: week.reduce((sum, day) => sum + day.count, 0),
+      start: week[0]?.date ?? "",
+    })),
+    [contributions]
+  );
+  const tallest = Math.max(...weeks.map((week) => week.total), 1);
+  const shown = hovered !== null ? weeks[hovered] : null;
+
+  return (
+    <Tile tone="indigo" className="col-span-2 p-6 lg:col-span-4 lg:p-8">
+      <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+        {children}
+        {weeks.length > 0 && (
+          <p className="shrink-0 md:text-right" aria-live="off">
+            <span className="wide block text-6xl font-extrabold leading-none tabular-nums md:text-7xl">
+              {shown ? shown.total : <CountUp value={contributions?.totalContributions ?? 0} />}
+            </span>
+            <span className="mt-2 block font-semibold">
+              {shown ? `${shown.total === 1 ? "contribution" : "contributions"}, week of ${shown.start}` : "contributions in the last year"}
+            </span>
+          </p>
+        )}
+      </div>
+
+      {weeks.length > 0 && (
+        <div
+          onPointerLeave={() => setHovered(null)}
+          role="img"
+          aria-label={`${contributions?.totalContributions} contributions over the last ${weeks.length} weeks`}
+          className="group/sky mt-8 flex h-40 items-end gap-[3px] sm:gap-1"
+        >
+          {weeks.map((week, index) => (
+            <span key={week.start || index} onPointerEnter={() => setHovered(index)} className="flex h-full min-w-0 flex-1 cursor-pointer items-end">
+              <span
+                className={`bar-rise block w-full origin-bottom rounded-t-[3px] motion-safe:transition-[background-color,opacity] motion-safe:duration-200 ${
+                  hovered === index ? "bg-amber" : week.total === 0 ? "bg-indigo-soft group-hover/sky:opacity-50" : "bg-periwinkle group-hover/sky:opacity-50"
+                }`}
+                style={{ height: `${Math.max(5, (week.total / tallest) * 100)}%`, animationDelay: `${index * 12}ms` }}
+              />
+            </span>
+          ))}
+        </div>
+      )}
+    </Tile>
+  );
+};
+
 const TimelineChart = ({ timeline }: { timeline: TimelineItem[] }) => {
   const max = Math.max(...timeline.map((t) => t.count), 1);
   return (
-    <div className="flex h-44 items-end gap-3" role="img" aria-label={timeline.map((t) => `${t.year}: ${plural(t.count, "repo")}`).join(", ")}>
-      {timeline.map((item) => (
-        <div key={item.year} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+    <div className="group/chart flex h-44 items-end gap-3" role="img" aria-label={timeline.map((t) => `${t.year}: ${plural(t.count, "repo")}`).join(", ")}>
+      {timeline.map((item, index) => (
+        <div key={item.year} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5 motion-safe:transition-opacity motion-safe:duration-200 group-hover/chart:opacity-40 hover:!opacity-100">
           <span className="text-sm font-bold">{item.count}</span>
-          <div className="w-full rounded-t-lg bg-violet" style={{ height: `${(item.count / max) * 70}%` }} />
+          <div className="bar-rise w-full origin-bottom rounded-t-lg bg-violet" style={{ height: `${(item.count / max) * 70}%`, animationDelay: `${index * 110}ms` }} />
           <span className="text-sm">{item.year}</span>
         </div>
       ))}
@@ -107,6 +160,34 @@ const LEVEL_COLORS = ["#E1E1E1", "#A7D8D6", "#7D82D0", "#595959", "#000000"];
 
 const ContributionCalendar = ({ contributions }: { contributions: ContributionData | null }) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const tipRef = useRef<HTMLDivElement>(null);
+
+  const cells = () => wrapRef.current?.querySelectorAll<HTMLElement>("[data-week]") ?? [];
+
+  const handleRipple = (event: React.PointerEvent) => {
+    const cell = (event.target as HTMLElement).closest<HTMLElement>("[data-week]");
+    if (!cell || !wrapRef.current || !tipRef.current) return;
+    const week = Number(cell.dataset.week);
+    const day = Number(cell.dataset.day);
+    if (window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+      cells().forEach((other) => {
+        const distance = Math.hypot(Number(other.dataset.week) - week, Number(other.dataset.day) - day);
+        other.style.transform = distance < 4 ? `scale(${1 + 0.85 * (1 - distance / 4)})` : "";
+      });
+    }
+    const wrap = wrapRef.current.getBoundingClientRect();
+    const box = cell.getBoundingClientRect();
+    tipRef.current.textContent = `${cell.dataset.count}, ${cell.dataset.date}`;
+    tipRef.current.style.opacity = "1";
+    tipRef.current.style.left = `${Math.max(70, Math.min(wrap.width - 70, box.left - wrap.left + box.width / 2))}px`;
+    tipRef.current.style.top = `${box.top - wrap.top - 34}px`;
+  };
+
+  const clearRipple = () => {
+    cells().forEach((other) => { other.style.transform = ""; });
+    if (tipRef.current) tipRef.current.style.opacity = "0";
+  };
 
   // On narrow screens, open on the most recent weeks.
   useEffect(() => {
@@ -124,20 +205,26 @@ const ContributionCalendar = ({ contributions }: { contributions: ContributionDa
           More
         </span>
       </div>
-      <div ref={scrollerRef} className="overflow-x-auto pb-2">
-        <div className="flex min-w-[720px] gap-[3px]">
-          {contributions.weeks.slice(-52).map((week, wi) => (
-            <div key={wi} className="flex flex-col gap-[3px]">
-              {week.map((day, di) => (
-                <div
-                  key={di}
-                  className="h-3 w-3 rounded-sm"
-                  style={{ backgroundColor: LEVEL_COLORS[day.level] ?? LEVEL_COLORS[0] }}
-                  title={`${day.date}: ${plural(day.count, "contribution")}`}
-                />
-              ))}
-            </div>
-          ))}
+      <div ref={wrapRef} onPointerMove={handleRipple} onPointerLeave={clearRipple} className="relative">
+        <div ref={tipRef} aria-hidden="true" className="pointer-events-none absolute z-20 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink px-3 py-1 text-xs font-bold text-white opacity-0 motion-safe:transition-opacity" />
+        <div ref={scrollerRef} className="overflow-x-auto py-2">
+          <div className="flex min-w-[720px] gap-[3px]">
+            {contributions.weeks.slice(-52).map((week, wi) => (
+              <div key={wi} className="flex flex-col gap-[3px]">
+                {week.map((day, di) => (
+                  <div
+                    key={di}
+                    data-week={wi}
+                    data-day={di}
+                    data-date={day.date}
+                    data-count={plural(day.count, "contribution")}
+                    className="cal-in h-3 w-3 rounded-sm motion-safe:transition-transform motion-safe:duration-150"
+                    style={{ backgroundColor: LEVEL_COLORS[day.level] ?? LEVEL_COLORS[0], animationDelay: `${wi * 14}ms` }}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -271,42 +358,45 @@ export default function AnalyticsPage() {
 
   return (
     <Shell>
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5">
-        <Tile tone="periwinkle" className="col-span-2 p-6 lg:row-span-2">
-          <div className="flex items-center gap-5">
-            <img src={profile.avatar_url} alt={profile.name} className="h-20 w-20 rounded-full object-cover" />
-            <div className="min-w-0">
-              <h2 className="wide text-2xl font-extrabold">{profile.name}</h2>
-              <a href={profile.html_url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1 font-semibold underline underline-offset-4">
-                @{profile.login} <ExternalLink className="h-4 w-4" aria-hidden="true" />
-              </a>
+      <div className="stats-grid grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5">
+        <ContributionSkyline contributions={contributions}>
+          <div className="min-w-0">
+            <div className="flex items-center gap-5">
+              <img src={profile.avatar_url} alt={profile.name} className="h-20 w-20 rounded-full object-cover transition-transform duration-300 hover:rotate-3 hover:scale-110" />
+              <div className="min-w-0">
+                <h2 className="wide text-2xl font-extrabold">{profile.name}</h2>
+                <a href={profile.html_url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1 font-semibold underline underline-offset-4">
+                  @{profile.login} <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                </a>
+              </div>
             </div>
+            {profile.bio && <p className="mt-3 max-w-[60ch]">{profile.bio}</p>}
+            <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-2">
+              <div><dd className="wide text-xl font-extrabold">{profile.followers}</dd><dt className="text-sm">Followers</dt></div>
+              <div><dd className="wide text-xl font-extrabold">{profile.following}</dd><dt className="text-sm">Following</dt></div>
+              <div><dd className="wide text-xl font-extrabold">{profile.accountAgeYears}y</dd><dt className="text-sm">Since {profile.joinedDate}</dt></div>
+            </dl>
           </div>
-          {profile.bio && <p className="mt-3 max-w-[60ch]">{profile.bio}</p>}
-          <dl className="mt-6 grid grid-cols-3 gap-4 border-t border-ink/30 pt-4">
-            <div><dd className="wide text-2xl font-extrabold text-white">{profile.followers}</dd><dt className="text-sm">Followers</dt></div>
-            <div><dd className="wide text-2xl font-extrabold text-white">{profile.following}</dd><dt className="text-sm">Following</dt></div>
-            <div><dd className="wide text-2xl font-extrabold text-white">{profile.accountAgeYears}y</dd><dt className="text-sm">On GitHub</dt></div>
-          </dl>
-          <p className="mt-4 text-sm">Member since {profile.joinedDate}</p>
-        </Tile>
+        </ContributionSkyline>
 
-        <Stat value={stats.totalRepos} label="Repositories" tone="mint" />
-        <Stat value={stats.totalStars} label="Stars Earned" tone="amber" />
-        <Stat value={stats.deployedCount} label="Deployed" tone="violet" />
-        <Stat value={languages.length} label="Languages" tone="pink" />
+        <div className="col-span-2 grid grid-cols-2 overflow-hidden rounded-[20px] lg:col-span-4 lg:flex">
+          <Stat value={stats.totalRepos} label="Repositories" tone="mint" />
+          <Stat value={stats.totalStars} label="Stars Earned" tone="amber" />
+          <Stat value={stats.deployedCount} label="Deployed" tone="violet" />
+          <Stat value={languages.length} label="Languages" tone="pink" />
+        </div>
 
         <Tile tone="white" className="col-span-2 p-6 lg:col-span-3">
           <TileTitle>Language Distribution</TileTitle>
-          <LanguageDonut languages={languages} />
+          <LanguageRibbon languages={languages} />
         </Tile>
 
         <Tile tone="periwinkle" className="col-span-2 p-6 lg:col-span-1">
           <TileTitle>Achievements</TileTitle>
           <ul className="space-y-4">
             {achievements.map(({ title, desc, Icon }) => (
-              <li key={title} className="flex items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-ink"><Icon className="h-5 w-5" aria-hidden="true" /></span>
+              <li key={title} className="group/ach flex items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-ink transition-transform duration-300 group-hover/ach:-rotate-12 group-hover/ach:scale-110"><Icon className="h-5 w-5" aria-hidden="true" /></span>
                 <span><span className="block font-bold">{title}</span><span className="block text-sm">{desc}</span></span>
               </li>
             ))}
@@ -322,7 +412,7 @@ export default function AnalyticsPage() {
               { label: "Most Active", value: highlights.mostActive?.name, sub: timeAgo(highlights.mostActive?.pushed_at) },
               { label: "Original Projects", value: `${stats.ownRepos} / ${stats.totalRepos}`, sub: "repos" },
             ].map((item) => (
-              <div key={item.label} className="flex flex-wrap items-baseline justify-between gap-x-4 py-2.5">
+              <div key={item.label} className="flex flex-wrap items-baseline justify-between gap-x-4 py-2.5 motion-safe:transition-[padding] motion-safe:duration-300 hover:px-2">
                 <dt>{item.label}</dt>
                 <dd className="break-all text-right"><span className="font-bold">{item.value}</span> <span className="text-sm">{item.sub}</span></dd>
               </div>
@@ -347,8 +437,8 @@ export default function AnalyticsPage() {
           <h2 id="milestones-heading" className="wide mb-6 text-xl font-extrabold">Milestones</h2>
           <ol className="grid gap-y-6 md:grid-cols-4">
             {milestones.map((item) => (
-              <li key={item.title} className="relative border-l-2 border-ink pl-5 md:border-l-0 md:border-t-2 md:pl-0 md:pr-6 md:pt-5">
-                <span aria-hidden="true" className="absolute -left-[7px] top-1 h-3 w-3 rounded-full bg-ink md:-top-[7px] md:left-0" />
+              <li key={item.title} className="group/mile relative border-l-2 border-ink pl-5 md:border-l-0 md:border-t-2 md:pl-0 md:pr-6 md:pt-5">
+                <span aria-hidden="true" className="absolute -left-[7px] top-1 h-3 w-3 rounded-full bg-ink transition-transform duration-300 group-hover/mile:scale-[1.8] md:-top-[7px] md:left-0" />
                 <p className="wide text-3xl font-extrabold">{item.when}</p>
                 <p className="mt-2 font-bold">{item.title}</p>
                 <p className="break-words text-sm">{item.detail}</p>
@@ -379,7 +469,7 @@ export default function AnalyticsPage() {
                   rel="noopener noreferrer"
                   className="group -mx-2 flex items-center gap-4 rounded-xl px-2 py-3 transition-colors hover:bg-frame"
                 >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-page">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-page transition-transform duration-300 group-hover:scale-110">
                     <TechIcon name={repo.language ?? ""} sizeClassName="w-5 h-5" />
                   </span>
                   <span className="min-w-0 flex-1">
@@ -406,11 +496,11 @@ export default function AnalyticsPage() {
               {activity.map((item, i) => {
                 const Icon = item.type === "PushEvent" ? GitCommitHorizontal : item.type === "CreateEvent" ? Plus : Zap;
                 return (
-                  <li key={`${item.repo}-${i}`} className="relative flex items-center gap-4 py-3">
+                  <li key={`${item.repo}-${i}`} className="group/feed relative flex items-center gap-4 py-3 motion-safe:transition-transform motion-safe:duration-300 hover:translate-x-1">
                     {i < activity.length - 1 && (
                       <span aria-hidden="true" className="absolute bottom-[-14px] left-[21px] top-[58px] w-0.5 bg-ink/25" />
                     )}
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-frame">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-frame transition-transform duration-300 group-hover/feed:rotate-12 group-hover/feed:scale-110">
                       <Icon className="h-5 w-5" aria-hidden="true" />
                     </span>
                     <span className="min-w-0 flex-1">

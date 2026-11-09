@@ -11,6 +11,7 @@ const TONES = {
   amber: "bg-amber text-ink",
   graphite: "bg-graphite text-white",
   black: "bg-ink text-white",
+  indigo: "bg-indigo text-white",
   white: "bg-white text-ink",
   plain: "bg-page text-ink",
 };

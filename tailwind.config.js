@@ -13,6 +13,8 @@ export default {
         violet: "#8D6FBD",
         amber: "#FEC067",
         graphite: "#595959",
+        indigo: "#2E2A5C",
+        "indigo-soft": "#4A4690",
       },
       fontFamily: {
         sans: ["var(--font-archivo)", "sans-serif"],

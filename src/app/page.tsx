@@ -12,7 +12,7 @@ const agroGuide = projectsData.find((p) => p.slug === "agroguide")!;
 
 const Count = ({ value, label, white }: { value: number; label: string; white?: boolean }) => (
   <span className={white ? "text-white" : undefined}>
-    <span className="wide block text-4xl font-extrabold">{value}</span>
+    <span className="wide block text-4xl font-extrabold transition-transform duration-300 group-hover:-translate-y-1">{value}</span>
     <span className="wide mt-1 block text-base">{label}</span>
   </span>
 );
@@ -39,9 +39,9 @@ export default function Home() {
           About Me
         </div>
 
-        <div className="relative mx-auto mt-8 aspect-[1/1.16] w-[min(74%,270px)] shrink-0 lg:my-auto lg:w-[min(88%,36vh)]">
+        <div className="group/portrait relative mx-auto mt-8 aspect-[1/1.16] w-[min(74%,270px)] shrink-0 lg:my-auto lg:w-[min(88%,36vh)]">
           <div className="absolute bottom-0 left-0 aspect-square w-full">
-            <div className="absolute -inset-2.5 rounded-full border-[5px] border-white" />
+            <div className="absolute -inset-2.5 rounded-full border-[5px] border-white transition-transform duration-500 ease-out group-hover/portrait:scale-105" />
             <div className="absolute inset-0 rounded-full bg-pink" />
           </div>
           <div className="absolute inset-0 overflow-hidden rounded-b-[999px]">
@@ -104,7 +104,7 @@ export default function Home() {
             height={1000}
             priority
             sizes="(min-width: 1024px) 50vw, 100vw"
-            className="absolute -top-[11%] left-0 h-[124%] w-full max-w-none object-cover object-left-top"
+            className="absolute -top-[11%] left-0 h-[124%] w-full max-w-none origin-left object-cover object-left-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
           />
           <span className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink">
             Open {echoRealm.title}
@@ -113,10 +113,10 @@ export default function Home() {
         </Tile>
 
         <div className="col-span-2 grid grid-cols-2 overflow-hidden rounded-[20px] lg:col-span-4 lg:grid-cols-1 lg:grid-rows-2 xl:col-span-3">
-          <Tile as={Link} href="/projects" tone="mint" corner className="flex flex-col justify-center !rounded-none p-5 transition-[filter] duration-300 hover:brightness-95 focus-inset">
+          <Tile as={Link} href="/projects" tone="mint" corner className="group flex flex-col justify-center !rounded-none p-5 transition-[filter] duration-300 hover:brightness-95 focus-inset">
             <Count value={projectsData.length} label="Projects" />
           </Tile>
-          <Tile as={Link} href="/experience" tone="violet" corner className="flex flex-col justify-center !rounded-none p-5 transition-[filter] duration-300 hover:brightness-95 focus-inset">
+          <Tile as={Link} href="/experience" tone="violet" corner className="group flex flex-col justify-center !rounded-none p-5 transition-[filter] duration-300 hover:brightness-95 focus-inset">
             <Count value={INTERNSHIP_COUNT} label="Internships" white />
           </Tile>
         </div>
@@ -127,20 +127,20 @@ export default function Home() {
           tone="graphite"
           interactive
           corner
-          className="col-span-2 flex min-h-36 flex-col items-center justify-center gap-3 lg:col-span-3 lg:min-h-0 xl:col-span-4"
+          className="group col-span-2 flex min-h-36 flex-col items-center justify-center gap-3 lg:col-span-3 lg:min-h-0 xl:col-span-4"
         >
-          <Code2 className="h-11 w-11" aria-hidden="true" />
+          <Code2 className="h-11 w-11 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110" aria-hidden="true" />
           <span className="wide text-xl">Skills</span>
         </Tile>
 
         <div className="col-span-2 grid grid-cols-2 overflow-hidden rounded-[20px] lg:col-span-9 xl:col-span-8">
-          <Link href={`/projects/${agroGuide.slug}`} className="focus-inset-light relative block min-h-36 bg-ink transition-[filter] duration-300 hover:brightness-95">
+          <Link href={`/projects/${agroGuide.slug}`} className="group focus-inset-light relative block min-h-36 overflow-hidden bg-ink transition-[filter] duration-300 hover:brightness-95">
             <Image
               src={agroGuide.thumbnail}
               alt={`${agroGuide.title} home screen`}
               fill
               sizes="(min-width: 1024px) 25vw, 50vw"
-              className="object-cover object-top"
+              className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.04]"
             />
             <span className="absolute bottom-3 left-3 rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-ink">
               {agroGuide.title}
