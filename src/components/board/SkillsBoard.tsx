@@ -19,7 +19,7 @@ interface SkillGroup {
   skills: Skill[];
 }
 
-const GROUPS: SkillGroup[] = [
+export const GROUPS: SkillGroup[] = [
   {
     title: "Frontend",
     tone: "mint",

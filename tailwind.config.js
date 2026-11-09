@@ -14,6 +14,8 @@ export default {
         amber: "#FEC067",
         graphite: "#595959",
         indigo: "#2E2A5C",
+        iris: "#5459AE",
+        apricot: "#FFB54D",
         "indigo-soft": "#4A4690",
       },
       fontFamily: {

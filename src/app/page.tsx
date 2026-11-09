@@ -1,18 +1,42 @@
+import type React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Code2, Mail, Hexagon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Tile from "@/components/board/Tile";
 import Wordmark from "@/components/board/Wordmark";
-import SpinBadge from "@/components/board/SpinBadge";
+import AboutCard from "@/components/board/AboutCard";
+import SkillKeysTile from "@/components/board/SkillKeysTile";
+import GitHubPulseTile from "@/components/board/GitHubPulseTile";
+import { TechIcon } from "@/components/ui/TechIcon";
 import { projectsData } from "@/data/ProjectData";
-import { EMAIL, INTERNSHIP_COUNT, RESUME_URL } from "@/data/site";
+import { INTERNSHIP_COUNT, INTERNSHIPS } from "@/data/site";
 
 const echoRealm = projectsData.find((p) => p.slug === "echorealm")!;
-const agroGuide = projectsData.find((p) => p.slug === "agroguide")!;
+
+const FEATURED_STACK = 4;
+
+const MAX_STACKED = 3;
+const ROLE_COLORS = ["bg-indigo", "bg-iris", "bg-violet"];
+const TIMELINE_COLORS = ["bg-amber", "bg-mint", "bg-pink", "bg-white"];
+
+const monthLabel = (yearMonth: string) => {
+  const [year, month] = yearMonth.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1)).toLocaleString("en", { month: "short", year: "numeric", timeZone: "UTC" });
+};
+
+const monthsLong = (start: string, end: string) => {
+  const [startYear, startMonth] = start.split("-").map(Number);
+  const [endYear, endMonth] = end.split("-").map(Number);
+  return (endYear - startYear) * 12 + endMonth - startMonth + 1;
+};
+
+const chronological = [...INTERNSHIPS].reverse();
+const stacked = INTERNSHIPS.slice(0, MAX_STACKED);
+const hiddenInternships = INTERNSHIPS.length - stacked.length;
 
 const Count = ({ value, label, white }: { value: number; label: string; white?: boolean }) => (
-  <span className={white ? "text-white" : undefined}>
-    <span className="wide block text-4xl font-extrabold transition-transform duration-300 group-hover:-translate-y-1">{value}</span>
+  <span className={`block ${white ? "text-white" : ""}`}>
+    <span className="wide block text-4xl font-extrabold leading-none transition-transform duration-300 group-hover:-translate-y-1">{value}</span>
     <span className="wide mt-1 block text-base">{label}</span>
   </span>
 );
@@ -24,133 +48,106 @@ export default function Home() {
         Portfolio
       </Wordmark>
 
-      {/* About card */}
-      <Tile
-        as="section"
-        tone="periwinkle"
-        aria-labelledby="about-name"
-        className="flex flex-col !rounded-tl-none p-6 lg:col-start-1 lg:row-span-2 lg:row-start-1"
-      >
-        <svg aria-hidden="true" viewBox="0 0 170 68" className="absolute -left-px -top-px h-[68px] w-[170px] fill-frame">
-          <path d="M0 0H170C154 0 146 6 138 14L116 36C108 44 100 48 88 48H20C8 48 0 56 0 68Z" />
-        </svg>
-        <div className="absolute left-1 top-0 flex h-12 items-center gap-2 text-sm font-semibold text-ink">
-          <Hexagon className="h-4 w-4" aria-hidden="true" />
-          About Me
-        </div>
-
-        <div className="group/portrait relative mx-auto mt-8 aspect-[1/1.16] w-[min(74%,270px)] shrink-0 lg:my-auto lg:w-[min(88%,36vh)]">
-          <div className="absolute bottom-0 left-0 aspect-square w-full">
-            <div className="absolute -inset-2.5 rounded-full border-[5px] border-white transition-transform duration-500 ease-out group-hover/portrait:scale-105" />
-            <div className="absolute inset-0 rounded-full bg-pink" />
-          </div>
-          <div className="absolute inset-0 overflow-hidden rounded-b-[999px]">
-            <Image
-              src="/NitishCutout.png"
-              alt="Portrait of Nitish Durga Bytaru"
-              fill
-              priority
-              sizes="(min-width: 1024px) 340px, 280px"
-              className="object-cover object-top"
-            />
-          </div>
-          <SpinBadge className="absolute -bottom-3 -right-8 h-[84px] w-[84px]" />
-        </div>
-
-        <div className="pt-5">
-          <p className="wide text-3xl font-light leading-none text-white">I&apos;m,</p>
-          <h1 id="about-name" className="wide mt-1 text-[2rem] font-semibold leading-[1.04] text-white">
-            Nitish Durga Bytaru
-          </h1>
-          <p className="mt-2 text-lg font-semibold text-ink">Full Stack Web Developer, open to roles</p>
-          <p className="mt-3 text-[15px] leading-snug text-ink">
-            I build full stack web apps, from real-time messaging with Socket.io to machine learning tools
-            that help farmers make data-driven decisions.
-          </p>
-          <div className="mt-1 flex flex-wrap items-center gap-x-4">
-            <a
-              href={`mailto:${EMAIL}`}
-              className="inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold text-ink underline decoration-dashed underline-offset-4"
-            >
-              {EMAIL}
-              <Mail className="h-4 w-4" aria-hidden="true" />
-            </a>
-            <a
-              href={RESUME_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center rounded-full bg-ink px-4 text-[15px] font-semibold text-white"
-            >
-              View Resume
-            </a>
-          </div>
-        </div>
-      </Tile>
+      <AboutCard />
 
       {/* Work tiles */}
-      <div className="grid grid-cols-2 gap-4 lg:col-start-2 lg:row-start-2 lg:grid-cols-12 lg:grid-rows-[minmax(200px,1.6fr)_minmax(min-content,1fr)] lg:gap-5">
+      <div className="grid grid-cols-2 gap-4 lg:col-start-2 lg:row-start-2 lg:grid-cols-12 lg:grid-rows-[minmax(300px,1.6fr)_minmax(180px,1fr)] lg:gap-5">
+        {/* Featured project */}
         <Tile
           as={Link}
           href={`/projects/${echoRealm.slug}`}
           interactive
           corner
-          tone="black"
-          className="group col-span-2 aspect-[16/10] lg:col-span-8 lg:aspect-auto xl:col-span-9"
+          tone="pink"
+          className="group col-span-2 p-6 lg:col-span-8 xl:col-span-9"
         >
-          <Image
-            src={echoRealm.thumbnail}
-            alt={`${echoRealm.title} app screen`}
-            width={1600}
-            height={1000}
-            priority
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            className="absolute -top-[11%] left-0 h-[124%] w-full max-w-none origin-left object-cover object-left-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-          />
-          <span className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink">
-            Open {echoRealm.title}
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
+          <span className="relative z-10 flex flex-col lg:h-full xl:w-[46%]">
+            <span className="wide block text-4xl font-extrabold leading-none">{echoRealm.title}</span>
+            <span className="mt-3 block text-base leading-snug">{echoRealm.shortDescription}</span>
+            <span className="mt-4 flex flex-wrap gap-2">
+              {echoRealm.techStack.slice(0, FEATURED_STACK).map((tech) => (
+                <span key={tech} title={tech} className="flex h-10 w-10 items-center justify-center rounded-full bg-frame">
+                  <TechIcon name={tech} sizeClassName="w-6 h-6" />
+                  <span className="sr-only">{tech}</span>
+                </span>
+              ))}
+            </span>
+            <span className="mt-5 inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-ink px-4 text-sm font-semibold text-white lg:mt-auto">
+              Open project
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
+            </span>
+          </span>
+          <span className="relative mt-5 block aspect-[16/10] overflow-hidden rounded-xl bg-ink shadow-[0_20px_34px_-12px_rgb(0_0_0/0.5)] motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out lg:hidden xl:absolute xl:-bottom-4 xl:-right-5 xl:mt-0 xl:block xl:w-[56%] xl:-rotate-3 xl:group-hover:rotate-0 xl:group-hover:scale-[1.03]">
+            <Image
+              src={echoRealm.thumbnail}
+              alt={`${echoRealm.title} app screen`}
+              width={1200}
+              height={750}
+              priority
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              className="absolute -top-[11%] left-0 h-[124%] w-full max-w-none object-cover object-left-top"
+            />
           </span>
         </Tile>
 
         <div className="col-span-2 grid grid-cols-2 overflow-hidden rounded-[20px] lg:col-span-4 lg:grid-cols-1 lg:grid-rows-2 xl:col-span-3">
-          <Tile as={Link} href="/projects" tone="mint" corner className="group flex flex-col justify-center !rounded-none p-5 transition-[filter] duration-300 hover:brightness-95 focus-inset">
+          <Tile as={Link} href="/projects" tone="mint" corner className="group flex flex-col justify-between gap-3 !rounded-none p-5 transition-[filter] duration-300 hover:brightness-95 focus-inset">
             <Count value={projectsData.length} label="Projects" />
-          </Tile>
-          <Tile as={Link} href="/experience" tone="violet" corner className="group flex flex-col justify-center !rounded-none p-5 transition-[filter] duration-300 hover:brightness-95 focus-inset">
-            <Count value={INTERNSHIP_COUNT} label="Internships" white />
-          </Tile>
-        </div>
-
-        <Tile
-          as={Link}
-          href="/skills"
-          tone="graphite"
-          interactive
-          corner
-          className="group col-span-2 flex min-h-36 flex-col items-center justify-center gap-3 lg:col-span-3 lg:min-h-0 xl:col-span-4"
-        >
-          <Code2 className="h-11 w-11 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110" aria-hidden="true" />
-          <span className="wide text-xl">Skills</span>
-        </Tile>
-
-        <div className="col-span-2 grid grid-cols-2 overflow-hidden rounded-[20px] lg:col-span-9 xl:col-span-8">
-          <Link href={`/projects/${agroGuide.slug}`} className="group focus-inset-light relative block min-h-36 overflow-hidden bg-ink transition-[filter] duration-300 hover:brightness-95">
-            <Image
-              src={agroGuide.thumbnail}
-              alt={`${agroGuide.title} home screen`}
-              fill
-              sizes="(min-width: 1024px) 25vw, 50vw"
-              className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-            />
-            <span className="absolute bottom-3 left-3 rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-ink">
-              {agroGuide.title}
+            <span aria-hidden="true" className="flex">
+              {projectsData.map((project) => (
+                <span key={project.slug} className="relative -ml-3 h-10 w-10 overflow-hidden rounded-full border-2 border-mint bg-ink first:ml-0 motion-safe:transition-[margin] motion-safe:duration-300 group-hover:-ml-1 group-hover:first:ml-0">
+                  <Image src={project.thumbnail} alt="" fill sizes="40px" className="object-cover object-left-top" />
+                </span>
+              ))}
             </span>
-          </Link>
-          <Tile as={Link} href="/experience" tone="amber" corner className="flex flex-col justify-center !rounded-none p-5 xl:p-7 transition-[filter] duration-300 hover:brightness-95 focus-inset">
-            <span className="wide block text-xl font-extrabold leading-tight lg:text-2xl">Infosys + Evaluate Health</span>
-            <span className="wide mt-2 block text-sm">Internship experience</span>
+          </Tile>
+          <Tile as={Link} href="/experience" tone="violet" corner className="group flex flex-col justify-between gap-3 !rounded-none p-5 transition-[filter] duration-300 hover:brightness-95 focus-inset">
+            <Count value={INTERNSHIP_COUNT} label="Internships" white />
+            <span aria-hidden="true" className="block">
+              <span className="flex gap-1">
+                {chronological.map((internship, index) => (
+                  <span
+                    key={internship.company}
+                    className={`h-2.5 min-w-1 origin-left rounded-full motion-safe:transition-transform motion-safe:duration-300 group-hover:scale-y-150 ${TIMELINE_COLORS[index % TIMELINE_COLORS.length]}`}
+                    style={{ flexGrow: monthsLong(internship.start, internship.end), flexBasis: 0 }}
+                  />
+                ))}
+              </span>
+              <span className="mt-1 flex justify-between text-xs font-semibold text-ink">
+                <span>{monthLabel(chronological[0].start)}</span>
+                <span>{monthLabel(chronological[chronological.length - 1].end)}</span>
+              </span>
+            </span>
           </Tile>
         </div>
+
+        <SkillKeysTile />
+
+        <GitHubPulseTile />
+
+        <Tile as={Link} href="/experience" tone="apricot" corner className="role-deck group col-span-2 flex flex-col gap-3 p-4 lg:col-span-4 lg:block lg:min-h-0 lg:p-0">
+          <span className={`block lg:p-4 ${stacked.length >= MAX_STACKED ? "role-label" : ""}`}>
+            <span className="wide block text-xl font-extrabold leading-tight lg:text-base xl:text-xl">Internships</span>
+            {hiddenInternships > 0 && <span className="mt-1 block text-sm font-semibold">+{hiddenInternships} more</span>}
+          </span>
+          <span className="flex flex-col gap-1 lg:absolute lg:inset-x-2 lg:bottom-2 lg:block lg:h-12 xl:inset-x-3 xl:bottom-3">
+            {stacked.map((internship, index) => (
+              <span
+                key={internship.company}
+                className="role-card flex h-12 items-center gap-2 rounded-xl bg-white px-2 shadow-[0_6px_12px_-6px_rgb(0_0_0/0.45)] lg:absolute lg:inset-0"
+                style={{ "--i": index, "--slot": stacked.length - 1 - index, zIndex: stacked.length - index } as React.CSSProperties}
+              >
+                <span aria-hidden="true" className={`wide flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-extrabold text-white lg:hidden xl:flex ${ROLE_COLORS[index % ROLE_COLORS.length]}`}>
+                  {internship.company[0]}
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-bold leading-tight">{internship.company}</span>
+                  <span className="block truncate text-xs leading-tight">{monthLabel(internship.start)} - {monthLabel(internship.end)}</span>
+                </span>
+              </span>
+            ))}
+          </span>
+        </Tile>
       </div>
     </div>
   );

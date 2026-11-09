@@ -113,6 +113,39 @@ export async function fetchContributions(): Promise<ContributionData> {
   }
 }
 
+export interface YearTotals {
+  currentYear: number;
+  current: number;
+  previousYear: number;
+  previous: number;
+}
+
+export async function fetchYearTotals(): Promise<YearTotals | null> {
+  const cached = getCached<YearTotals>("year_totals");
+  if (cached) return cached;
+
+  try {
+    const currentYear = new Date().getFullYear();
+    const previousYear = currentYear - 1;
+    const res = await fetch(
+      `https://github-contributions-api.jogruber.de/v4/${USERNAME}?y=${previousYear}&y=${currentYear}`
+    );
+    if (!res.ok) throw new Error("Year totals fetch failed");
+    const json: { total: Record<string, number> } = await res.json();
+    const data: YearTotals = {
+      currentYear,
+      current: json.total[currentYear] ?? 0,
+      previousYear,
+      previous: json.total[previousYear] ?? 0,
+    };
+    setCache("year_totals", data);
+    return data;
+  } catch (err) {
+    console.warn("Yearly contribution totals unavailable:", err);
+    return null;
+  }
+}
+
 export interface LanguageMetric {
   name: string;
   count: number;

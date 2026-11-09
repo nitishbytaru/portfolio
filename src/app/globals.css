@@ -177,6 +177,80 @@ h3 {
   }
 }
 
+/* Home internships: a stack that fans open, one slot per role */
+@media (min-width: 1024px) {
+  .role-card {
+    transform: translateY(calc(var(--slot) * -52px));
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .role-label {
+    opacity: 0;
+  }
+}
+
+@media (min-width: 1024px) and (hover: hover) {
+  .role-label {
+    opacity: 1;
+    transition: opacity 0.2s ease;
+  }
+
+  .role-deck:not(:hover):not(:focus-visible) .role-card {
+    transform: translateY(calc(var(--i) * -12px)) scale(calc(1 - var(--i) * 0.06));
+  }
+
+  .role-deck:hover .role-label,
+  .role-deck:focus-visible .role-label {
+    opacity: 0;
+  }
+}
+
+/* Home skills: two rows of logos sliding in opposite directions */
+.skill-flow-row {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skill-flow-track {
+    animation: skill-flow 30s linear infinite;
+  }
+
+  .skill-flow-track.is-reverse {
+    animation-direction: reverse;
+    animation-duration: 36s;
+  }
+
+  .skill-flow:hover .skill-flow-track,
+  .skill-flow:focus-visible .skill-flow-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes skill-flow {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skill-flow-row {
+    overflow-x: auto;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bar-grow {
+    animation: bar-grow 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  @keyframes bar-grow {
+    from {
+      transform: scaleX(0);
+    }
+  }
+}
+
 /* One-shot motion: Experience wipe and pops, GitHub Stats bars and calendar */
 @media (prefers-reduced-motion: no-preference) {
   .wipe-in {

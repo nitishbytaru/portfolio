@@ -12,6 +12,8 @@ const TONES = {
   graphite: "bg-graphite text-white",
   black: "bg-ink text-white",
   indigo: "bg-indigo text-white",
+  iris: "bg-iris text-white",
+  apricot: "bg-apricot text-ink",
   white: "bg-white text-ink",
   plain: "bg-page text-ink",
 };
