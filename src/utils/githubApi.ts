@@ -1,23 +1,35 @@
 const USERNAME = "nitishbytaru";
 const API_BASE = "https://api.github.com";
 const CACHE_PREFIX = "gh_analytics_";
-const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+const CACHE_TTL = 15 * 60 * 1000; // 15 minutes
 
 interface CacheItem<T> {
   data: T;
   ts: number;
 }
 
+const isExpired = (ts: number) => Date.now() - ts > CACHE_TTL;
+
+// Deletes every expired or unreadable entry, not only the one being read.
+function removeExpired(): void {
+  for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+    const key = localStorage.key(index);
+    if (!key?.startsWith(CACHE_PREFIX)) continue;
+    try {
+      const { ts } = JSON.parse(localStorage.getItem(key) ?? "") as CacheItem<unknown>;
+      if (isExpired(ts)) localStorage.removeItem(key);
+    } catch {
+      localStorage.removeItem(key);
+    }
+  }
+}
+
 function getCached<T>(key: string): T | null {
   try {
-    const raw = sessionStorage.getItem(CACHE_PREFIX + key);
+    removeExpired();
+    const raw = localStorage.getItem(CACHE_PREFIX + key);
     if (!raw) return null;
-    const { data, ts } = JSON.parse(raw) as CacheItem<T>;
-    if (Date.now() - ts > CACHE_TTL) {
-      sessionStorage.removeItem(CACHE_PREFIX + key);
-      return null;
-    }
-    return data;
+    return (JSON.parse(raw) as CacheItem<T>).data;
   } catch {
     return null;
   }
@@ -25,12 +37,12 @@ function getCached<T>(key: string): T | null {
 
 function setCache<T>(key: string, data: T): void {
   try {
-    sessionStorage.setItem(
+    localStorage.setItem(
       CACHE_PREFIX + key,
       JSON.stringify({ data, ts: Date.now() })
     );
   } catch {
-    // Storage full — silently ignore
+    // Storage full or blocked: the page still works, just uncached.
   }
 }
 

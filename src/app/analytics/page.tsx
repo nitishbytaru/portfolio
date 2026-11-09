@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import Tile, { TileTone } from "@/components/board/Tile";
 import Wordmark from "@/components/board/Wordmark";
+import GitHubUnavailable from "@/components/board/GitHubUnavailable";
 import { TechIcon } from "@/components/ui/TechIcon";
 import {
   fetchProfile, fetchRepos, fetchEvents, fetchContributions,
@@ -580,18 +581,7 @@ export default function AnalyticsPage() {
   if (failed || !analytics) {
     return (
       <Shell>
-        <Tile tone="amber" className="max-w-xl p-8">
-          <h2 className="wide text-2xl font-extrabold">GitHub stats couldn&apos;t load</h2>
-          <p className="mb-6 mt-2 text-lg">GitHub may be limiting requests for a moment. Try again, or see the profile directly.</p>
-          <div className="flex flex-wrap gap-3">
-            <button type="button" onClick={() => window.location.reload()} className="min-h-11 rounded-full bg-indigo px-6 font-semibold text-white">
-              Try again
-            </button>
-            <a href="https://github.com/nitishbytaru" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center rounded-full bg-frame px-6 font-semibold">
-              Open GitHub profile
-            </a>
-          </div>
-        </Tile>
+        <GitHubUnavailable />
       </Shell>
     );
   }
