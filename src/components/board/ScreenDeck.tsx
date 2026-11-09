@@ -2,12 +2,14 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 
 interface ScreenDeckProps {
   title: string;
   images: string[];
 }
+
+const SLIDE_MS = 5000;
 
 // Shortest signed distance around the loop, so the deck wraps seamlessly.
 const loopOffset = (index: number, active: number, total: number) => {
@@ -19,12 +21,27 @@ const loopOffset = (index: number, active: number, total: number) => {
 
 export default function ScreenDeck({ title, images }: ScreenDeckProps) {
   const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
   const dragStart = useRef<number | null>(null);
   const total = images.length;
 
   useEffect(() => {
     setActive(0);
   }, [images]);
+
+  // Starts paused for visitors who asked for less motion.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) setPaused(true);
+  }, []);
+
+  // Rescheduled on every change, so a manual move always gets a full five seconds.
+  useEffect(() => {
+    if (paused || total < 2) return;
+    const timer = window.setTimeout(() => {
+      setActive((current) => (current + 1) % total);
+    }, SLIDE_MS);
+    return () => window.clearTimeout(timer);
+  }, [active, paused, total]);
 
   const step = (delta: number) => setActive((current) => (current + delta + total) % total);
 
@@ -88,7 +105,7 @@ export default function ScreenDeck({ title, images }: ScreenDeckProps) {
 
       {total > 1 && (
         <div className="mt-3 flex items-center gap-3">
-          <p aria-live="polite" className="wide w-16 shrink-0 text-sm font-bold">
+          <p aria-live={paused ? "polite" : "off"} className="wide w-16 shrink-0 text-sm font-bold">
             {active + 1} / {total}
           </p>
           <span aria-hidden="true" className="block h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-ink/20 sm:hidden">
@@ -113,6 +130,20 @@ export default function ScreenDeck({ title, images }: ScreenDeckProps) {
             ))}
           </div>
           <div className="flex shrink-0 gap-2">
+            <button
+              type="button"
+              onClick={() => setPaused(!paused)}
+              aria-label={paused ? "Play slideshow" : "Pause slideshow"}
+              className="relative flex h-11 w-11 items-center justify-center rounded-full bg-white text-ink"
+            >
+              <svg viewBox="0 0 44 44" aria-hidden="true" className="absolute inset-0 h-full w-full -rotate-90">
+                <circle cx="22" cy="22" r="20" fill="none" stroke="currentColor" strokeOpacity="0.15" strokeWidth="3" />
+                {!paused && (
+                  <circle key={active} className="deck-ring" cx="22" cy="22" r="20" fill="none" stroke="#5459AE" strokeWidth="3" strokeLinecap="round" strokeDasharray="125.66" style={{ animationDuration: `${SLIDE_MS}ms` }} />
+                )}
+              </svg>
+              {paused ? <Play className="h-4 w-4" aria-hidden="true" /> : <Pause className="h-4 w-4" aria-hidden="true" />}
+            </button>
             <button type="button" onClick={() => step(-1)} aria-label="Previous screenshot" className="flex h-11 w-11 items-center justify-center rounded-full bg-ink text-white">
               <ArrowLeft className="h-5 w-5" aria-hidden="true" />
             </button>

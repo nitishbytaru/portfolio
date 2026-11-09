@@ -86,7 +86,7 @@ export default function ProjectsBoard() {
                   href={`/projects/${project.slug}`}
                   onPointerMove={handleMove}
                   onPointerLeave={(event) => applyTilt(event.currentTarget, 0, 0)}
-                  className="group relative flex h-full flex-col overflow-hidden p-6 focus-inset md:grid md:grid-cols-2 md:items-center md:gap-6 xl:flex xl:p-8"
+                  className="group relative flex h-full flex-col overflow-hidden p-6 focus-inset md:grid md:grid-cols-2 md:items-center md:gap-6 xl:flex xl:items-stretch xl:p-8"
                 >
                   <div className="relative z-10 flex flex-col xl:h-full xl:w-[40%]">
                     <h2 className={`wide text-4xl font-extrabold leading-[1.05] ${reveal(0).className}`} style={reveal(0).style}>

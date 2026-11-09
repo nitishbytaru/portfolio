@@ -12,6 +12,7 @@ import { TechIcon, hasTechIcon } from "../ui/TechIcon";
 import Tile, { TileTone } from "../board/Tile";
 import Wordmark from "../board/Wordmark";
 import ScreenDeck from "../board/ScreenDeck";
+import ProjectLaunchpad from "../board/ProjectLaunchpad";
 
 interface ProjectLayoutProps {
   project: Project;
@@ -22,23 +23,6 @@ const HERO_TONES: TileTone[] = ["mint", "pink", "periwinkle", "violet", "mint"];
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <h2 className="wide mb-5 text-2xl font-extrabold">{children}</h2>
 );
-
-const hostOf = (url: string) => {
-  try {
-    return new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    return url;
-  }
-};
-
-const repoPathOf = (url: string) => {
-  try {
-    const parsed = new URL(url);
-    return parsed.hostname.endsWith("github.com") ? parsed.pathname.replace(/^\//, "") : "View repository";
-  } catch {
-    return "View repository";
-  }
-};
 
 // Splits "A, B (C, D), E" on commas that are outside parentheses.
 const splitSpec = (value: string) => value.split(/,(?![^(]*\))/).map((item) => item.trim());
@@ -90,8 +74,6 @@ const FEATURE_ICONS: [RegExp, LucideIcon][] = [
 
 const featureIcon = (feature: string) => FEATURE_ICONS.find(([pattern]) => pattern.test(feature))?.[1] ?? Check;
 
-const FACT_STYLE = "wide block text-3xl font-extrabold";
-
 const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
   const images = project.images?.length ? project.images : [project.thumbnail];
   useEffect(() => {
@@ -108,63 +90,26 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
   const layers = Object.entries(architecture);
   const [lead, ...restIntro] = project.detailedDescription?.intro ?? [];
 
-  const facts = [
-    { value: project.features.length, label: "Features" },
-    { value: project.techStack.length, label: "Tools" },
-    { value: images.length, label: "Screens" },
-  ];
+  
 
   return (
     <div>
-      <Wordmark className="!text-[clamp(2.25rem,6.6vw,5.75rem)]">{project.title}</Wordmark>
-      <p className="mb-6 mt-3 max-w-[65ch] text-lg leading-relaxed text-graphite">{project.shortDescription}</p>
+      <Wordmark className="mb-6 !text-[clamp(2.25rem,6.6vw,5.75rem)]">{project.title}</Wordmark>
+      
 
       <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
         {/* Screens */}
-        <Tile as="section" aria-label={`${project.title} screenshots`} tone={heroTone} className="p-3 sm:p-4 lg:col-span-8">
+        <Tile as="section" id="screens" aria-label={`${project.title} screenshots`} tone={heroTone} className="p-3 sm:p-4 lg:col-span-8">
           <ScreenDeck title={project.title} images={images} />
         </Tile>
 
         {/* Actions */}
-        <div className="flex flex-col gap-4 md:grid md:grid-cols-2 lg:col-span-4 lg:flex lg:gap-5">
-          <a
-            href={project.liveLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative flex min-h-40 flex-[1.5] flex-col lg:min-h-56 justify-between overflow-hidden rounded-[20px] bg-amber p-6 text-ink"
-          >
-            <span aria-hidden="true" className="absolute right-6 top-6 h-14 w-14 rounded-full bg-ink transition-transform duration-500 ease-out motion-safe:group-hover:scale-[16]" />
-            <span className="relative z-10 flex items-start justify-between">
-              <span className="break-all pr-20 text-sm font-semibold transition-colors duration-300 motion-safe:group-hover:text-white">{hostOf(project.liveLink)}</span>
-              <span aria-hidden="true" className="flex h-14 w-14 shrink-0 items-center justify-center text-white">
-                <ArrowUpRight className="h-7 w-7 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </span>
-            </span>
-            <span className="wide relative z-10 block text-4xl font-extrabold leading-[1.05] transition-colors duration-300 motion-safe:group-hover:text-white">
-              {isLinkedIn ? "LinkedIn Post" : "Live Demo"}
-            </span>
-          </a>
-
-          <a
-            href={project.githubLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative flex min-h-32 flex-1 flex-col lg:min-h-36 justify-between overflow-hidden rounded-[20px] bg-graphite p-6 text-white"
-          >
-            <Github aria-hidden="true" className="absolute -bottom-8 -right-6 h-44 w-44 text-white/15 transition-transform duration-500 ease-out group-hover:-rotate-12 group-hover:scale-110" />
-            <span className="relative z-10 break-all text-sm font-semibold">{repoPathOf(project.githubLink)}</span>
-            <span className="wide relative z-10 mt-6 block text-3xl font-extrabold leading-[1.05]">Source Code</span>
-          </a>
-
-          <dl className="grid grid-cols-3 divide-x divide-ink/10 rounded-[20px] bg-white md:col-span-2">
-            {facts.map((fact) => (
-              <div key={fact.label} className="flex flex-col-reverse p-4">
-                <dt className="wide text-xs font-semibold">{fact.label}</dt>
-                <dd className={FACT_STYLE}>{fact.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
+        <ProjectLaunchpad
+          project={project}
+          images={images}
+          featureIcons={Array.from(new Set(project.features.map(featureIcon)))}
+          heroTone={heroTone}
+        />
 
         {/* Story */}
         <Tile tone="periwinkle" className="p-6 lg:col-span-5">
@@ -182,7 +127,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
         </Tile>
 
         {project.techStack?.length > 0 && (
-          <Tile tone="plain" className="p-6 lg:col-span-7">
+          <Tile id="stack" tone="plain" className="p-6 lg:col-span-7">
             <SectionTitle>Core Stack</SectionTitle>
             <ul className="flex flex-wrap gap-x-5 gap-y-4">
               {project.techStack.map((tech) => (
@@ -237,7 +182,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
           </Tile>
         )}
 
-        <Tile tone="pink" className="p-6 lg:col-span-12">
+        <Tile id="features" tone="pink" className="p-6 lg:col-span-12">
           <SectionTitle>Key Features</SectionTitle>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {project.features.map((feature) => {
