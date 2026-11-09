@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowUpRight, Github, GitCommitHorizontal, GitFork, Star, ExternalLink, Plus, Rocket, Compass, Code2, Zap, Eye,
+  ArrowUpRight, FolderGit2, Github, GitCommitHorizontal, GitFork, Star, ExternalLink, Plus, Rocket, Compass, Code2, Zap, Eye,
   LucideIcon,
 } from "lucide-react";
 import Tile, { TileTone } from "@/components/board/Tile";
@@ -62,7 +62,7 @@ const LanguageRibbon = ({ languages }: { languages: LanguageMetric[] }) => {
           <span className="text-sm">{plural(active.count, "repo")}</span>
         </p>
       )}
-      <div className="ribbon-in flex h-14 origin-left gap-1" aria-hidden="true">
+      <div className="ribbon-in flex h-24 origin-left gap-1" aria-hidden="true">
         {slices.map((slice, i) => (
           <span
             key={slice.name}
@@ -103,39 +103,38 @@ const ContributionSkyline = ({ contributions, children }: { contributions: Contr
 
   return (
     <Tile tone="indigo" className="col-span-2 p-6 lg:col-span-4 lg:p-8">
-      <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+      <div className="grid gap-8 lg:grid-cols-[340px_minmax(0,1fr)]">
         {children}
         {weeks.length > 0 && (
-          <p className="shrink-0 md:text-right" aria-live="off">
-            <span className="wide block text-6xl font-extrabold leading-none tabular-nums md:text-7xl">
-              {shown ? shown.total : <CountUp value={contributions?.totalContributions ?? 0} />}
-            </span>
-            <span className="mt-2 block font-semibold">
-              {shown ? `${shown.total === 1 ? "contribution" : "contributions"}, week of ${shown.start}` : "contributions in the last year"}
-            </span>
-          </p>
+          <div className="relative h-72 lg:h-auto lg:min-h-[280px]">
+            <p className="pointer-events-none absolute left-0 top-0 z-10">
+              <span className="wide block text-6xl font-extrabold leading-none tabular-nums md:text-7xl">
+                {shown ? shown.total : <CountUp value={contributions?.totalContributions ?? 0} />}
+              </span>
+              <span className="mt-2 block font-semibold">
+                {shown ? `${shown.total === 1 ? "contribution" : "contributions"}, week of ${shown.start}` : "contributions in the last year"}
+              </span>
+            </p>
+            <div
+              onPointerLeave={() => setHovered(null)}
+              role="img"
+              aria-label={`${contributions?.totalContributions} contributions over the last ${weeks.length} weeks`}
+              className="group/sky absolute inset-0 flex items-end gap-[3px] sm:gap-1"
+            >
+              {weeks.map((week, index) => (
+                <span key={week.start || index} onPointerEnter={() => setHovered(index)} className="flex h-full min-w-0 flex-1 cursor-pointer items-end">
+                  <span
+                    className={`bar-rise block w-full origin-bottom rounded-t-[3px] motion-safe:transition-[background-color,opacity] motion-safe:duration-200 ${
+                      hovered === index ? "bg-amber" : week.total === 0 ? "bg-indigo-soft group-hover/sky:opacity-50" : "bg-periwinkle group-hover/sky:opacity-50"
+                    }`}
+                    style={{ height: `${Math.max(4, (week.total / tallest) * 100)}%`, animationDelay: `${index * 12}ms` }}
+                  />
+                </span>
+              ))}
+            </div>
+          </div>
         )}
       </div>
-
-      {weeks.length > 0 && (
-        <div
-          onPointerLeave={() => setHovered(null)}
-          role="img"
-          aria-label={`${contributions?.totalContributions} contributions over the last ${weeks.length} weeks`}
-          className="group/sky mt-8 flex h-40 items-end gap-[3px] sm:gap-1"
-        >
-          {weeks.map((week, index) => (
-            <span key={week.start || index} onPointerEnter={() => setHovered(index)} className="flex h-full min-w-0 flex-1 cursor-pointer items-end">
-              <span
-                className={`bar-rise block w-full origin-bottom rounded-t-[3px] motion-safe:transition-[background-color,opacity] motion-safe:duration-200 ${
-                  hovered === index ? "bg-amber" : week.total === 0 ? "bg-indigo-soft group-hover/sky:opacity-50" : "bg-periwinkle group-hover/sky:opacity-50"
-                }`}
-                style={{ height: `${Math.max(5, (week.total / tallest) * 100)}%`, animationDelay: `${index * 12}ms` }}
-              />
-            </span>
-          ))}
-        </div>
-      )}
     </Tile>
   );
 };
@@ -143,12 +142,24 @@ const ContributionSkyline = ({ contributions, children }: { contributions: Contr
 const TimelineChart = ({ timeline }: { timeline: TimelineItem[] }) => {
   const max = Math.max(...timeline.map((t) => t.count), 1);
   return (
-    <div className="group/chart flex h-44 items-end gap-3" role="img" aria-label={timeline.map((t) => `${t.year}: ${plural(t.count, "repo")}`).join(", ")}>
-      {timeline.map((item, index) => (
-        <div key={item.year} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5 motion-safe:transition-opacity motion-safe:duration-200 group-hover/chart:opacity-40 hover:!opacity-100">
-          <span className="text-sm font-bold">{item.count}</span>
-          <div className="bar-rise w-full origin-bottom rounded-t-lg bg-violet" style={{ height: `${(item.count / max) * 70}%`, animationDelay: `${index * 110}ms` }} />
-          <span className="text-sm">{item.year}</span>
+    <div className="flex items-end gap-4" role="img" aria-label={timeline.map((t) => `${t.year}: ${plural(t.count, "repo")}`).join(", ")}>
+      {timeline.map((item, column) => (
+        <div key={item.year} className="group/col min-w-0 flex-1 text-center">
+          <p className="wide mb-2 text-2xl font-extrabold">{item.count}</p>
+          <div className="flex h-48 flex-col-reverse gap-1">
+            {Array.from({ length: item.count }, (_, brick) => (
+              <span
+                key={brick}
+                className="cal-in block rounded bg-violet motion-safe:transition-[transform,background-color] motion-safe:duration-300 group-hover/col:-translate-y-1 group-hover/col:bg-indigo"
+                style={{
+                  height: `calc((100% - ${(max - 1) * 4}px) / ${max})`,
+                  animationDelay: `${column * 120 + brick * 45}ms`,
+                  transitionDelay: `${brick * 22}ms`,
+                }}
+              />
+            ))}
+          </div>
+          <p className="wide mt-2 text-sm font-semibold">{item.year}</p>
         </div>
       ))}
     </div>
@@ -157,6 +168,14 @@ const TimelineChart = ({ timeline }: { timeline: TimelineItem[] }) => {
 
 // Light to dark, on a white tile, so each level reads as one step darker.
 const LEVEL_COLORS = ["#E1E1E1", "#A7D8D6", "#7D82D0", "#595959", "#000000"];
+
+const monthOf = (date?: string) =>
+  date ? new Date(`${date}T00:00:00Z`).toLocaleString("en", { month: "short", timeZone: "UTC" }) : "";
+
+const monthLabel = (weeks: ContributionData["weeks"], index: number) => {
+  const month = monthOf(weeks[index][0]?.date);
+  return index === 0 || month !== monthOf(weeks[index - 1][0]?.date) ? month : "";
+};
 
 const ContributionCalendar = ({ contributions }: { contributions: ContributionData | null }) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -173,7 +192,7 @@ const ContributionCalendar = ({ contributions }: { contributions: ContributionDa
     if (window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
       cells().forEach((other) => {
         const distance = Math.hypot(Number(other.dataset.week) - week, Number(other.dataset.day) - day);
-        other.style.transform = distance < 4 ? `scale(${1 + 0.85 * (1 - distance / 4)})` : "";
+        other.style.transform = distance < 4 ? `scale(${1 + 0.4 * (1 - distance / 4)})` : "";
       });
     }
     const wrap = wrapRef.current.getBoundingClientRect();
@@ -195,6 +214,7 @@ const ContributionCalendar = ({ contributions }: { contributions: ContributionDa
   }, [contributions]);
 
   if (!contributions) return null;
+  const shownWeeks = contributions.weeks.slice(-52);
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-sm">
@@ -208,22 +228,29 @@ const ContributionCalendar = ({ contributions }: { contributions: ContributionDa
       <div ref={wrapRef} onPointerMove={handleRipple} onPointerLeave={clearRipple} className="relative">
         <div ref={tipRef} aria-hidden="true" className="pointer-events-none absolute z-20 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink px-3 py-1 text-xs font-bold text-white opacity-0 motion-safe:transition-opacity" />
         <div ref={scrollerRef} className="overflow-x-auto py-2">
-          <div className="flex min-w-[720px] gap-[3px]">
-            {contributions.weeks.slice(-52).map((week, wi) => (
-              <div key={wi} className="flex flex-col gap-[3px]">
-                {week.map((day, di) => (
-                  <div
-                    key={di}
-                    data-week={wi}
-                    data-day={di}
-                    data-date={day.date}
-                    data-count={plural(day.count, "contribution")}
-                    className="cal-in h-3 w-3 rounded-sm motion-safe:transition-transform motion-safe:duration-150"
-                    style={{ backgroundColor: LEVEL_COLORS[day.level] ?? LEVEL_COLORS[0], animationDelay: `${wi * 14}ms` }}
-                  />
-                ))}
-              </div>
-            ))}
+          <div className="min-w-[720px]">
+            <div aria-hidden="true" className="mb-1.5 flex gap-1 text-xs font-semibold">
+              {shownWeeks.map((week, wi) => (
+                <span key={wi} className="min-w-0 flex-1 overflow-visible whitespace-nowrap">{monthLabel(shownWeeks, wi)}</span>
+              ))}
+            </div>
+            <div className="flex gap-1">
+              {shownWeeks.map((week, wi) => (
+                <div key={wi} className="flex min-w-0 flex-1 flex-col gap-1">
+                  {week.map((day, di) => (
+                    <div
+                      key={di}
+                      data-week={wi}
+                      data-day={di}
+                      data-date={day.date}
+                      data-count={plural(day.count, "contribution")}
+                      className="cal-in aspect-square w-full rounded-[4px] motion-safe:transition-transform motion-safe:duration-150"
+                      style={{ backgroundColor: LEVEL_COLORS[day.level] ?? LEVEL_COLORS[0], animationDelay: `${wi * 14}ms` }}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -284,6 +311,9 @@ const groupActivity = (events: any[]): ActivityGroup[] => {
       : group
   );
 };
+
+const BADGE_COLORS = ["bg-amber", "bg-mint", "bg-pink", "bg-white"];
+const FOLDER_COLORS = ["bg-mint", "bg-amber", "bg-pink"];
 
 const Shell = ({ children }: { children: React.ReactNode }) => (
   <div>
@@ -362,20 +392,28 @@ export default function AnalyticsPage() {
         <ContributionSkyline contributions={contributions}>
           <div className="min-w-0">
             <div className="flex items-center gap-5">
-              <img src={profile.avatar_url} alt={profile.name} className="h-20 w-20 rounded-full object-cover transition-transform duration-300 hover:rotate-3 hover:scale-110" />
+              <img src={profile.avatar_url} alt={profile.name} className="h-24 w-24 rounded-full object-cover transition-transform duration-300 hover:rotate-3 hover:scale-110" />
               <div className="min-w-0">
-                <h2 className="wide text-2xl font-extrabold">{profile.name}</h2>
+                <h2 className="wide text-2xl font-extrabold leading-tight">{profile.name}</h2>
                 <a href={profile.html_url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1 font-semibold underline underline-offset-4">
                   @{profile.login} <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               </div>
             </div>
-            {profile.bio && <p className="mt-3 max-w-[60ch]">{profile.bio}</p>}
-            <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-2">
-              <div><dd className="wide text-xl font-extrabold">{profile.followers}</dd><dt className="text-sm">Followers</dt></div>
-              <div><dd className="wide text-xl font-extrabold">{profile.following}</dd><dt className="text-sm">Following</dt></div>
-              <div><dd className="wide text-xl font-extrabold">{profile.accountAgeYears}y</dd><dt className="text-sm">Since {profile.joinedDate}</dt></div>
+            {profile.bio && <p className="mt-3">{profile.bio}</p>}
+            <dl className="mt-5 grid grid-cols-3 gap-2">
+              {[
+                { value: profile.followers, label: "Followers" },
+                { value: profile.following, label: "Following" },
+                { value: `${profile.accountAgeYears}y`, label: "On GitHub" },
+              ].map((item) => (
+                <div key={item.label} className="flex flex-col-reverse rounded-xl bg-indigo-soft p-3 transition-transform duration-300 hover:-translate-y-1">
+                  <dt className="text-xs font-semibold">{item.label}</dt>
+                  <dd className="wide text-2xl font-extrabold">{item.value}</dd>
+                </div>
+              ))}
             </dl>
+            <p className="mt-3 text-sm">Member since {profile.joinedDate}</p>
           </div>
         </ContributionSkyline>
 
@@ -393,28 +431,37 @@ export default function AnalyticsPage() {
 
         <Tile tone="periwinkle" className="col-span-2 p-6 lg:col-span-1">
           <TileTitle>Achievements</TileTitle>
-          <ul className="space-y-4">
-            {achievements.map(({ title, desc, Icon }) => (
-              <li key={title} className="group/ach flex items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-ink transition-transform duration-300 group-hover/ach:-rotate-12 group-hover/ach:scale-110"><Icon className="h-5 w-5" aria-hidden="true" /></span>
-                <span><span className="block font-bold">{title}</span><span className="block text-sm">{desc}</span></span>
+          <ul className="grid grid-cols-2 gap-x-3 gap-y-5">
+            {achievements.map(({ title, desc, Icon }, index) => (
+              <li key={title} className="group/ach text-center">
+                <span className="relative mx-auto block h-[72px] w-[72px] [perspective:400px]">
+                  <span aria-hidden="true" className="absolute -inset-1 rounded-full border-2 border-dashed border-white/70 group-hover/ach:motion-safe:animate-[spin_5s_linear_infinite]" />
+                  <span className={`absolute inset-1 flex items-center justify-center rounded-full text-ink motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out group-hover/ach:[transform:rotateY(360deg)] ${BADGE_COLORS[index % BADGE_COLORS.length]}`}>
+                    <Icon className="h-6 w-6" aria-hidden="true" />
+                  </span>
+                </span>
+                <span className="mt-2 block text-sm font-bold leading-tight">{title}</span>
+                <span className="block text-xs leading-tight">{desc}</span>
               </li>
             ))}
           </ul>
         </Tile>
 
-        <Tile tone="amber" className="col-span-2 p-6">
+        <Tile tone="amber" className="col-span-2 flex flex-col p-6">
           <TileTitle>Repository Insights</TileTitle>
-          <dl className="divide-y divide-ink/20">
+          <dl className="grid flex-1 auto-rows-fr grid-cols-2 gap-3">
             {[
-              { label: "Most Starred", value: highlights.mostStarred?.name, sub: plural(highlights.mostStarred?.stargazers_count ?? 0, "star") },
-              { label: "Most Forked", value: highlights.mostForked?.name, sub: plural(highlights.mostForked?.forks_count ?? 0, "fork") },
-              { label: "Most Active", value: highlights.mostActive?.name, sub: timeAgo(highlights.mostActive?.pushed_at) },
-              { label: "Original Projects", value: `${stats.ownRepos} / ${stats.totalRepos}`, sub: "repos" },
-            ].map((item) => (
-              <div key={item.label} className="flex flex-wrap items-baseline justify-between gap-x-4 py-2.5 motion-safe:transition-[padding] motion-safe:duration-300 hover:px-2">
-                <dt>{item.label}</dt>
-                <dd className="break-all text-right"><span className="font-bold">{item.value}</span> <span className="text-sm">{item.sub}</span></dd>
+              { Icon: Star, metric: highlights.mostStarred?.stargazers_count ?? 0, label: "Most Starred", name: highlights.mostStarred?.name },
+              { Icon: GitFork, metric: highlights.mostForked?.forks_count ?? 0, label: "Most Forked", name: highlights.mostForked?.name },
+              { Icon: Zap, metric: timeAgo(highlights.mostActive?.pushed_at), label: "Most Active", name: highlights.mostActive?.name },
+              { Icon: FolderGit2, metric: `${stats.ownRepos}/${stats.totalRepos}`, label: "Original", name: "repositories" },
+            ].map(({ Icon, metric, label, name }) => (
+              <div key={label} className="group/cell relative flex flex-col-reverse justify-end rounded-2xl bg-frame p-4 motion-safe:transition-transform motion-safe:duration-300 hover:-translate-y-1">
+                <dt className="mt-1 text-sm"><span className="font-semibold">{label}</span><span className="block break-words font-bold">{name}</span></dt>
+                <dd className="wide pr-10 text-3xl font-extrabold leading-none">{metric}</dd>
+                <span aria-hidden="true" className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white motion-safe:transition-transform motion-safe:duration-300 group-hover/cell:rotate-[20deg] group-hover/cell:scale-110">
+                  <Icon className="h-4 w-4" />
+                </span>
               </div>
             ))}
           </dl>
@@ -423,7 +470,6 @@ export default function AnalyticsPage() {
         <Tile tone="mint" className="col-span-2 p-6">
           <TileTitle>Coding Timeline</TileTitle>
           <TimelineChart timeline={timeline} />
-          <p className="mt-2 text-sm">Repos created per year</p>
         </Tile>
 
         {contributions?.weeks?.length ? (
@@ -447,8 +493,8 @@ export default function AnalyticsPage() {
           </ol>
         </Tile>
 
-        <Tile as="section" tone="white" aria-labelledby="repos-heading" className="col-span-2 p-6">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+        <section aria-labelledby="repos-heading" className="no-lift col-span-2 flex flex-col lg:col-span-3">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <h2 id="repos-heading" className="wide text-xl font-extrabold">Top Repositories</h2>
             <a
               href={`https://github.com/${profile.login}`}
@@ -460,54 +506,67 @@ export default function AnalyticsPage() {
               View Full Profile on GitHub
             </a>
           </div>
-          <ul className="divide-y divide-ink/10">
-            {topRepos.slice(0, 6).map((repo: any) => (
-              <li key={repo.id}>
-                <a
-                  href={repo.html_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group -mx-2 flex items-center gap-4 rounded-xl px-2 py-3 transition-colors hover:bg-frame"
-                >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-page transition-transform duration-300 group-hover:scale-110">
-                    <TechIcon name={repo.language ?? ""} sizeClassName="w-5 h-5" />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block break-words font-bold">{repo.name}</span>
-                    <span className="block text-sm">
-                      {repo.language ?? "Code"}{repo.description ? `, ${repo.description}` : ""}
+          <ul className="grid flex-1 auto-rows-fr gap-x-4 gap-y-5 sm:grid-cols-2 xl:grid-cols-3">
+            {topRepos.slice(0, 6).map((repo: any, index: number) => {
+              const folder = FOLDER_COLORS[index % FOLDER_COLORS.length];
+              return (
+                <li key={repo.id}>
+                  <a href={repo.html_url} target="_blank" rel="noopener noreferrer" className="group/folder relative block h-full pt-7">
+                    <span aria-hidden="true" className={`absolute left-0 top-3 h-8 w-2/5 rounded-t-xl ${folder}`} />
+                    <span aria-hidden="true" className="absolute inset-x-4 top-5 flex h-20 justify-end rounded-lg bg-white p-2 shadow motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out group-hover/folder:-translate-y-4 group-hover/folder:rotate-1">
+                      <ArrowUpRight className="h-4 w-4" />
                     </span>
-                  </span>
-                  <span className="flex shrink-0 items-center gap-3 text-sm font-medium">
-                    <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only">Stars</span>{repo.stargazers_count}</span>
-                    <span className="inline-flex items-center gap-1"><GitFork className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only">Forks</span>{repo.forks_count}</span>
-                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
-                  </span>
-                </a>
-              </li>
-            ))}
+                    <span className={`relative flex h-full min-h-40 flex-col justify-between rounded-2xl rounded-tl-none p-4 text-ink motion-safe:transition-transform motion-safe:duration-300 group-hover/folder:translate-y-1 ${folder}`}>
+                      <span>
+                        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-frame">
+                          <TechIcon name={repo.language ?? ""} sizeClassName="w-6 h-6" />
+                        </span>
+                        <span className="mt-2 block break-words font-bold leading-tight">{repo.name}</span>
+                        {repo.description && <span className="mt-1 block text-sm leading-snug">{repo.description}</span>}
+                      </span>
+                      <span className="mt-3 flex items-center gap-3 text-sm font-semibold">
+                        <span>{repo.language ?? "Code"}</span>
+                        <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only">Stars</span>{repo.stargazers_count}</span>
+                        <span className="inline-flex items-center gap-1"><GitFork className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only">Forks</span>{repo.forks_count}</span>
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
           </ul>
-        </Tile>
+        </section>
 
-        <Tile as="section" tone="violet" aria-labelledby="activity-heading" className="col-span-2 p-6">
+        <Tile as="section" tone="indigo" aria-labelledby="activity-heading" className="col-span-2 p-6 lg:col-span-1">
           <h2 id="activity-heading" className="wide mb-3 text-xl font-extrabold">Recent Activity</h2>
           {activity.length > 0 ? (
-            <ol>
+            <ol className="space-y-1">
               {activity.map((item, i) => {
                 const Icon = item.type === "PushEvent" ? GitCommitHorizontal : item.type === "CreateEvent" ? Plus : Zap;
                 return (
-                  <li key={`${item.repo}-${i}`} className="group/feed relative flex items-center gap-4 py-3 motion-safe:transition-transform motion-safe:duration-300 hover:translate-x-1">
-                    {i < activity.length - 1 && (
-                      <span aria-hidden="true" className="absolute bottom-[-14px] left-[21px] top-[58px] w-0.5 bg-ink/25" />
+                  <li key={`${item.repo}-${i}`} className="group/feed -mx-2 rounded-xl p-2 motion-safe:transition-colors motion-safe:duration-200 hover:bg-indigo-soft">
+                    <span className="flex items-center gap-3">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-periwinkle text-ink motion-safe:transition-transform motion-safe:duration-300 group-hover/feed:rotate-12 group-hover/feed:scale-110">
+                        <Icon className="h-4 w-4" aria-hidden="true" />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block break-words text-sm font-bold">{item.repo}</span>
+                        <span className="text-xs">{item.when}</span>
+                      </span>
+                    </span>
+                    {item.type === "PushEvent" ? (
+                      <span role="img" aria-label={item.label} className="ml-12 mt-1 flex flex-wrap gap-1">
+                        {Array.from({ length: Math.min(item.count, 12) }, (_, tick) => (
+                          <span
+                            key={tick}
+                            className="h-2.5 w-2.5 rounded-sm bg-amber motion-safe:transition-transform motion-safe:duration-200 group-hover/feed:-translate-y-0.5"
+                            style={{ transitionDelay: `${tick * 25}ms` }}
+                          />
+                        ))}
+                      </span>
+                    ) : (
+                      <span className="ml-12 mt-1 block text-xs font-semibold">{item.label}</span>
                     )}
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-frame transition-transform duration-300 group-hover/feed:rotate-12 group-hover/feed:scale-110">
-                      <Icon className="h-5 w-5" aria-hidden="true" />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block break-words font-bold">{item.repo}</span>
-                      <span className="block text-sm">{item.label}</span>
-                    </span>
-                    <span className="shrink-0 text-sm font-medium">{item.when}</span>
                   </li>
                 );
               })}

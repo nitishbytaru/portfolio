@@ -60,7 +60,7 @@ const GROUPS: SkillGroup[] = [
   },
   {
     title: "Databases",
-    tone: "periwinkle",
+    tone: "indigo",
     leadIcon: "MongoDB",
     span: "xl:col-span-6",
     skills: [
@@ -103,6 +103,15 @@ const standStraight = (event: React.PointerEvent<HTMLLIElement>) => {
   if (card) card.style.transform = "";
 };
 
+// Logos that wash out on their tile are drawn as a solid silhouette instead.
+const GHOST_STYLE: Record<string, { wrap: string; logo: string }> = {
+  Frontend: { wrap: "opacity-25", logo: "brightness-0" },
+  Databases: { wrap: "opacity-90", logo: "" },
+};
+
+// The React mark is very pale on the light circles.
+const deepen = (name: string) => (name.startsWith("React") ? "brightness-75 saturate-200" : "");
+
 const FACE = "!absolute inset-0 h-full w-full [backface-visibility:hidden]";
 
 export default function SkillsBoard() {
@@ -142,8 +151,8 @@ export default function SkillsBoard() {
                 }`}
               >
                 <Tile as="span" tone={group.tone} corner className={`${FACE} flex flex-col justify-between p-7`}>
-                  <span aria-hidden="true" className="pointer-events-none absolute -bottom-10 -right-8 rotate-[-12deg] opacity-25">
-                    <TechIcon name={group.leadIcon} sizeClassName="h-56 w-56 xl:h-64 xl:w-64" />
+                  <span aria-hidden="true" className={`pointer-events-none absolute -bottom-10 -right-8 rotate-[-12deg] ${GHOST_STYLE[group.title]?.wrap ?? "opacity-25"}`}>
+                    <TechIcon name={group.leadIcon} sizeClassName={`h-56 w-56 xl:h-64 xl:w-64 ${GHOST_STYLE[group.title]?.logo ?? ""}`} />
                   </span>
                   <span className="relative z-10 flex">
                     {group.skills.map((skill, index) => (
@@ -152,7 +161,7 @@ export default function SkillsBoard() {
                         className="-ml-4 flex h-[72px] w-[72px] items-center justify-center rounded-full bg-frame shadow-[0_6px_14px_-4px_rgb(0_0_0/0.35)] first:ml-0"
                         style={{ zIndex: group.skills.length - index }}
                       >
-                        <TechIcon name={skill.icon ?? skill.name} sizeClassName="w-9 h-9" />
+                        <TechIcon name={skill.icon ?? skill.name} sizeClassName={`w-9 h-9 ${deepen(skill.name)}`} />
                       </span>
                     ))}
                   </span>
@@ -175,7 +184,7 @@ export default function SkillsBoard() {
                         } as React.CSSProperties}
                       >
                         <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-frame">
-                          <TechIcon name={skill.icon ?? skill.name} sizeClassName="w-7 h-7" />
+                          <TechIcon name={skill.icon ?? skill.name} sizeClassName={`w-7 h-7 ${deepen(skill.name)}`} />
                         </span>
                         {skill.name}
                       </span>

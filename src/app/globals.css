@@ -131,7 +131,7 @@ h3 {
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
   }
 
-  .stats-grid > *:hover {
+  .stats-grid > *:not(.no-lift):hover {
     transform: translateY(-4px);
     box-shadow: 0 18px 28px -18px rgb(0 0 0 / 0.45);
   }
