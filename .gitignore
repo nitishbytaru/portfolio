@@ -28,3 +28,8 @@ dist-ssr
 
 # Impeccable design tool working files
 .impeccable/
+.docs/*
+# Secrets
+.env
+.env.*
+!.env.example

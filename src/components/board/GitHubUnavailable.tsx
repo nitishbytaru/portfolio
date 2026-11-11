@@ -3,11 +3,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Github, RotateCw } from "lucide-react";
 import Tile from "@/components/board/Tile";
+import { GITHUB_USERNAME } from "@/lib/github-username";
 
 const STEP = 26;
 const CELL = 22;
 const COLORS = ["#3B3776", "#216E39", "#30A14E", "#40C463", "#9BE9A8"];
-const PROFILE_URL = "https://github.com/nitishbytaru";
+const PROFILE_URL = `https://github.com/${GITHUB_USERNAME}`;
 
 const ContributionWave = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);

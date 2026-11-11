@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { ArrowUpRight, Code2, GitBranch, GitCommitHorizontal, Github, Globe, Images, Linkedin, LucideIcon, Rocket } from "lucide-react";
-import { Project } from "@/data/ProjectData";
+import type { Project } from "@/lib/schema";
 import { TechIcon } from "@/components/ui/TechIcon";
 import Odometer from "@/components/board/Odometer";
 import Tile, { TileTone } from "@/components/board/Tile";

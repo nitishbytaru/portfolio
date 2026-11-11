@@ -1,4 +1,4 @@
-const USERNAME = "nitishbytaru";
+import { GITHUB_USERNAME as USERNAME } from "@/lib/github-username";
 const API_BASE = "https://api.github.com";
 const CACHE_PREFIX = "gh_analytics_";
 const CACHE_TTL = 15 * 60 * 1000; // 15 minutes

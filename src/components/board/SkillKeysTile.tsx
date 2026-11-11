@@ -5,17 +5,12 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Tile from "@/components/board/Tile";
 import { TechIcon } from "@/components/ui/TechIcon";
-import { GROUPS } from "@/components/board/SkillsBoard";
+import type { Skill } from "@/lib/schema";
 
-// One skill from each area in turn, so neighbouring logos vary.
-const allSkills = Array.from({ length: Math.max(...GROUPS.map((group) => group.skills.length)) }, (_, round) =>
-  GROUPS.flatMap((group) => (group.skills[round] ? [group.skills[round]] : []))
-).flat();
-
-const rows = [allSkills.filter((_, index) => index % 2 === 0), allSkills.filter((_, index) => index % 2 === 1)];
-
-export default function SkillKeysTile() {
+/** `skills` arrive interleaved and filtered to the featured ones (see getHomeSkills). */
+export default function SkillKeysTile({ skills: allSkills }: { skills: Skill[] }) {
   const [hovered, setHovered] = useState<string | null>(null);
+  const rows = [allSkills.filter((_, index) => index % 2 === 0), allSkills.filter((_, index) => index % 2 === 1)];
 
   return (
     <Tile
@@ -37,14 +32,15 @@ export default function SkillKeysTile() {
             <span className={`skill-flow-track flex w-max ${rowIndex === 1 ? "is-reverse" : ""}`}>
               {[...row, ...row].map((skill, index) => (
                 <span
-                  key={`${skill.name}-${index}`}
+                  key={`${skill.id}-${index}`}
                   onPointerEnter={(event) => {
                     if (event.pointerType === "mouse") setHovered(skill.name);
                   }}
                   className="mr-2 flex h-12 w-12 shrink-0 max-md:mr-1.5 max-md:h-9 max-md:w-9 items-center justify-center rounded-full bg-frame transition-transform duration-200 hover:scale-110"
                 >
                   <TechIcon
-                    name={skill.icon ?? skill.name}
+                    name={skill.name}
+                    icon={skill.icon}
                     sizeClassName={`h-5 w-5 md:h-7 md:w-7 ${skill.name.startsWith("React") ? "brightness-75 saturate-200" : ""}`}
                   />
                 </span>

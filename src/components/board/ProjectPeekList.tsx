@@ -4,9 +4,9 @@ import React, { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { projectsData } from "@/data/ProjectData";
+import type { Project } from "@/lib/schema";
 
-export default function ProjectPeekList() {
+export default function ProjectPeekList({ projects }: { projects: Pick<Project, "slug" | "title" | "thumbnail">[] }) {
   const [peek, setPeek] = useState<string | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const lastX = useRef(0);
@@ -18,12 +18,12 @@ export default function ProjectPeekList() {
     cardRef.current.style.transform = `translate3d(${event.clientX + 24}px, ${event.clientY - 90}px, 0) rotate(${lean}deg)`;
   };
 
-  const shown = projectsData.find((project) => project.slug === peek);
+  const shown = projects.find((project) => project.slug === peek);
 
   return (
     <div onPointerMove={handleMove} onPointerLeave={() => setPeek(null)}>
       <ul className="divide-y divide-ink/20">
-        {projectsData.map((project) => (
+        {projects.map((project) => (
           <li key={project.slug}>
             <Link
               href={`/projects/${project.slug}`}

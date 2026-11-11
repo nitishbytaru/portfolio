@@ -6,7 +6,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Tile, { TileTone } from "@/components/board/Tile";
 import { TechIcon } from "@/components/ui/TechIcon";
-import { projectsData } from "@/data/ProjectData";
+import ProjectPeekList from "@/components/board/ProjectPeekList";
+import type { Project } from "@/lib/schema";
 
 const TONES: TileTone[] = ["mint", "amber", "pink", "periwinkle", "violet"];
 const MOTION = "motion-safe:transition-[opacity,transform] motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)]";
@@ -22,7 +23,14 @@ const applyTilt = (root: HTMLElement, x: number, y: number) => {
   });
 };
 
-export default function ProjectsBoard() {
+interface ProjectsBoardProps {
+  /** Rich expanding panels: featured projects first, then the rest in order, capped. */
+  panels: Project[];
+  /** Everything that didn't get a panel. */
+  more: Project[];
+}
+
+export default function ProjectsBoard({ panels, more }: ProjectsBoardProps) {
   const [active, setActive] = useState(0);
   const panelLinks = useRef<(HTMLAnchorElement | null)[]>([]);
 
@@ -42,9 +50,18 @@ export default function ProjectsBoard() {
     requestAnimationFrame(() => panelLinks.current[index]?.focus({ preventScroll: true }));
   };
 
+  if (panels.length === 0) {
+    return (
+      <Tile tone="mint" className="p-6">
+        <p className="wide text-xl font-extrabold">Projects are on their way.</p>
+      </Tile>
+    );
+  }
+
   return (
+    <div className="flex flex-col gap-4">
     <ul className="enter-strips stagger flex flex-col gap-3 xl:h-[calc(100vh-18.5rem)] xl:min-h-[540px] xl:flex-row">
-      {projectsData.map((project, index) => {
+      {panels.map((project, index) => {
         const isActive = active === index;
         const extraScreen = project.images?.find((src) => src !== project.thumbnail);
         const reveal = (step: number) => ({
@@ -71,7 +88,7 @@ export default function ProjectsBoard() {
                   className="flex h-20 w-full items-center gap-4 px-5 xl:h-full xl:flex-col xl:justify-between xl:px-0 xl:py-6"
                 >
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-frame">
-                    <TechIcon name={project.techStack[0]} sizeClassName="w-6 h-6" />
+                    <TechIcon name={project.techStack[0] ?? project.title} sizeClassName="w-6 h-6" />
                   </span>
                   <h2 className="wide text-xl font-extrabold xl:rotate-180 xl:whitespace-nowrap xl:[writing-mode:vertical-rl]">
                     {project.title}
@@ -154,5 +171,13 @@ export default function ProjectsBoard() {
         );
       })}
     </ul>
+
+    {more.length > 0 && (
+      <Tile as="section" tone="white" aria-labelledby="more-projects" className="p-6 max-md:p-4">
+        <h2 id="more-projects" className="wide mb-3 text-2xl font-extrabold max-md:text-lg">All projects</h2>
+        <ProjectPeekList projects={more} />
+      </Tile>
+    )}
+    </div>
   );
 }
