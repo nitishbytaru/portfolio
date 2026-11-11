@@ -18,7 +18,7 @@ export default function ProfileEditor({ initial, sha, rawBase }: { initial: Prof
 
   return (
     <PreviewProvider rawBase={rawBase} local={files.local}>
-      <section className="grid gap-4 rounded-[20px] bg-white p-4 sm:p-6">
+      <section className="grid gap-4 rounded-2xl border border-night-line bg-night-panel p-4 sm:p-6">
         <div className="grid gap-4 sm:grid-cols-2">
           <TextField label="Name" value={data.name} onChange={(name) => set({ name })} required />
           <TextField label="Headline" value={data.headline} onChange={(headline) => set({ headline })} required />
@@ -31,7 +31,7 @@ export default function ProfileEditor({ initial, sha, rawBase }: { initial: Prof
           <Portrait src={data.portrait} />
           <div>
             <p className="mb-2 text-sm font-semibold">Portrait</p>
-            <p className="mb-2 max-w-sm text-xs text-graphite">A cut-out on a transparent background looks best. It's resized and converted before upload.</p>
+            <p className="mb-2 max-w-sm text-xs text-night-faint">A cut-out on a transparent background looks best. It's resized and converted before upload.</p>
             <UploadButton
               label="Replace portrait"
               onUploaded={(added) => {
@@ -43,17 +43,17 @@ export default function ProfileEditor({ initial, sha, rawBase }: { initial: Prof
         </div>
       </section>
 
-      <section className="mt-4 grid gap-4 rounded-[20px] bg-white p-4 sm:p-6">
+      <section className="mt-4 grid gap-4 rounded-2xl border border-night-line bg-night-panel p-4 sm:p-6">
         <h2 className="wide text-xl font-extrabold">Search and sharing</h2>
         <TextField label="Page title" value={data.seo.title} onChange={(title) => set({ seo: { ...data.seo, title } })} />
         <TextArea label="Description" value={data.seo.description} onChange={(description) => set({ seo: { ...data.seo, description } })} rows={2} />
       </section>
 
-      <section className="mt-4 rounded-[20px] bg-white p-4 sm:p-6">
+      <section className="mt-4 rounded-2xl border border-night-line bg-night-panel p-4 sm:p-6">
         <h2 className="wide mb-3 text-xl font-extrabold">Footer links</h2>
         <ul className="grid gap-2">
           {data.socials.map((social, index) => (
-            <li key={social.id} className="grid gap-2 rounded-xl bg-frame p-2 sm:grid-cols-[10rem_minmax(0,1fr)_minmax(0,2fr)_auto] sm:items-end">
+            <li key={social.id} className="grid gap-2 rounded-xl bg-night-raised p-3 sm:grid-cols-[10rem_minmax(0,1fr)_minmax(0,2fr)_auto] sm:items-end">
               <Select label="Icon" value={social.icon} options={SOCIAL_ICONS} onChange={(icon) => set({ socials: replaceAt(data.socials, index, { ...social, icon }) })} />
               <TextField label="Label" value={social.label} onChange={(label) => set({ socials: replaceAt(data.socials, index, { ...social, label }) })} />
               <TextField label="Link" hint="https:// or mailto:" value={social.href} onChange={(href) => set({ socials: replaceAt(data.socials, index, { ...social, href: href.trim() }) })} />

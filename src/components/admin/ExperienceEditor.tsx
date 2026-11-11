@@ -34,7 +34,7 @@ export default function ExperienceEditor({ initial, sha }: { initial: Experience
   return (
     <div>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm text-graphite">Top of the list shows first. Newest first works best.</p>
+        <p className="text-sm text-night-faint">Top of the list shows first. Newest first works best.</p>
         <button
           type="button"
           className={buttonClass.primary}
@@ -49,6 +49,7 @@ export default function ExperienceEditor({ initial, sha }: { initial: Experience
           <ItemCard
             key={item.id}
             title={item.company}
+            tone={item.color}
             subtitle={`${item.role || "Role"} · ${rangeLabel(item.start, item.end)}${item.visible ? "" : " · hidden"}`}
             muted={!item.visible}
             open={open === item.id}
@@ -90,7 +91,7 @@ export default function ExperienceEditor({ initial, sha }: { initial: Experience
               <legend className="mb-2 text-sm font-semibold">Stamps</legend>
               <div className="grid gap-2">
                 {item.metrics.map((metric, metricIndex) => (
-                  <div key={metricIndex} className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 rounded-xl bg-frame p-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_10rem_auto] sm:items-end">
+                  <div key={metricIndex} className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 rounded-xl bg-night-raised p-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_10rem_auto] sm:items-end">
                     <TextField label="Label" value={metric.label} onChange={(label) => update(index, { metrics: replaceAt(item.metrics, metricIndex, { ...metric, label }) })} className="max-sm:col-span-2" />
                     <TextField label="Value" value={metric.value} onChange={(value) => update(index, { metrics: replaceAt(item.metrics, metricIndex, { ...metric, value }) })} className="max-sm:col-span-2" />
                     <Select label="Icon" value={metric.icon} options={METRIC_ICONS} onChange={(icon) => update(index, { metrics: replaceAt(item.metrics, metricIndex, { ...metric, icon }) })} />
@@ -123,7 +124,7 @@ export default function ExperienceEditor({ initial, sha }: { initial: Experience
                     aria-pressed={item.color === color}
                     aria-label={color}
                     onClick={() => update(index, { color })}
-                    className={`h-11 w-11 rounded-full ${toneBg(color)} ${item.color === color ? "ring-4 ring-ink ring-offset-2" : ""}`}
+                    className={`h-11 w-11 rounded-full ${toneBg(color)} ${item.color === color ? "ring-2 ring-night-text ring-offset-[3px] ring-offset-night-panel" : ""}`}
                   />
                 ))}
               </div>

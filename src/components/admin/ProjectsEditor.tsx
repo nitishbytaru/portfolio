@@ -6,6 +6,9 @@ import type { Project } from "@/lib/schema";
 import { buttonClass, Check, ItemCard, ItemTools, ListField, move, newId, PairsField, replaceAt, SaveBar, slugify, TextArea, TextField, useContentEditor } from "./kit";
 import { PreviewProvider, UploadButton, usePreviewSrc, useUploads } from "./images";
 
+// Same rotation as the public Projects board, so each project keeps its colour.
+const PROJECT_TONES = ["mint", "amber", "pink", "periwinkle", "violet"];
+
 const blank = (): Project => ({
   id: newId("project"),
   visible: false,
@@ -33,12 +36,12 @@ function Screens({ project, onChange }: { project: Project; onChange: (patch: Pa
   return (
     <fieldset>
       <legend className="mb-2 text-sm font-semibold">Screenshots</legend>
-      {project.images.length === 0 && <p className="mb-2 text-sm text-graphite">Add at least one. The first becomes the thumbnail unless you pick another.</p>}
+      {project.images.length === 0 && <p className="mb-2 text-sm text-night-faint">Add at least one. The first becomes the thumbnail unless you pick another.</p>}
       <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
         {project.images.map((src, index) => {
           const isThumb = src === project.thumbnail;
           return (
-            <li key={src} className={`overflow-hidden rounded-xl bg-frame ${isThumb ? "ring-4 ring-indigo" : ""}`}>
+            <li key={src} className={`overflow-hidden rounded-xl border border-night-line bg-night-raised ${isThumb ? "ring-2 ring-periwinkle" : ""}`}>
               <img src={preview(src)} alt={`Screenshot ${index + 1}`} className="aspect-[16/10] w-full bg-ink object-cover object-left-top" />
               <div className="flex flex-wrap items-center justify-between gap-0.5 p-1">
                 <button type="button" className={buttonClass.quiet} disabled={index === 0} onClick={() => setImages(move(project.images, index, index - 1))} aria-label={`Move screenshot ${index + 1} earlier`}>
@@ -58,7 +61,7 @@ function Screens({ project, onChange }: { project: Project; onChange: (patch: Pa
           );
         })}
       </ul>
-      <p className="mt-2 text-xs text-graphite">The starred screenshot is the thumbnail. Images are resized and converted before upload.</p>
+      <p className="mt-2 text-xs text-night-faint">The starred screenshot is the thumbnail. Images are resized and converted before upload.</p>
     </fieldset>
   );
 }
@@ -73,7 +76,7 @@ export default function ProjectsEditor({ initial, sha, rawBase }: { initial: Pro
   return (
     <PreviewProvider rawBase={rawBase} local={files.local}>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm text-graphite">List order is display order. New projects start hidden until you show them.</p>
+        <p className="text-sm text-night-faint">List order is display order. New projects start hidden until you show them.</p>
         <button type="button" className={buttonClass.primary} onClick={() => { const item = blank(); setData([...data, item]); setOpen(item.id); }}>
           <Plus className="h-4 w-4" aria-hidden="true" /> Add project
         </button>
@@ -84,6 +87,7 @@ export default function ProjectsEditor({ initial, sha, rawBase }: { initial: Pro
           <ItemCard
             key={project.id}
             title={project.title}
+            tone={PROJECT_TONES[index % PROJECT_TONES.length]}
             subtitle={[`/projects/${project.slug || "…"}`, project.featured && "featured", !project.visible && "hidden"].filter(Boolean).join(" · ")}
             muted={!project.visible}
             open={open === project.id}

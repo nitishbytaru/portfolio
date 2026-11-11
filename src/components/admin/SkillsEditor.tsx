@@ -14,9 +14,9 @@ function SkillRow({ skill, index, count, onChange, onMove, onDelete }: {
   skill: Skill; index: number; count: number; onChange: (patch: Partial<Skill>) => void; onMove: (to: number) => void; onDelete: () => void;
 }) {
   return (
-    <li className={`rounded-xl bg-frame p-2 ${skill.visible ? "" : "opacity-70"}`}>
-      <div className="grid grid-cols-[44px_minmax(0,1fr)] items-end gap-2 sm:grid-cols-[44px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]">
-        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white" title="Icon preview">
+    <li className={`rounded-xl bg-night-raised p-3 ${skill.visible ? "" : "opacity-70"}`}>
+      <div className="grid grid-cols-[44px_minmax(0,1fr)] items-start gap-x-3 gap-y-2 sm:grid-cols-[44px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]">
+        <span className="mt-[30px] flex h-11 w-11 items-center justify-center rounded-full bg-white" title="Icon preview">
           <TechIcon name={skill.name} icon={skill.icon} sizeClassName="h-6 w-6" />
         </span>
         <TextField label="Name" value={skill.name} onChange={(name) => onChange({ name, ...(skill.aliases.length === 0 || skill.aliases[0] === skill.name.toLowerCase() ? { aliases: name ? [name.toLowerCase()] : [] } : {}) })} />
@@ -46,7 +46,7 @@ export default function SkillsEditor({ initial, sha }: { initial: SkillGroup[]; 
   return (
     <div>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm text-graphite">Each group is one card on the Skills page. The grid adjusts to how many there are.</p>
+        <p className="text-sm text-night-faint">Each group is one card on the Skills page. The grid adjusts to how many there are.</p>
         <button type="button" className={buttonClass.primary} onClick={() => { const group = blankGroup(); setData([...data, group]); setOpen(group.id); }}>
           <Plus className="h-4 w-4" aria-hidden="true" /> Add group
         </button>
@@ -57,6 +57,7 @@ export default function SkillsEditor({ initial, sha }: { initial: SkillGroup[]; 
           <ItemCard
             key={group.id}
             title={group.title}
+            tone={group.color}
             subtitle={`${group.skills.length} skills${group.visible ? "" : " · hidden"}`}
             muted={!group.visible}
             open={open === group.id}
@@ -91,7 +92,7 @@ export default function SkillsEditor({ initial, sha }: { initial: SkillGroup[]; 
                     aria-pressed={group.color === color}
                     aria-label={color}
                     onClick={() => update(index, { color })}
-                    className={`h-11 w-11 rounded-full ${toneBg(color)} ${group.color === color ? "ring-4 ring-ink ring-offset-2" : ""}`}
+                    className={`h-11 w-11 rounded-full ${toneBg(color)} ${group.color === color ? "ring-2 ring-night-text ring-offset-[3px] ring-offset-night-panel" : ""}`}
                   />
                 ))}
               </div>

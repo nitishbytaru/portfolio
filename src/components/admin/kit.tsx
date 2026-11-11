@@ -1,21 +1,22 @@
 "use client";
 
 import React, { useEffect, useId, useRef, useState } from "react";
-import { ArrowDown, ArrowUp, Eye, EyeOff, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, CircleCheck, Eye, EyeOff, Trash2 } from "lucide-react";
 import type { z } from "zod";
 import { saveContent, type SaveResult, type Upload } from "@/app/admin/actions";
 import { describeIssues, SCHEMAS, type ContentData, type ContentFile } from "@/lib/schema";
+import { toneBg } from "@/lib/tones";
 
 // Shared admin form pieces. Everything is a single column on phones and at least 44px to tap.
 
 export const inputClass =
-  "block w-full min-h-11 rounded-xl border-2 border-ink/15 bg-white px-3 py-2 text-base text-ink outline-none transition-colors focus:border-indigo aria-[invalid=true]:border-red-600";
+  "block w-full min-h-11 rounded-xl border border-night-edge bg-night px-3 py-2 text-base text-night-text transition-colors duration-150 hover:border-[#4a4a55] focus:border-periwinkle-light aria-[invalid=true]:border-red-400";
 
 export const buttonClass = {
-  primary: "inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-ink px-5 font-semibold text-white disabled:opacity-50",
-  secondary: "inline-flex min-h-11 items-center justify-center gap-2 rounded-full border-2 border-ink px-4 font-semibold text-ink disabled:opacity-50",
-  quiet: "inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-xl px-2 text-sm font-semibold text-ink hover:bg-page disabled:opacity-30",
-  danger: "inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-xl px-2 text-sm font-semibold text-red-700 hover:bg-red-50",
+  primary: "inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-periwinkle px-5 font-semibold text-ink transition-colors duration-150 hover:bg-periwinkle-light disabled:cursor-not-allowed disabled:bg-night-raised disabled:text-night-faint",
+  secondary: "inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-night-edge px-4 font-semibold text-night-text transition-colors duration-150 hover:border-night-muted hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50",
+  quiet: "inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-xl px-2 text-sm font-semibold text-night-muted transition-colors duration-150 hover:bg-white/5 hover:text-night-text disabled:pointer-events-none disabled:opacity-30",
+  danger: "inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-xl px-2 text-sm font-semibold text-red-300 transition-colors duration-150 hover:bg-red-500/10 hover:text-red-200",
 };
 
 export const newId = (prefix: string) => `${prefix}-${Math.random().toString(36).slice(2, 8)}`;
@@ -27,9 +28,9 @@ export function Field({ label, hint, children, className = "" }: { label: string
   const id = useId();
   return (
     <div className={className}>
-      <label htmlFor={id} className="mb-1 block text-sm font-semibold text-ink">{label}</label>
+      <label htmlFor={id} className="mb-1.5 block text-sm font-semibold text-night-text">{label}</label>
       {children(id)}
-      {hint && <p className="mt-1 text-xs text-graphite">{hint}</p>}
+      {hint && <p className="mt-1.5 text-xs text-night-faint">{hint}</p>}
     </div>
   );
 }
@@ -70,8 +71,8 @@ export function Select<T extends string>({ label, value, options, onChange, clas
 
 export function Check({ label, checked, onChange }: { label: string; checked: boolean; onChange: (checked: boolean) => void }) {
   return (
-    <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-sm font-semibold text-ink">
-      <input type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} className="h-5 w-5 accent-indigo" />
+    <label className="inline-flex min-h-11 cursor-pointer items-center gap-2.5 text-sm font-semibold text-night-text">
+      <input type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} className="h-5 w-5 accent-periwinkle" />
       {label}
     </label>
   );
@@ -140,7 +141,7 @@ export function ItemTools({ index, count, onMove, visible, onToggle, onDelete, n
   index: number; count: number; onMove: (to: number) => void; visible?: boolean; onToggle?: () => void; onDelete: () => void; name: string;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-0.5">
+    <div className="ml-auto flex flex-wrap items-center gap-0.5">
       <button type="button" className={buttonClass.quiet} disabled={index === 0} onClick={() => onMove(index - 1)} aria-label={`Move ${name} up`}>
         <ArrowUp className="h-4 w-4" aria-hidden="true" />
       </button>
@@ -176,19 +177,22 @@ export const move = <T,>(list: T[], from: number, to: number) => {
 export const replaceAt = <T,>(list: T[], index: number, item: T) => list.map((current, i) => (i === index ? item : current));
 
 /** A collapsible card for one item in a list. */
-export function ItemCard({ title, subtitle, muted, open, onOpen, tools, children }: {
-  title: string; subtitle?: string; muted?: boolean; open: boolean; onOpen: (open: boolean) => void; tools: React.ReactNode; children: React.ReactNode;
+export function ItemCard({ title, subtitle, muted, open, onOpen, tools, tone, children }: {
+  title: string; subtitle?: string; muted?: boolean; open: boolean; onOpen: (open: boolean) => void; tools: React.ReactNode; tone?: string; children: React.ReactNode;
 }) {
   return (
-    <li className={`min-w-0 rounded-[20px] bg-white p-3 sm:p-4 ${muted ? "opacity-70" : ""}`}>
+    <li className={`min-w-0 rounded-2xl border bg-night-panel p-3 transition-colors duration-150 sm:p-4 ${open ? "border-night-edge" : "border-night-line hover:border-night-edge"}`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <button type="button" onClick={() => onOpen(!open)} aria-expanded={open} className="min-h-11 min-w-0 flex-1 text-left">
-          <span className="wide block truncate text-lg font-extrabold text-ink">{title || "Untitled"}</span>
-          {subtitle && <span className="block truncate text-sm text-graphite">{subtitle}</span>}
+        <button type="button" onClick={() => onOpen(!open)} aria-expanded={open} className={`flex min-h-11 min-w-[12rem] flex-1 items-center gap-3 rounded-xl text-left ${muted ? "opacity-55" : ""}`}>
+          {tone && <span aria-hidden="true" className={`h-3.5 w-3.5 shrink-0 rounded-full ${toneBg(tone)}`} />}
+          <span className="min-w-0">
+            <span className="wide block truncate text-lg font-extrabold text-night-text">{title || "Untitled"}</span>
+            {subtitle && <span className="block truncate text-sm text-night-faint">{subtitle}</span>}
+          </span>
         </button>
         {tools}
       </div>
-      {open && <div className="mt-3 grid gap-4 border-t-2 border-page pt-4">{children}</div>}
+      {open && <div className="mt-3 grid gap-5 border-t border-night-line pt-5">{children}</div>}
     </li>
   );
 }
@@ -245,16 +249,17 @@ export function useContentEditor<F extends ContentFile>(file: F, initial: Conten
 /** Sticky save bar with the outcome of the last save. */
 export function SaveBar({ dirty, status, onSave }: { dirty: boolean; status: Status; onSave: () => void }) {
   return (
-    <div className="sticky bottom-0 z-20 -mx-3 mt-6 border-t-2 border-page bg-frame/95 px-3 py-3 backdrop-blur sm:-mx-6 sm:px-6" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
+    <div className="sticky bottom-0 z-20 -mx-3 mt-8 border-t border-night-line bg-night/85 px-3 py-3 backdrop-blur-md sm:-mx-6 sm:px-6" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
       <div role="status" aria-live="polite" className="mb-2 text-sm empty:hidden">
         {status.kind === "saved" && !dirty && (
-          <p className="font-semibold text-ink">
-            Saved. Live in a minute or two.{" "}
-            <a href={status.commitUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">View the change</a>
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 font-semibold text-mint">
+            <CircleCheck className="h-4 w-4" aria-hidden="true" />
+            Saved. Live in a minute or two.
+            <a href={status.commitUrl} target="_blank" rel="noopener noreferrer" className="text-night-muted underline underline-offset-4 hover:text-night-text">View the change</a>
           </p>
         )}
         {status.kind === "error" && (
-          <div className="rounded-xl bg-red-50 p-3 text-red-800">
+          <div className="rounded-xl border border-red-400/30 bg-red-500/10 p-3 text-red-200">
             <p className="font-semibold">{status.message}</p>
             {status.issues && <ul className="mt-1 list-disc pl-5">{status.issues.map((issue) => <li key={issue}>{issue}</li>)}</ul>}
             {status.conflict && <button type="button" onClick={() => window.location.reload()} className="mt-2 font-semibold underline underline-offset-4">Reload the latest version</button>}
@@ -263,7 +268,10 @@ export function SaveBar({ dirty, status, onSave }: { dirty: boolean; status: Sta
         )}
       </div>
       <div className="flex items-center justify-between gap-3">
-        <span className="text-sm text-graphite">{dirty ? "Unsaved changes" : "All changes saved"}</span>
+        <span className="inline-flex items-center gap-2 text-sm text-night-muted">
+          <span aria-hidden="true" className={`h-2 w-2 rounded-full ${dirty ? "bg-amber" : "bg-night-edge"}`} />
+          {dirty ? "Unsaved changes" : "All changes saved"}
+        </span>
         <button type="button" onClick={onSave} disabled={!dirty || status.kind === "saving"} className={buttonClass.primary}>
           {status.kind === "saving" ? "Saving…" : "Save"}
         </button>

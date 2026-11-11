@@ -18,15 +18,27 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-sm rounded-[20px] bg-periwinkle p-6">
-        <h1 className="wide text-3xl font-extrabold text-white">Edit the portfolio</h1>
-        <p className="mt-2 text-ink">Only the site owner can sign in.</p>
+      <div className="w-full max-w-sm">
+        <span aria-hidden="true" className="mb-6 grid w-max grid-cols-2 gap-1">
+          <span className="h-5 w-5 rounded-full bg-periwinkle" />
+          <span className="h-5 w-5 rounded-full bg-pink" />
+          <span className="h-5 w-5 rounded-full bg-mint" />
+          <span className="h-5 w-5 rounded-full bg-amber" />
+        </span>
+        <h1 className="wide text-4xl font-extrabold leading-none text-night-text">Edit the portfolio</h1>
+        <p className="mt-3 text-night-muted">Only the site owner can sign in.</p>
         {error && ERRORS[error] && (
-          <p role="alert" className="mt-4 rounded-xl bg-white p-3 text-sm font-semibold text-red-800">{ERRORS[error]}</p>
+          <p role="alert" className="mt-5 rounded-xl border border-red-400/30 bg-red-500/10 p-3 text-sm font-semibold text-red-200">{ERRORS[error]}</p>
         )}
-        <a href="/api/auth/github" className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-ink px-5 font-semibold text-white">
+        <a
+          href="/api/auth/github"
+          className="mt-8 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-periwinkle px-5 font-semibold text-ink transition-colors duration-150 hover:bg-periwinkle-light"
+        >
           <Github className="h-5 w-5" aria-hidden="true" />
           Sign in with GitHub
+        </a>
+        <a href="/" className="mt-3 inline-flex min-h-11 w-full items-center justify-center text-sm font-semibold text-night-muted hover:text-night-text">
+          Back to the site
         </a>
       </div>
     </main>

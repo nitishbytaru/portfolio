@@ -100,7 +100,7 @@ export function UploadButton({ label, multiple, onUploaded }: { label: string; m
         <ImagePlus className="h-4 w-4" aria-hidden="true" />
         {busy ?? label}
       </button>
-      {error && <p role="alert" className="mt-2 text-sm font-semibold text-red-700">{error}</p>}
+      {error && <p role="alert" className="mt-2 text-sm font-semibold text-red-300">{error}</p>}
     </div>
   );
 }
