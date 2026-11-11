@@ -2,7 +2,7 @@
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, ChevronDown, Cloud, Cpu, Database, Layers, LucideIcon, Monitor, Server, Zap } from "lucide-react";
-import { Project } from "@/data/ProjectData";
+import type { Project } from "@/lib/schema";
 import { TechIcon, hasTechIcon } from "@/components/ui/TechIcon";
 import Tile from "@/components/board/Tile";
 
@@ -41,8 +41,8 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
 
 export const AboutTile = ({ project }: { project: Project }) => {
   const { ref, state } = useReveal();
-  const [lead, ...rest] = project.detailedDescription?.intro ?? [];
-  const note = project.detailedDescription?.note;
+  const [lead, ...rest] = project.intro;
+  const note = project.note;
   const titleWords = project.title.toLowerCase().split(" ");
 
   return (

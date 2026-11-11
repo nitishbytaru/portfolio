@@ -1,0 +1,17 @@
+{
+  "name": "Nitish Durga Bytaru",
+  "headline": "Full Stack Web Developer, open to roles",
+  "bio": "I build full stack web apps, from real-time messaging with Socket.io to machine learning tools that help farmers make data-driven decisions.",
+  "email": "bndnitish24@gmail.com",
+  "portrait": "/NitishCutout.png",
+  "githubUsername": "nitishbytaru",
+  "seo": {
+    "title": "Nitish Durga Bytaru - Portfolio",
+    "description": "Portfolio of Nitish Durga Bytaru, a full stack web developer building with React, Node.js, Flask and MongoDB."
+  },
+  "socials": [
+    { "id": "github", "label": "GitHub", "href": "https://github.com/nitishbytaru", "icon": "github" },
+    { "id": "linkedin", "label": "LinkedIn", "href": "https://linkedin.com/in/nitishbytaru", "icon": "linkedin" },
+    { "id": "email", "label": "Email", "href": "mailto:bndnitish24@gmail.com", "icon": "mail" }
+  ]
+}

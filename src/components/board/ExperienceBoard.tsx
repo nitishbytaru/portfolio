@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   Award,
   Briefcase,
@@ -12,124 +12,48 @@ import {
   Database,
   Layers,
   Activity,
+  ChartColumn,
+  Cpu,
+  Globe,
   LucideIcon,
+  Server,
+  Shield,
+  Users,
+  Zap,
 } from "lucide-react";
 import Tile, { TileTone } from "@/components/board/Tile";
 import Image from "next/image";
 import { TechIcon, hasTechIcon } from "@/components/ui/TechIcon";
+import { driveFileId, type Experience, type Metric } from "@/lib/schema";
+import { buildRuler, rangeLabel } from "@/lib/layout";
+import { toneBg } from "@/lib/tones";
 
-interface Metric {
-  label: string;
-  value: string;
-  icon: LucideIcon;
-}
-
-interface ExperienceItem {
-  role: string;
-  company: string;
-  location: string;
-  date: string;
-  type: string;
-  summaryLabel: string;
-  certificate: string;
-  points: string[];
-  skills: string[];
-  metrics: Metric[];
-}
-
-const experiences: ExperienceItem[] = [
-  {
-    role: "System Engineer Intern",
-    company: "Infosys",
-    location: "Mysore",
-    date: "Dec 2025 - May 2026",
-    type: "Enterprise Training",
-    summaryLabel: "Enterprise Stack",
-    certificate:
-      "https://drive.google.com/file/d/1aLeH6dHQzZo0sbtxbiw7Z4B6qrq_IPTw/view?usp=drive_link",
-    points: [
-      "Completed intensive Java Generic Training covering OOP principles — inheritance, polymorphism, abstraction, encapsulation, exception handling, and collections.",
-      "Acquired hands-on knowledge of DBMS and MySQL: relational design, normalization, SQL queries, joins, and database management.",
-      "Completed Stream Training in the Microsoft stack: TypeScript, C#, Angular, .NET, and Entity Framework Core for enterprise-grade full-stack development.",
-    ],
-    skills: [
-      "Java",
-      "OOP",
-      "DBMS",
-      "MySQL",
-      "TypeScript",
-      "C#",
-      "Angular",
-      ".NET",
-      "Entity Framework Core",
-    ],
-    metrics: [
-      { label: "Focus Area", value: "Full Stack & DB", icon: Database },
-      { label: "Stream Track", value: "Microsoft C# / .NET", icon: Code2 },
-      { label: "Engineering Scope", value: "Enterprise Architecture", icon: Layers },
-      { label: "Work Model", value: "Intensive Academy", icon: Activity },
-    ]
-  },
-  {
-    role: "Frontend Intern",
-    company: "Evaluate Health",
-    location: "Vizag",
-    date: "Jul 2025 - Nov 2025",
-    type: "Frontend Engineering",
-    summaryLabel: "Mobile Frontend",
-    certificate:
-      "https://drive.google.com/file/d/1hiiyhRLeDxyIRnXKSnl4iDoFrAVErm6g/view?usp=drive_link",
-    points: [
-      "Developed production-level mobile applications using React Native, TypeScript, Redux, and Redux-Saga.",
-      "Built reusable card components, reducing unnecessary re-renders and measurably improving rendering performance of the application.",
-      "Coordinated with the backend team to integrate REST APIs for data storage and retrieval within an Agile frontend workflow.",
-    ],
-    skills: [
-      "React Native",
-      "TypeScript",
-      "Redux",
-      "Redux-Saga",
-      "REST APIs",
-      "Agile",
-    ],
-    metrics: [
-      { label: "Focus Area", value: "Mobile Native UI", icon: Layers },
-      { label: "State Engine", value: "Redux & Saga", icon: Activity },
-      { label: "API Integration", value: "RESTful Endpoints", icon: Code2 },
-      { label: "Workflow Mode", value: "Agile Scrum", icon: Briefcase },
-    ]
-  },
-];
-
-const MONTHS = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May"];
-const yearOf = (monthIndex: number) => (monthIndex <= 5 ? 2025 : 2026);
-const TICKS = 66;
-
-// Month ranges on the ruler, end exclusive.
-const SPANS: Record<string, { start: number; end: number; tone: TileTone; bg: string }> = {
-  "Evaluate Health": { start: 0, end: 5, tone: "amber", bg: "bg-amber" },
-  Infosys: { start: 5, end: 11, tone: "mint", bg: "bg-mint" },
+const METRIC_ICON: Record<Metric["icon"], LucideIcon> = {
+  database: Database,
+  code: Code2,
+  layers: Layers,
+  activity: Activity,
+  briefcase: Briefcase,
+  server: Server,
+  cpu: Cpu,
+  globe: Globe,
+  users: Users,
+  zap: Zap,
+  shield: Shield,
+  chart: ChartColumn,
 };
 
-const roleAt = (monthIndex: number) =>
-  experiences.findIndex((role) => {
-    const span = SPANS[role.company];
-    return monthIndex >= span.start && monthIndex < span.end;
-  });
+const escape = (word: string) => word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const KEYWORDS = [
-  "Entity Framework Core", "React Native", "Redux-Saga", "REST APIs", "TypeScript",
-  "Angular", "MySQL", "Redux", "Agile", "DBMS", "Java", "OOP", ".NET", "C#",
-];
-const KEYWORD_PATTERN = new RegExp(
-  `(${KEYWORDS.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`,
-  "g"
-);
-
-const highlightKeywords = (text: string) =>
-  text.split(KEYWORD_PATTERN).map((chunk, i) =>
-    KEYWORDS.includes(chunk) ? <mark key={i} className="flow-mark">{chunk}</mark> : chunk
-  );
+/** Splits text so each known keyword can be marked. Keywords arrive longest first. */
+const useHighlighter = (keywords: string[]) =>
+  useMemo(() => {
+    if (keywords.length === 0) return (text: string): React.ReactNode => text;
+    const known = new Set(keywords);
+    const pattern = new RegExp(`(${keywords.map(escape).join("|")})`, "g");
+    return (text: string): React.ReactNode =>
+      text.split(pattern).map((chunk, i) => (known.has(chunk) ? <mark key={i} className="flow-mark">{chunk}</mark> : chunk));
+  }, [keywords]);
 
 // Visible by default; only hidden once script confirms it can reveal it again.
 const FlowStep = ({ children, last }: { children: React.ReactNode; last: boolean }) => {
@@ -169,7 +93,7 @@ const FlowStep = ({ children, last }: { children: React.ReactNode; last: boolean
 
 const CertificateCard = ({ url, company, roleName, date }: { url: string; company: string; roleName: string; date: string }) => {
   const [failed, setFailed] = useState(false);
-  const fileId = url.match(/\/d\/(.*?)\//)?.[1];
+  const fileId = driveFileId(url);
 
   return (
     <a
@@ -216,7 +140,7 @@ const Barcode = ({ seed }: { seed: string }) => (
   </span>
 );
 
-const IdBadge = ({ item, accent }: { item: ExperienceItem; accent: string }) => {
+const IdBadge = ({ item, accent, name, portrait }: { item: Experience; accent: string; name: string; portrait: string }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const lean = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -243,13 +167,13 @@ const IdBadge = ({ item, accent }: { item: ExperienceItem; accent: string }) => 
               <span aria-hidden="true" className="block h-2.5 w-14 rounded-full bg-white" />
             </div>
             <div className={`relative mx-auto -mt-6 h-28 w-28 overflow-hidden rounded-full border-4 border-white ${accent}`}>
-              <Image src="/NitishCutout.png" alt="" fill sizes="112px" className="object-cover object-top" />
+              <Image src={portrait} alt="" fill sizes="112px" className="object-cover object-top" />
             </div>
             <div className="px-5 pb-5 pt-3">
-              <p className="wide text-base font-extrabold leading-tight">Nitish Durga Bytaru</p>
+              <p className="wide text-base font-extrabold leading-tight">{name}</p>
               <p className="mt-1 text-sm font-semibold">{item.role}</p>
               <p className="mt-3 inline-flex items-center gap-1.5 text-sm"><MapPin className="h-4 w-4" aria-hidden="true" />{item.location}</p>
-              <p className="flex items-center justify-center gap-1.5 text-sm"><Calendar className="h-4 w-4" aria-hidden="true" />{item.date}</p>
+              <p className="flex items-center justify-center gap-1.5 text-sm"><Calendar className="h-4 w-4" aria-hidden="true" />{rangeLabel(item.start, item.end)}</p>
               <div className="mt-4"><Barcode seed={item.company + item.role} /></div>
             </div>
           </div>
@@ -287,10 +211,10 @@ const Stamps = ({ metrics }: { metrics: Metric[] }) => {
   return (
     <dl ref={ref} data-state={state} className="stamps grid grid-cols-1 gap-5 max-md:gap-1.5 lg:grid-cols-2">
       {metrics.map((metric, index) => {
-        const Icon = metric.icon;
+        const Icon = METRIC_ICON[metric.icon] ?? Activity;
         return (
           <div
-            key={metric.label}
+            key={`${metric.label}-${index}`}
             className="stamp flex cursor-default items-center gap-3 rounded-xl border-[3px] border-double border-indigo p-3 text-indigo max-md:gap-1.5 max-md:p-1.5 max-md:text-xs"
             style={{ "--tilt": STAMP_TILT[index % STAMP_TILT.length], animationDelay: `${index * 170}ms` } as React.CSSProperties}
           >
@@ -308,7 +232,16 @@ const Stamps = ({ metrics }: { metrics: Metric[] }) => {
   );
 };
 
-export default function ExperienceBoard() {
+interface ExperienceBoardProps {
+  items: Experience[];
+  keywords: string[];
+  /** "YYYY-MM" at build time, so a role with no end date reaches the same month on server and client. */
+  today: string;
+  name: string;
+  portrait: string;
+}
+
+export default function ExperienceBoard({ items, keywords, today, name, portrait }: ExperienceBoardProps) {
   const [active, setActive] = useState(0);
   const [previous, setPrevious] = useState(0);
   const [origin, setOrigin] = useState(50);
@@ -316,6 +249,31 @@ export default function ExperienceBoard() {
   const needleRef = useRef<HTMLDivElement>(null);
   const bubbleRef = useRef<HTMLSpanElement>(null);
   const ticks = useRef<(HTMLSpanElement | null)[]>([]);
+  const highlight = useHighlighter(keywords);
+  const ruler = useMemo(() => buildRuler(items, today), [items, today]);
+
+  // About six ticks a month on short rulers, thinning out as the range grows.
+  const perMonth = Math.max(1, Math.floor(72 / ruler.months));
+  const tickCount = Math.min(ruler.months * perMonth, 72);
+  const majorEvery = ruler.months <= 24 ? perMonth : perMonth * 12;
+  const columns = { gridTemplateColumns: `repeat(${ruler.months}, minmax(0, 1fr))` };
+  const phoneLabelStep = ruler.labels.length > 11 ? Math.ceil(ruler.labels.length / 8) : 1;
+
+  if (items.length === 0) {
+    return (
+      <Tile tone="indigo" className="p-6">
+        <p className="wide text-xl font-extrabold text-white">Experience is on its way.</p>
+      </Tile>
+    );
+  }
+
+  const roleAt = (column: number) => {
+    const covering = ruler.spans
+      .map((span, index) => ({ span, index }))
+      .filter(({ span }) => column >= span.start && column < span.end);
+    if (covering.length === 0) return -1;
+    return covering.some(({ index }) => index === active) ? active : covering[0].index;
+  };
 
   const choose = (index: number, atPercent: number) => {
     if (index === active || index < 0) return;
@@ -330,16 +288,16 @@ export default function ExperienceBoard() {
     const ratio = Math.max(0, Math.min(0.9999, (event.clientX - box.left) / box.width));
     ticks.current.forEach((tick, index) => {
       if (!tick) return;
-      const distance = (index + 0.5) / TICKS - ratio;
+      const distance = (index + 0.5) / tickCount - ratio;
       tick.style.transform = `scaleY(${1 + 2.6 * Math.exp(-((distance / 0.045) ** 2))})`;
     });
-    const monthIndex = Math.floor(ratio * MONTHS.length);
+    const column = Math.floor(ratio * ruler.months);
     if (needleRef.current) {
       needleRef.current.style.opacity = "1";
       needleRef.current.style.left = `${ratio * 100}%`;
     }
-    if (bubbleRef.current) bubbleRef.current.textContent = `${MONTHS[monthIndex]} ${yearOf(monthIndex)}`;
-    choose(roleAt(monthIndex), ratio * 100);
+    if (bubbleRef.current) bubbleRef.current.textContent = ruler.nameAt(column);
+    choose(roleAt(column), ratio * 100);
   };
 
   const handleLeave = () => {
@@ -349,9 +307,10 @@ export default function ExperienceBoard() {
     if (needleRef.current) needleRef.current.style.opacity = "0";
   };
 
-  const role = experiences[active];
-  const span = SPANS[role.company];
-  const behind = SPANS[experiences[previous].company];
+  const safeActive = Math.min(active, items.length - 1);
+  const role = items[safeActive];
+  const accent = toneBg(role.color);
+  const behind = toneBg(items[Math.min(previous, items.length - 1)].color);
 
   return (
     <div className="flex flex-col gap-4">
@@ -359,12 +318,12 @@ export default function ExperienceBoard() {
       <Tile tone="indigo" className="!overflow-visible enter-ruler z-20 shrink-0 px-5 pb-4 pt-3 max-md:px-3 max-md:pb-2 max-md:pt-1">
         <div ref={rulerRef} onPointerMove={handleMove} onPointerLeave={handleLeave} className="relative">
           <div aria-hidden="true" className="flex h-16 items-end justify-between max-md:h-8">
-            {Array.from({ length: TICKS }, (_, index) => (
+            {Array.from({ length: tickCount }, (_, index) => (
               <span
                 key={index}
                 ref={(node) => { ticks.current[index] = node; }}
                 className={`block w-0.5 origin-bottom max-sm:[&:nth-child(even)]:hidden rounded-full motion-safe:transition-transform motion-safe:duration-150 ${
-                  index % 6 === 0 ? "h-5 bg-white" : "h-3 bg-white/45"
+                  index % majorEvery === 0 ? "h-5 bg-white" : "h-3 bg-white/45"
                 }`}
               />
             ))}
@@ -374,22 +333,32 @@ export default function ExperienceBoard() {
             <span ref={bubbleRef} className="absolute left-2 top-0 whitespace-nowrap rounded-full bg-amber px-2.5 py-0.5 text-xs font-bold text-ink" />
           </div>
 
-          <div aria-hidden="true" className="mb-2 mt-1 grid grid-cols-11 text-center text-xs font-semibold text-white">
-            {MONTHS.map((month) => <span key={month}>{month}</span>)}
+          <div aria-hidden="true" className="mb-2 mt-1 grid text-center text-xs font-semibold text-white" style={columns}>
+            {ruler.labels.map((label, index) => (
+              <span
+                key={label.from}
+                // Phones fit about eight labels; past that, every few are kept so they don't run together.
+                className={phoneLabelStep > 1 && index % phoneLabelStep !== 0 ? "max-sm:invisible" : undefined}
+                style={{ gridColumn: `${label.from + 1} / ${label.to + 1}` }}
+              >
+                {label.text}
+              </span>
+            ))}
           </div>
 
-          <div className="grid grid-cols-11 gap-1">
-            {experiences.map((item, index) => {
-              const itemSpan = SPANS[item.company];
+          <div className="grid gap-1" style={columns}>
+            {items.map((item, index) => {
+              const itemSpan = ruler.spans[index];
               return (
                 <button
-                  key={item.company}
+                  key={item.id}
                   type="button"
-                  aria-pressed={active === index}
-                  onClick={() => choose(index, ((itemSpan.start + itemSpan.end) / 2 / MONTHS.length) * 100)}
-                  style={{ gridColumn: `${itemSpan.start + 1} / ${itemSpan.end + 1}`, gridRow: 1 }}
+                  aria-pressed={safeActive === index}
+                  aria-label={`${item.company}, ${rangeLabel(item.start, item.end)}`}
+                  onClick={() => choose(index, ((itemSpan.start + itemSpan.end) / 2 / ruler.months) * 100)}
+                  style={{ gridColumn: `${itemSpan.start + 1} / ${itemSpan.end + 1}`, gridRow: itemSpan.lane + 1 }}
                   className={`min-h-11 truncate rounded-full px-3 text-sm font-bold motion-safe:transition-colors motion-safe:duration-300 ${
-                    active === index ? `${itemSpan.bg} text-ink` : "bg-indigo-soft text-white"
+                    safeActive === index ? `${toneBg(item.color)} text-ink` : "bg-indigo-soft text-white"
                   }`}
                 >
                   {item.company}
@@ -401,25 +370,28 @@ export default function ExperienceBoard() {
       </Tile>
 
       {/* Role, wiped in from the point on the ruler */}
-      <div className={`rounded-[20px] ${behind.bg}`}>
+      <div className={`rounded-[20px] ${behind}`}>
         <Tile
-          key={role.company}
+          key={role.id}
           as="article"
-          tone={span.tone}
+          tone={role.color as TileTone}
           className="wipe-in !text-indigo p-6 max-md:p-3 lg:p-10"
           style={{ "--wipe-x": `${origin}%` } as React.CSSProperties}
         >
           <div className="grid gap-8 max-md:grid-cols-[150px_minmax(0,1fr)] max-md:gap-x-3 max-md:gap-y-3 md:grid-cols-[260px_minmax(0,1fr)] lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-12">
-            <IdBadge item={role} accent={span.bg} />
+            <IdBadge item={role} accent={accent} name={name} portrait={portrait} />
 
             <div className="min-w-0 max-md:contents">
               <div className="min-w-0 self-center">
               <h2 className="wide text-[clamp(2.25rem,5.4vw,5rem)] font-extrabold leading-none max-md:text-xl">{role.company}</h2>
               <p className="mt-3 text-xl font-bold max-md:mt-1 max-md:text-sm">{role.role}</p>
-              <p className="mt-2 font-medium max-md:mt-1 max-md:text-xs">{role.type}, {role.summaryLabel}</p>
-              <p className="mt-1 text-xs font-medium md:hidden">{role.location}, {role.date}</p>
+              {(role.typeLabel || role.summaryLabel) && (
+                <p className="mt-2 font-medium max-md:mt-1 max-md:text-xs">{[role.typeLabel, role.summaryLabel].filter(Boolean).join(", ")}</p>
+              )}
+              <p className="mt-1 text-xs font-medium md:hidden">{[role.location, rangeLabel(role.start, role.end)].filter(Boolean).join(", ")}</p>
               </div>
 
+              {role.skills.length > 0 && (
               <ul aria-label="Skills applied" className="mt-5 flex flex-wrap gap-2 max-md:col-span-2 max-md:mt-0 max-md:gap-1">
                 {role.skills.map((skill, index) => (
                   <li
@@ -434,23 +406,28 @@ export default function ExperienceBoard() {
                   </li>
                 ))}
               </ul>
+              )}
 
+              {role.points.length > 0 && (
               <ol className="mt-8 max-md:col-span-2 max-md:mt-0">
                 {role.points.map((point, index) => (
-                  <FlowStep key={point} last={index === role.points.length - 1}>
-                    {highlightKeywords(point)}
+                  <FlowStep key={`${index}-${point}`} last={index === role.points.length - 1}>
+                    {highlight(point)}
                   </FlowStep>
                 ))}
               </ol>
+              )}
             </div>
           </div>
 
+          {(role.certificate || role.metrics.length > 0) && (
           <div className="mt-10 grid grid-cols-2 items-center gap-10 max-md:mt-2 max-md:gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)]">
-            {role.certificate !== "#" && (
-              <CertificateCard url={role.certificate} company={role.company} roleName={role.role} date={role.date} />
+            {role.certificate && (
+              <CertificateCard url={role.certificate} company={role.company} roleName={role.role} date={rangeLabel(role.start, role.end)} />
             )}
-            <Stamps metrics={role.metrics} />
+            {role.metrics.length > 0 && <Stamps metrics={role.metrics} />}
           </div>
+          )}
         </Tile>
       </div>
     </div>

@@ -99,20 +99,40 @@ function getTechIconUrl(tech: string): { url: string } | null {
   }
 }
 
-export const hasTechIcon = (name: string) => getTechIconUrl(name) !== null;
+/** A Simple Icons slug, e.g. "rust" or "googlecloud". */
+const SLUG = /^[a-z0-9]{1,40}$/;
+
+/**
+ * The known map comes first. An `icon` that isn't in the map is treated as a Simple Icons slug,
+ * so a new skill can get its logo from the admin without a code change.
+ */
+const resolveIcon = (name: string, icon?: string) => {
+  if (icon) {
+    const known = getTechIconUrl(icon);
+    if (known) return known;
+    const slug = icon.trim().toLowerCase();
+    if (SLUG.test(slug)) return { url: `https://cdn.simpleicons.org/${slug}` };
+  }
+  return getTechIconUrl(name);
+};
+
+export const hasTechIcon = (name: string, icon?: string) => resolveIcon(name, icon) !== null;
 
 interface TechIconProps {
   name: string;
+  /** Optional icon override: a known tech name or a Simple Icons slug. */
+  icon?: string;
   className?: string;
   sizeClassName?: string;
 }
 
 export const TechIcon: React.FC<TechIconProps> = ({
   name,
+  icon,
   className = "",
   sizeClassName = "w-4 h-4",
 }) => {
-  const iconData = getTechIconUrl(name);
+  const iconData = resolveIcon(name, icon);
   if (!iconData) {
     // Render a default Code2 icon if the specific technology icon is not found
     return <Code2 aria-hidden="true" className={`${sizeClassName} shrink-0 ${className}`} />;

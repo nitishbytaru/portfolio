@@ -4,15 +4,21 @@ import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Bell, Camera, ChartColumn, Check, Globe, Heart, LayoutGrid, Leaf, Lock, LucideIcon, MessageCircle, Search, Shield, Smartphone, Upload, User, Wallet, Zap } from "lucide-react";
-import { projectsData, Project } from "../../data/ProjectData";
+import type { Project } from "@/lib/schema";
 import Tile, { TileTone } from "../board/Tile";
 import Wordmark from "../board/Wordmark";
 import ScreenDeck from "../board/ScreenDeck";
 import ProjectLaunchpad from "../board/ProjectLaunchpad";
 import { AboutTile, BuiltTile, FeaturesTile, StackTile } from "../board/ProjectStory";
 
+type Neighbour = Pick<Project, "slug" | "title" | "thumbnail"> | null;
+
 interface ProjectLayoutProps {
   project: Project;
+  /** Position among visible projects, for the hero colour. */
+  index: number;
+  previousProject: Neighbour;
+  nextProject: Neighbour;
 }
 
 const HERO_TONES: TileTone[] = ["mint", "pink", "periwinkle", "violet", "mint"];
@@ -41,16 +47,12 @@ const FEATURE_ICONS: [RegExp, LucideIcon][] = [
 
 const featureIcon = (feature: string) => FEATURE_ICONS.find(([pattern]) => pattern.test(feature))?.[1] ?? Check;
 
-const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project }) => {
+const ProjectLayout: React.FC<ProjectLayoutProps> = ({ project, index: currentIndex, previousProject, nextProject }) => {
   const images = project.images?.length ? project.images : [project.thumbnail];
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [project]);
 
-  const currentIndex = projectsData.findIndex((item) => item.slug === project.slug);
-  const previousProject = currentIndex > 0 ? projectsData[currentIndex - 1] : null;
-  const nextProject = currentIndex < projectsData.length - 1 ? projectsData[currentIndex + 1] : null;
-  const isLinkedIn = project.liveLink?.includes("linkedin.com");
   const heroTone = HERO_TONES[Math.max(currentIndex, 0) % HERO_TONES.length];
 
   

@@ -1,0 +1,227 @@
+[
+  {
+    "id": "frontend",
+    "visible": true,
+    "title": "Frontend",
+    "color": "mint",
+    "leadIcon": "React.js",
+    "skills": [
+      {
+        "id": "react-js",
+        "visible": true,
+        "featured": true,
+        "name": "React.js",
+        "aliases": [
+          "react",
+          "react.js"
+        ]
+      },
+      {
+        "id": "next-js",
+        "visible": true,
+        "featured": true,
+        "name": "Next.js",
+        "aliases": [
+          "next.js"
+        ]
+      },
+      {
+        "id": "angular",
+        "visible": true,
+        "featured": true,
+        "name": "Angular",
+        "aliases": [
+          "angular"
+        ]
+      },
+      {
+        "id": "tailwind-css",
+        "visible": true,
+        "featured": true,
+        "name": "Tailwind CSS",
+        "aliases": [
+          "tailwind css"
+        ]
+      },
+      {
+        "id": "html-css",
+        "visible": true,
+        "featured": true,
+        "name": "HTML / CSS",
+        "aliases": [
+          "html",
+          "css"
+        ],
+        "icon": "HTML"
+      }
+    ]
+  },
+  {
+    "id": "backend",
+    "visible": true,
+    "title": "Backend",
+    "color": "amber",
+    "leadIcon": "Node.js",
+    "skills": [
+      {
+        "id": "node-js",
+        "visible": true,
+        "featured": true,
+        "name": "Node.js",
+        "aliases": [
+          "node.js"
+        ]
+      },
+      {
+        "id": "express-js",
+        "visible": true,
+        "featured": true,
+        "name": "Express.js",
+        "aliases": [
+          "express.js"
+        ]
+      },
+      {
+        "id": "net-c",
+        "visible": true,
+        "featured": true,
+        "name": ".NET / C#",
+        "aliases": [
+          ".net",
+          "c#"
+        ],
+        "icon": ".NET"
+      },
+      {
+        "id": "entity-framework",
+        "visible": true,
+        "featured": true,
+        "name": "Entity Framework",
+        "aliases": [
+          "entity framework"
+        ],
+        "icon": "Entity Framework Core"
+      },
+      {
+        "id": "django-flask",
+        "visible": true,
+        "featured": true,
+        "name": "Django / Flask",
+        "aliases": [
+          "django",
+          "flask"
+        ],
+        "icon": "Django"
+      }
+    ]
+  },
+  {
+    "id": "languages",
+    "visible": true,
+    "title": "Languages",
+    "color": "pink",
+    "leadIcon": "TypeScript",
+    "skills": [
+      {
+        "id": "javascript",
+        "visible": true,
+        "featured": true,
+        "name": "JavaScript",
+        "aliases": [
+          "javascript"
+        ]
+      },
+      {
+        "id": "typescript",
+        "visible": true,
+        "featured": true,
+        "name": "TypeScript",
+        "aliases": [
+          "typescript"
+        ]
+      },
+      {
+        "id": "python",
+        "visible": true,
+        "featured": true,
+        "name": "Python",
+        "aliases": [
+          "python"
+        ]
+      },
+      {
+        "id": "java",
+        "visible": true,
+        "featured": true,
+        "name": "Java",
+        "aliases": [
+          "java"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "databases",
+    "visible": true,
+    "title": "Databases",
+    "color": "indigo",
+    "leadIcon": "MongoDB",
+    "skills": [
+      {
+        "id": "mongodb",
+        "visible": true,
+        "featured": true,
+        "name": "MongoDB",
+        "aliases": [
+          "mongodb",
+          "mongoose"
+        ]
+      },
+      {
+        "id": "mysql",
+        "visible": true,
+        "featured": true,
+        "name": "MySQL",
+        "aliases": [
+          "mysql"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mobile-tools",
+    "visible": true,
+    "title": "Mobile & Tools",
+    "color": "violet",
+    "leadIcon": "React Native",
+    "skills": [
+      {
+        "id": "react-native",
+        "visible": true,
+        "featured": true,
+        "name": "React Native",
+        "aliases": [
+          "react native"
+        ]
+      },
+      {
+        "id": "git-github",
+        "visible": true,
+        "featured": true,
+        "name": "Git & GitHub",
+        "aliases": [
+          "git"
+        ]
+      },
+      {
+        "id": "jupyter",
+        "visible": true,
+        "featured": true,
+        "name": "Jupyter",
+        "aliases": [
+          "jupyter"
+        ]
+      }
+    ]
+  }
+]

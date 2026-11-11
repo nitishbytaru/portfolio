@@ -5,16 +5,25 @@ import Image from "next/image";
 import { Eye, EyeOff, FileText, Hexagon, Mail } from "lucide-react";
 import Tile from "@/components/board/Tile";
 import SpinBadge from "@/components/board/SpinBadge";
-import { EMAIL, RESUME_URL } from "@/data/site";
+import { driveFileId } from "@/lib/schema";
 
-const RESUME_ID = RESUME_URL.match(/\/d\/(.*?)\//)?.[1];
-const RESUME_THUMB = `https://drive.google.com/thumbnail?id=${RESUME_ID}&sz=w600`;
 const PARALLAX = "motion-safe:transition-transform motion-safe:duration-200 motion-safe:ease-out";
 
 const canFollow = () =>
   window.matchMedia("(hover: hover) and (prefers-reduced-motion: no-preference)").matches;
 
-export default function AboutCard() {
+interface AboutCardProps {
+  name: string;
+  headline: string;
+  bio: string;
+  email: string;
+  portrait: string;
+  /** The active Drive link, used only for the preview thumbnail. Buttons go to /resume. */
+  resumeUrl: string;
+}
+
+export default function AboutCard({ name, headline, bio, email, portrait, resumeUrl }: AboutCardProps) {
+  const resumeId = driveFileId(resumeUrl);
   const cardRef = useRef<HTMLElement>(null);
   const [previewing, setPreviewing] = useState(false);
   const [wanted, setWanted] = useState(false);
@@ -79,8 +88,8 @@ export default function AboutCard() {
         </div>
         <div data-depth="14" className={`absolute inset-0 overflow-hidden rounded-b-[999px] ${PARALLAX}`}>
           <Image
-            src="/NitishCutout.png"
-            alt="Portrait of Nitish Durga Bytaru"
+            src={portrait}
+            alt={`Portrait of ${name}`}
             fill
             priority
             sizes="(min-width: 1024px) 340px, 280px"
@@ -93,7 +102,7 @@ export default function AboutCard() {
 
         {/* Resume sheet that rises over the portrait */}
         <a
-          href={RESUME_URL}
+          href="/resume"
           target="_blank"
           rel="noopener noreferrer"
           aria-hidden={!previewing}
@@ -105,10 +114,10 @@ export default function AboutCard() {
               : "pointer-events-none -translate-x-1/2 translate-y-[6%] rotate-6 opacity-0"
           }`}
         >
-          {wanted && !failed ? (
+          {wanted && resumeId && !failed ? (
             <img
-              src={RESUME_THUMB}
-              alt="Preview of Nitish Durga Bytaru's resume"
+              src={`https://drive.google.com/thumbnail?id=${resumeId}&sz=w600`}
+              alt={`Preview of ${name}'s resume`}
               referrerPolicy="no-referrer"
               onError={() => setFailed(true)}
               className="h-full w-full rounded-sm object-cover object-top"
@@ -126,23 +135,20 @@ export default function AboutCard() {
       <div className="pt-5 max-md:contents md:min-w-0 md:flex-1 lg:flex-none">
         <p className="wide text-3xl font-light leading-none text-white max-md:col-start-1 max-md:row-start-1 max-md:pt-9 max-md:text-base">I&apos;m,</p>
         <h1 id="about-name" className="wide mt-1 text-[2rem] font-semibold leading-[1.04] text-white max-md:col-start-1 max-md:row-start-2 max-md:mt-0 max-md:text-lg">
-          Nitish Durga Bytaru
+          {name}
         </h1>
-        <p className="mt-2 text-lg font-semibold text-ink max-md:col-start-1 max-md:row-start-3 max-md:mt-0.5 max-md:text-xs">Full Stack Web Developer, open to roles</p>
-        <p className="mt-3 text-[15px] leading-snug text-ink max-md:hidden">
-          I build full stack web apps, from real-time messaging with Socket.io to machine learning tools
-          that help farmers make data-driven decisions.
-        </p>
+        <p className="mt-2 text-lg font-semibold text-ink max-md:col-start-1 max-md:row-start-3 max-md:mt-0.5 max-md:text-xs">{headline}</p>
+        <p className="mt-3 text-[15px] leading-snug text-ink max-md:hidden">{bio}</p>
         <div className="mt-1 flex flex-wrap items-center gap-x-4 max-md:col-start-1 max-md:row-start-4 max-md:mt-1">
           <a
-            href={`mailto:${EMAIL}`}
+            href={`mailto:${email}`}
             className="inline-flex min-h-11 min-w-0 items-center gap-2 text-[15px] font-semibold text-ink underline max-md:hidden decoration-dashed underline-offset-4"
           >
-            {EMAIL}
+            {email}
             <Mail className="h-4 w-4" aria-hidden="true" />
           </a>
           <a
-            href={RESUME_URL}
+            href="/resume"
             target="_blank"
             rel="noopener noreferrer"
             onPointerEnter={(event) => { if (event.pointerType === "mouse") setPreviewing(true); }}

@@ -3,11 +3,16 @@ import Link from "next/link";
 import Tile from "@/components/board/Tile";
 import Wordmark from "@/components/board/Wordmark";
 import ProjectPeekList from "@/components/board/ProjectPeekList";
+import SiteFrame from "@/components/board/SiteFrame";
+import { getProjects } from "@/lib/content";
 
 export const metadata: Metadata = { title: "Page not found" };
 
+// Unmatched URLs render outside the (site) group, so this page brings its own frame.
 export default function NotFound() {
+  const projects = getProjects().map(({ slug, title, thumbnail }) => ({ slug, title, thumbnail }));
   return (
+    <SiteFrame>
     <div>
       <Wordmark className="mb-6">Not found</Wordmark>
       <div className="enter-lost stagger grid gap-4 lg:grid-cols-3 lg:gap-5">
@@ -19,9 +24,10 @@ export default function NotFound() {
         </Tile>
         <Tile tone="mint" className="p-6 lg:col-span-2">
           <h2 className="wide mb-3 text-2xl font-extrabold">These projects are all still here</h2>
-          <ProjectPeekList />
+          <ProjectPeekList projects={projects} />
         </Tile>
       </div>
     </div>
+    </SiteFrame>
   );
 }
