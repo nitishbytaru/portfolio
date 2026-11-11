@@ -10,7 +10,10 @@ export default function AdminNav() {
   const pathname = usePathname();
   const activeRef = useRef<HTMLAnchorElement>(null);
   // On phones the tabs scroll sideways; keep the current one in view.
-  useEffect(() => activeRef.current?.scrollIntoView({ block: "nearest", inline: "center" }), [pathname]);
+  // Braces matter: newer browsers return a Promise from scrollIntoView, and an effect may only return a cleanup.
+  useEffect(() => {
+    activeRef.current?.scrollIntoView({ block: "nearest", inline: "center" });
+  }, [pathname]);
   return (
     <nav aria-label="Admin" className="-mx-3 overflow-x-auto px-3 [scrollbar-width:none] sm:mx-0 sm:px-0">
       <ul className="flex w-max gap-1">
