@@ -118,14 +118,24 @@ export const projectsFileSchema = z.array(projectSchema).superRefine((items, ctx
   });
 });
 
+/**
+ * "devicon:react/original", "si:rust", or an older plain value (a known tech name or a bare slug).
+ * Restricted characters, since it becomes part of an image URL.
+ */
+const iconRef = z
+  .string()
+  .trim()
+  .max(80)
+  .regex(/^(devicon:[a-z0-9]+\/[a-z0-9-]+|si:[a-z0-9]+|[\w .#+&/-]{0,40})$/, "Choose an icon from the picker");
+
 export const skillSchema = z.object({
   id,
   visible: z.boolean(),
   featured: z.boolean(),
   name: required(40),
   aliases: z.array(required(40)).max(10),
-  /** A known tech name (see TechIcon) or a Simple Icons slug such as "rust". */
-  icon: text(40).optional(),
+  /** Chosen in the admin's icon picker. Empty means the icon comes from the name. */
+  icon: iconRef.optional(),
 });
 
 export const skillGroupSchema = z.object({
@@ -133,7 +143,7 @@ export const skillGroupSchema = z.object({
   visible: z.boolean(),
   title: required(40),
   color: z.enum(GROUP_COLORS),
-  leadIcon: required(40),
+  leadIcon: iconRef.pipe(z.string().min(1, "Choose a background icon")),
   skills: z.array(skillSchema).max(16).superRefine(uniqueIds),
 });
 

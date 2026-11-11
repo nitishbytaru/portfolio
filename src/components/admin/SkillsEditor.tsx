@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Plus } from "lucide-react";
 import { GROUP_COLORS, type Skill, type SkillGroup } from "@/lib/schema";
 import { toneBg } from "@/lib/tones";
-import { TechIcon } from "@/components/ui/TechIcon";
+import IconPicker from "./IconPicker";
 import { buttonClass, Check, ItemCard, ItemTools, ListField, move, newId, replaceAt, SaveBar, TextField, useContentEditor } from "./kit";
 
 const blankSkill = (): Skill => ({ id: newId("skill"), visible: true, featured: true, name: "", aliases: [], icon: "" });
@@ -15,19 +15,12 @@ function SkillRow({ skill, index, count, onChange, onMove, onDelete }: {
 }) {
   return (
     <li className={`rounded-xl bg-night-raised p-3 ${skill.visible ? "" : "opacity-70"}`}>
-      <div className="grid grid-cols-[44px_minmax(0,1fr)] items-start gap-x-3 gap-y-2 sm:grid-cols-[44px_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]">
-        <span className="mt-[30px] flex h-11 w-11 items-center justify-center rounded-full bg-white" title="Icon preview">
-          <TechIcon name={skill.name} icon={skill.icon} sizeClassName="h-6 w-6" />
-        </span>
+      <div className="grid items-start gap-x-3 gap-y-3 sm:grid-cols-2">
         <TextField label="Name" value={skill.name} onChange={(name) => onChange({ name, ...(skill.aliases.length === 0 || skill.aliases[0] === skill.name.toLowerCase() ? { aliases: name ? [name.toLowerCase()] : [] } : {}) })} />
-        <TextField
-          label="Icon"
-          hint="Known name or a simpleicons.org slug"
-          value={skill.icon ?? ""}
-          onChange={(icon) => onChange({ icon: icon.trim() || undefined })}
-          className="max-sm:col-span-2"
-        />
-        <ListField label="Also matches" hint="Project tech names, for “Used in N projects”" separator="comma" value={skill.aliases} onChange={(aliases) => onChange({ aliases: aliases.map((alias) => alias.toLowerCase()) })} className="max-sm:col-span-2" />
+        <ListField label="Also matches" hint="Project tech names, for “Used in N projects”" separator="comma" value={skill.aliases} onChange={(aliases) => onChange({ aliases: aliases.map((alias) => alias.toLowerCase()) })} />
+        <div className="sm:col-span-2">
+          <IconPicker label="Icon" name={skill.name} value={skill.icon || undefined} onChange={(icon) => onChange({ icon })} />
+        </div>
       </div>
       <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
         <Check label="Show on Home" checked={skill.featured} onChange={(featured) => onChange({ featured })} />
@@ -76,10 +69,14 @@ export default function SkillsEditor({ initial, sha }: { initial: SkillGroup[]; 
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <TextField label="Title" value={group.title} onChange={(title) => update(index, { title })} />
-              <div className="grid grid-cols-[minmax(0,1fr)_44px] items-end gap-2">
-                <TextField label="Large background icon" hint="A skill name or icon slug" value={group.leadIcon} onChange={(leadIcon) => update(index, { leadIcon })} />
-                <span className="mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-frame"><TechIcon name={group.leadIcon} icon={group.leadIcon} sizeClassName="h-6 w-6" /></span>
-              </div>
+              <IconPicker
+                label="Large background icon"
+                name={group.leadIcon}
+                initialQuery={group.title}
+                value={group.leadIcon || undefined}
+                allowAuto={false}
+                onChange={(leadIcon) => update(index, { leadIcon: leadIcon ?? group.leadIcon })}
+              />
             </div>
 
             <fieldset>

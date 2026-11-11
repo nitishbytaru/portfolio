@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import Tile, { TileTone } from "@/components/board/Tile";
 import Image from "next/image";
-import { TechIcon, hasTechIcon } from "@/components/ui/TechIcon";
+import { TechIcon, useHasTechIcon } from "@/components/ui/TechIcon";
 import { driveFileId, type Experience, type Metric } from "@/lib/schema";
 import { buildRuler, rangeLabel } from "@/lib/layout";
 import { toneBg } from "@/lib/tones";
@@ -250,6 +250,7 @@ export default function ExperienceBoard({ items, keywords, today, name, portrait
   const bubbleRef = useRef<HTMLSpanElement>(null);
   const ticks = useRef<(HTMLSpanElement | null)[]>([]);
   const highlight = useHighlighter(keywords);
+  const hasTechIcon = useHasTechIcon();
   const ruler = useMemo(() => buildRuler(items, today), [items, today]);
 
   // About six ticks a month on short rulers, thinning out as the range grows.

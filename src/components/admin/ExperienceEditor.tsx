@@ -5,6 +5,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { EXPERIENCE_KINDS, KIND_LABELS, METRIC_ICONS, ROLE_COLORS, type Experience } from "@/lib/schema";
 import { rangeLabel } from "@/lib/layout";
 import { toneBg } from "@/lib/tones";
+import TechPicker from "./TechPicker";
 import { buttonClass, Check, ItemCard, ItemTools, ListField, move, newId, replaceAt, SaveBar, Select, TextField, useContentEditor } from "./kit";
 
 const blank = (): Experience => ({
@@ -25,7 +26,7 @@ const blank = (): Experience => ({
   color: "pink",
 });
 
-export default function ExperienceEditor({ initial, sha }: { initial: Experience[]; sha: string }) {
+export default function ExperienceEditor({ initial, sha, techOptions }: { initial: Experience[]; sha: string; techOptions: string[] }) {
   const { data, setData, dirty, status, save } = useContentEditor("experience", initial, sha);
   const [open, setOpen] = useState<string | null>(null);
 
@@ -85,7 +86,7 @@ export default function ExperienceEditor({ initial, sha }: { initial: Experience
             </div>
 
             <ListField label="What I did" hint="One point per line" rows={5} value={item.points} onChange={(points) => update(index, { points })} />
-            <ListField label="Skills" separator="comma" value={item.skills} onChange={(skills) => update(index, { skills })} />
+            <TechPicker label="Skills" hint="Shown as chips on the role and highlighted in “What I did”." options={techOptions} value={item.skills} onChange={(skills) => update(index, { skills })} />
 
             <fieldset>
               <legend className="mb-2 text-sm font-semibold">Stamps</legend>

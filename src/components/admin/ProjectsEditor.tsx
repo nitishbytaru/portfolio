@@ -3,8 +3,11 @@
 import React, { useState } from "react";
 import { ArrowLeft, ArrowRight, Plus, Star, Trash2 } from "lucide-react";
 import type { Project } from "@/lib/schema";
-import { buttonClass, Check, ItemCard, ItemTools, ListField, move, newId, PairsField, replaceAt, SaveBar, slugify, TextArea, TextField, useContentEditor } from "./kit";
+import { buttonClass, Check, ItemCard, ItemTools, ListField, move, newId, replaceAt, SaveBar, slugify, TextArea, TextField, useContentEditor } from "./kit";
 import { PreviewProvider, UploadButton, usePreviewSrc, useUploads } from "./images";
+import TechPicker from "./TechPicker";
+import LayersField from "./LayersField";
+import type { TechCatalog } from "@/lib/tech";
 
 // Same rotation as the public Projects board, so each project keeps its colour.
 const PROJECT_TONES = ["mint", "amber", "pink", "periwinkle", "violet"];
@@ -43,7 +46,7 @@ function Screens({ project, onChange }: { project: Project; onChange: (patch: Pa
           return (
             <li key={src} className={`overflow-hidden rounded-xl border border-night-line bg-night-raised ${isThumb ? "ring-2 ring-periwinkle" : ""}`}>
               <img src={preview(src)} alt={`Screenshot ${index + 1}`} className="aspect-[16/10] w-full bg-ink object-cover object-left-top" />
-              <div className="flex flex-wrap items-center justify-between gap-0.5 p-1">
+              <div className="grid grid-cols-4 p-1 [&>button]:min-w-0">
                 <button type="button" className={buttonClass.quiet} disabled={index === 0} onClick={() => setImages(move(project.images, index, index - 1))} aria-label={`Move screenshot ${index + 1} earlier`}>
                   <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                 </button>
@@ -66,7 +69,7 @@ function Screens({ project, onChange }: { project: Project; onChange: (patch: Pa
   );
 }
 
-export default function ProjectsEditor({ initial, sha, rawBase }: { initial: Project[]; sha: string; rawBase: string }) {
+export default function ProjectsEditor({ initial, sha, rawBase, catalog }: { initial: Project[]; sha: string; rawBase: string; catalog: TechCatalog }) {
   const { data, setData, dirty, status, save } = useContentEditor("projects", initial, sha);
   const files = useUploads();
   const [open, setOpen] = useState<string | null>(null);
@@ -129,14 +132,26 @@ export default function ProjectsEditor({ initial, sha, rawBase }: { initial: Pro
               }}
             />
 
-            <ListField label="Tech stack" separator="comma" value={project.techStack} onChange={(techStack) => update(index, { techStack })} />
+            <TechPicker label="Tech stack" hint="The first one's icon leads the project's strip on the Projects page." options={catalog.stack} value={project.techStack} onChange={(techStack) => update(index, { techStack })} />
             <ListField label="Key features" value={project.features} onChange={(features) => update(index, { features })} />
             <ListField label="About (paragraphs)" hint="One paragraph per line" value={project.intro} onChange={(intro) => update(index, { intro })} />
             <TextArea label="Note" value={project.note} onChange={(note) => update(index, { note })} rows={2} />
-            <div className="grid gap-4 sm:grid-cols-2">
-              <PairsField label="How it's built" value={project.technologiesUsed} onChange={(technologiesUsed) => update(index, { technologiesUsed })} />
-              <PairsField label="Deployment" value={project.deployment} onChange={(deployment) => update(index, { deployment })} />
-            </div>
+            <LayersField
+              label="How it's built"
+              hint="Layers run left to right on the project page. Use the note button for details such as “for user data”."
+              value={project.technologiesUsed}
+              layerOptions={catalog.layers}
+              techOptions={catalog.built}
+              onChange={(technologiesUsed) => update(index, { technologiesUsed })}
+            />
+            <LayersField
+              label="Deployment"
+              hint="Where each layer runs. A layer named like one above lights up with it."
+              value={project.deployment}
+              layerOptions={catalog.layers}
+              techOptions={catalog.deploy}
+              onChange={(deployment) => update(index, { deployment })}
+            />
           </ItemCard>
         ))}
       </ul>

@@ -50,6 +50,15 @@ export const getFeaturedProject = () => {
   return projects.find((project) => project.featured) ?? projects[0] ?? null;
 };
 
+/** Icons chosen for visible skills, by lowercase skill name, so they apply site-wide. */
+export const getIconOverrides = cache(() => {
+  const icons: Record<string, string> = {};
+  getSkillGroups().forEach((group) => group.skills.forEach((skill) => {
+    if (skill.icon) icons[skill.name.toLowerCase()] = skill.icon;
+  }));
+  return icons;
+});
+
 /** Words to highlight in role descriptions: every skill name and alias the site knows. */
 export const getKeywords = cache(() => {
   const words = new Set<string>();

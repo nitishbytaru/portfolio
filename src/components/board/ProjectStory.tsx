@@ -3,8 +3,9 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, ChevronDown, Cloud, Cpu, Database, Layers, LucideIcon, Monitor, Server, Zap } from "lucide-react";
 import type { Project } from "@/lib/schema";
-import { TechIcon, hasTechIcon } from "@/components/ui/TechIcon";
+import { TechIcon, useHasTechIcon } from "@/components/ui/TechIcon";
 import Tile from "@/components/board/Tile";
+import { splitSpec, techName } from "@/lib/tech";
 
 type RevealState = "idle" | "waiting" | "in";
 
@@ -171,13 +172,10 @@ export const StackTile = ({ techStack }: { techStack: string[] }) => {
   );
 };
 
-// Splits "A, B (C, D), E" on commas that are outside parentheses.
-const splitSpec = (value: string) => value.split(/,(?![^(]*\))/).map((item) => item.trim());
-
-const techName = (item: string) => item.replace(/\s*\(.*\)/, "").trim();
 
 // A logo when one exists, otherwise the name; the full text stays available as a tooltip.
 const TechMark = ({ item }: { item: string }) => {
+  const hasTechIcon = useHasTechIcon();
   const name = techName(item);
   return hasTechIcon(name) ? (
     <span title={item} className="flex h-10 w-10 items-center justify-center rounded-full bg-white max-md:h-8 max-md:w-8">

@@ -116,26 +116,6 @@ export function ListField({ label, hint, value, onChange, separator = "line", ro
   );
 }
 
-/** "Key: value" per line, for the project's technology and deployment tables. */
-export function PairsField({ label, hint, value, onChange }: { label: string; hint?: string; value: Record<string, string>; onChange: (value: Record<string, string>) => void }) {
-  const lines = Object.entries(value).map(([key, text]) => `${key}: ${text}`);
-  return (
-    <ListField
-      label={label}
-      hint={hint ?? "One per line, as Name: value"}
-      value={lines}
-      onChange={(list) => {
-        const next: Record<string, string> = {};
-        list.forEach((line) => {
-          const at = line.indexOf(":");
-          if (at > 0) next[line.slice(0, at).trim()] = line.slice(at + 1).trim();
-        });
-        onChange(next);
-      }}
-    />
-  );
-}
-
 /** Move, hide and delete controls for an item in an ordered list. */
 export function ItemTools({ index, count, onMove, visible, onToggle, onDelete, name }: {
   index: number; count: number; onMove: (to: number) => void; visible?: boolean; onToggle?: () => void; onDelete: () => void; name: string;

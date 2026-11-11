@@ -1,12 +1,13 @@
 import SideNav from "@/components/board/SideNav";
 import BoardFooter from "@/components/board/BoardFooter";
-import { getProfile } from "@/lib/content";
+import { TechIconProvider } from "@/components/ui/TechIcon";
+import { getIconOverrides, getProfile } from "@/lib/content";
 
 /** The public site's sheet: side nav, main column and footer. */
 export default function SiteFrame({ children }: { children: React.ReactNode }) {
   const profile = getProfile();
   return (
-    <>
+    <TechIconProvider icons={getIconOverrides()}>
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-xl focus:bg-ink focus:px-4 focus:py-3 focus:font-semibold focus:text-white"
@@ -24,6 +25,6 @@ export default function SiteFrame({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </div>
-    </>
+    </TechIconProvider>
   );
 }

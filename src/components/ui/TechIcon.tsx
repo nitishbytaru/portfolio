@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { createContext, useContext } from "react";
 import { Code2 } from "lucide-react";
 
 function getTechIconUrl(tech: string): { url: string } | null {
@@ -99,28 +101,66 @@ function getTechIconUrl(tech: string): { url: string } | null {
   }
 }
 
+/** Pinned so a chosen icon never changes under the site. */
+export const DEVICON_BASE = "https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons";
+
 /** A Simple Icons slug, e.g. "rust" or "googlecloud". */
 const SLUG = /^[a-z0-9]{1,40}$/;
+const DEVICON_REF = /^devicon:([a-z0-9]+)\/([a-z0-9-]+)$/;
+const SIMPLE_REF = /^si:([a-z0-9]+)$/;
 
 /**
- * The known map comes first. An `icon` that isn't in the map is treated as a Simple Icons slug,
- * so a new skill can get its logo from the admin without a code change.
+ * An icon reference, as stored on a skill:
+ *  - "devicon:react/original"  a Devicon logo in a given style
+ *  - "si:rust"                 a Simple Icons logo
+ *  - "HTML" or "rust"          a known tech name, or a bare Simple Icons slug (older values)
  */
-const resolveIcon = (name: string, icon?: string) => {
+export const iconUrl = (ref: string): string | null => {
+  const value = ref.trim();
+  const devicon = value.match(DEVICON_REF);
+  if (devicon) return `${DEVICON_BASE}/${devicon[1]}/${devicon[1]}-${devicon[2]}.svg`;
+  const simple = value.match(SIMPLE_REF);
+  if (simple) return `https://cdn.simpleicons.org/${simple[1]}`;
+  const known = getTechIconUrl(value);
+  if (known) return known.url;
+  return SLUG.test(value.toLowerCase()) && value.length > 0 ? `https://cdn.simpleicons.org/${value.toLowerCase()}` : null;
+};
+
+/**
+ * Icons chosen for skills on the Skills page, keyed by lowercase skill name. Provided once per page
+ * so a skill's icon is the same wherever its name appears.
+ */
+const IconOverrides = createContext<Record<string, string>>({});
+
+export function TechIconProvider({ icons, children }: { icons: Record<string, string>; children: React.ReactNode }) {
+  return <IconOverrides.Provider value={icons}>{children}</IconOverrides.Provider>;
+}
+
+/** An explicit icon first, then the skill's chosen icon, then the built-in map. */
+const resolveIcon = (name: string, icon: string | undefined, overrides: Record<string, string>) => {
   if (icon) {
-    const known = getTechIconUrl(icon);
-    if (known) return known;
-    const slug = icon.trim().toLowerCase();
-    if (SLUG.test(slug)) return { url: `https://cdn.simpleicons.org/${slug}` };
+    const url = iconUrl(icon);
+    if (url) return { url };
   }
+  const chosen = overrides[name.trim().toLowerCase()];
+  if (chosen) {
+    const url = iconUrl(chosen);
+    if (url) return { url };
+  }
+  // A name can itself be a reference (a group's large background icon).
+  if (DEVICON_REF.test(name) || SIMPLE_REF.test(name)) return { url: iconUrl(name)! };
   return getTechIconUrl(name);
 };
 
-export const hasTechIcon = (name: string, icon?: string) => resolveIcon(name, icon) !== null;
+/** Whether a name has a logo, taking chosen icons into account. */
+export function useHasTechIcon() {
+  const overrides = useContext(IconOverrides);
+  return (name: string, icon?: string) => resolveIcon(name, icon, overrides) !== null;
+}
 
 interface TechIconProps {
   name: string;
-  /** Optional icon override: a known tech name or a Simple Icons slug. */
+  /** Optional icon reference that wins over everything else. */
   icon?: string;
   className?: string;
   sizeClassName?: string;
@@ -132,7 +172,8 @@ export const TechIcon: React.FC<TechIconProps> = ({
   className = "",
   sizeClassName = "w-4 h-4",
 }) => {
-  const iconData = resolveIcon(name, icon);
+  const overrides = useContext(IconOverrides);
+  const iconData = resolveIcon(name, icon, overrides);
   if (!iconData) {
     // Render a default Code2 icon if the specific technology icon is not found
     return <Code2 aria-hidden="true" className={`${sizeClassName} shrink-0 ${className}`} />;
